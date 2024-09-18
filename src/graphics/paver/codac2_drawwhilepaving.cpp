@@ -47,11 +47,16 @@ namespace codac2
     if(!fig)
       fig = DefaultView::selected_fig();
     init_fig(fig, x0);
+    fig->new_group("OUT");
+    fig->new_group("UNKNOWN");
 
     clock_t t_start = clock();
 
     if(x0.size() > 2)
-      fig->draw_box(x0, StyleProperties::outside());
+      {
+        fig->change_group("OUT");
+        fig->draw_box(x0, StyleProperties::outside());
+      }
 
     list<IntervalVector> l { x0 };
     size_t n = 0;
@@ -65,13 +70,17 @@ namespace codac2
 
       if(x0.size() == 2)
         for(const auto& bi : prev_x.diff(x))
+        {
+          fig->change_group("OUT");
           fig->draw_box(bi, StyleProperties::outside());
-
+        }
+          
       if(!x.is_empty())
       {
         if(x.max_diam() < eps)
         {
           n++;
+          fig->change_group("UNKNOWN");
           fig->draw_box(x, StyleProperties::boundary());
         }
 
@@ -99,6 +108,9 @@ namespace codac2
     if(!fig)
       fig = DefaultView::selected_fig();
     init_fig(fig, x0);
+    fig->new_group("OUT");
+    fig->new_group("UNKNOWN");
+    fig->new_group("IN");
     
     clock_t t_start = clock();
 
@@ -116,17 +128,22 @@ namespace codac2
       for(const auto& bi : x.diff(x_sep.inner))
       {
         n_inner++;
+        fig->change_group("IN");
         fig->draw_box(bi, StyleProperties::inside());
       }
 
       for(const auto& bi : x.diff(x_sep.outer))
+      {
+        fig->change_group("OUT");
         fig->draw_box(bi, StyleProperties::outside());
-
+      }
+        
       if(!boundary.is_empty())
       {
         if(boundary.max_diam() < eps)
         {
           n_boundary++;
+          fig->change_group("UNKNOWN");
           fig->draw_box(boundary, StyleProperties::boundary());
         }
 

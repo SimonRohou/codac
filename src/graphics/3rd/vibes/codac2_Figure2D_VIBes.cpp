@@ -16,13 +16,15 @@ using namespace codac2;
 int Figure2D_VIBes::_has_been_initialized = 0;
 
 Figure2D_VIBes::Figure2D_VIBes(const Figure2D& fig)
-  : OutputFigure2D(fig), _params(vibesParams("figure", fig.name()))
+  : OutputFigure2D(fig), _params(vibesParams("figure", fig.name(),"group", "default")),_name(fig.name()), _current_group("default")
 {
   if(Figure2D_VIBes::_has_been_initialized == 0)
     vibes::beginDrawing();
   Figure2D_VIBes::_has_been_initialized ++;
 
   vibes::newFigure(fig.name());
+  vibes::newGroup("default");
+  _groups.push_back("default");
 }
 
 Figure2D_VIBes::~Figure2D_VIBes()
@@ -132,6 +134,35 @@ void Figure2D_VIBes::draw_AUV(const Vector& x, float size, const StyleProperties
   assert(_fig.size() <= x.size()+1);
   assert(j()+1 < x.size());
   vibes::drawAUV(x[i()],x[j()],180.*x[j()+1]/codac2::pi, size, to_vibes_style(s), _params);
+}
+
+void Figure2D_VIBes::new_group(const std::string& name)
+{
+  assert (std::find(_groups.begin(), _groups.end(), name) == _groups.end());
+  vibes::selectFigure(_name);
+  _groups.push_back(name);
+  vibes::newGroup(name);
+  _params["group"] = name;
+  _current_group = name;
+}
+
+void Figure2D_VIBes::clear_group(const std::string& name)
+{
+  assert (std::find(_groups.begin(), _groups.end(), name) != _groups.end());
+  assert (name != "default");
+  vibes::selectFigure(_name);
+  _groups.remove(name);
+  if(_current_group == name)
+    {_params["group"] = "default";
+    _current_group = "default";}
+  vibes::clearGroup(name);
+}
+
+void Figure2D_VIBes::change_group(const std::string& name)
+{
+  assert (std::find(_groups.begin(), _groups.end(), name) != _groups.end());
+  vibes::selectFigure(_name);
+  _params["group"] = name;
 }
 
 string Figure2D_VIBes::to_vibes_style(const StyleProperties& s)

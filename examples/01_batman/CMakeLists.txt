@@ -31,7 +31,7 @@
 
   # In case you installed Codac in a local directory, you need 
   # to specify its path with the CMAKE_PREFIX_PATH option.
-  # set(CMAKE_PREFIX_PATH "~/codac/build_install")
+  set(CMAKE_PREFIX_PATH "~/codac/build_install")
 
   find_package(CODAC REQUIRED)
   message(STATUS "Found Codac version ${CODAC_VERSION}")

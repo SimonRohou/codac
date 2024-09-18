@@ -33,5 +33,10 @@ namespace codac2
       // Robots
       virtual void draw_tank(const Vector& x, float size, const StyleProperties& s = StyleProperties()) = 0;
       virtual void draw_AUV(const Vector& x, float size, const StyleProperties& s = StyleProperties()) = 0;
+
+      // Groups
+      virtual void new_group(const std::string& name) = 0;
+      virtual void clear_group(const std::string& name) = 0;
+      virtual void change_group(const std::string& name) = 0;
   };
 }

@@ -108,6 +108,11 @@ namespace codac2
           draw_box(pi, s);
       }
 
+      // Groups
+      void new_group(const std::string& name);
+      void clear_group(const std::string& name);
+      void change_group(const std::string& name);
+
     protected:
 
       const std::string _name;
@@ -243,6 +248,23 @@ namespace codac2
       {
         auto_init();
         selected_fig()->draw_subpaving(p, s);
+      }
+
+      // Groups
+
+      static void new_group(const std::string& name)
+      {
+        selected_fig()->new_group(name);
+      }
+
+      static void clear_group(const std::string& name)
+      {
+        selected_fig()->clear_group(name);
+      }
+
+      static void change_group(const std::string& name)
+      {
+        selected_fig()->change_group(name);
       }
 
 

@@ -40,11 +40,19 @@ namespace codac2
       void draw_tank(const Vector& x, float size, const StyleProperties& s = StyleProperties());
       void draw_AUV(const Vector& x, float size, const StyleProperties& s = StyleProperties());
 
+      // Groups
+      void new_group(const std::string& name);
+      void clear_group(const std::string& name);
+      void change_group(const std::string& name);
+
       static std::string to_vibes_style(const StyleProperties& s);
 
     protected:
 
       static int _has_been_initialized;
-      const vibes::Params _params;
+      vibes::Params _params;
+      const std::string _name;
+      std::list<std::string> _groups;
+      std::string _current_group;
   };
 }

@@ -172,6 +172,21 @@ void Figure2D_IPE::draw_AUV(const Vector& x, float size, const StyleProperties& 
   // Not implemented yet
 }
 
+void Figure2D_IPE::new_group(const std::string& name)
+{
+  // Not implemented yet
+}
+
+void Figure2D_IPE::clear_group(const std::string& name)
+{
+  // Not implemented yet
+}
+
+void Figure2D_IPE::change_group(const std::string& name)
+{
+  // Not implemented yet
+}
+
 double Figure2D_IPE::scale_x(double x) const
 {
   return (x-_fig.axes()[0].limits.lb())*_ratio[0];

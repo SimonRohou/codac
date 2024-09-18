@@ -262,3 +262,21 @@ void Figure2D::draw_paving(const PavingInOut& p, const StyleProperties& boundary
       });
   }
 }
+
+void Figure2D::new_group(const std::string& name)
+{
+  for(const auto& output_fig : _output_figures)
+    output_fig->new_group(name);
+}
+
+void Figure2D::clear_group(const std::string& name)
+{
+  for(const auto& output_fig : _output_figures)
+    output_fig->clear_group(name);
+}
+
+void Figure2D::change_group(const std::string& name)
+{
+  for(const auto& output_fig : _output_figures)
+    output_fig->change_group(name);
+}
