@@ -21,16 +21,16 @@ namespace codac2
   template<typename P>
   class Subpaving;
 
-  template<typename... X>
+  template<typename P,typename... X>
     requires (std::is_same_v<X,IntervalVector> && ...)
   class Paving : public Domain
   {
     public:
 
-      using Node_ = std::shared_ptr<const PavingNode<Paving<X...>>>;
+      using Node_ = std::shared_ptr<const PavingNode<P>>;
       using NodeTuple_ = std::tuple<X...>;
       using NodeValue_ = std::function<std::list<IntervalVector>(Node_)>;
-      using ConnectedSubset_ = Subpaving<Paving<X...>>;
+      using ConnectedSubset_ = Subpaving<P>;
 
       Paving(size_t n)
         : Paving(IntervalVector(n))
@@ -39,7 +39,7 @@ namespace codac2
       }
 
       Paving(const IntervalVector& x)
-        : _tree(std::make_shared<PavingNode<Paving<X...>>>(*this, x))
+        : _tree(std::make_shared<PavingNode<P>>(*static_cast<P*>(this), x))
       { }
 
       size_t size() const
@@ -47,14 +47,14 @@ namespace codac2
         return std::get<0>(_tree->boxes()).size();
       }
 
-      std::shared_ptr<const PavingNode<Paving<X...>>> tree() const
+      std::shared_ptr<const PavingNode<P>> tree() const
       {
         return _tree;
       }
 
-      std::shared_ptr<PavingNode<Paving<X...>>> tree()
+      std::shared_ptr<PavingNode<P>> tree()
       {
-        return std::const_pointer_cast<PavingNode<Paving<X...>>>(const_cast<const Paving<X...>*>(this)->tree());
+        return std::const_pointer_cast<PavingNode<P>>(const_cast<const Paving<P,X...>*>(this)->tree());
       }
 
       std::list<Node_> intersecting_nodes(const IntervalVector& x, const NodeValue_& node_value, bool flat_intersections = false) const
@@ -163,47 +163,47 @@ namespace codac2
 
     protected:
 
-      friend class PavingNode<Paving<X...>>;
+      friend class PavingNode<P>;
 
       static NodeTuple_ init_tuple(const IntervalVector& x)
       {
         return std::make_tuple(((X)x)...);
       }
 
-      std::shared_ptr<PavingNode<Paving<X...>>> _tree; // must be a shared_ptr to allow enable_shared_from_this
+      std::shared_ptr<PavingNode<P>> _tree; // must be a shared_ptr to allow enable_shared_from_this
   };
 
 
   class PavingOut;
-  using PavingOut_Node = PavingNode<Paving<IntervalVector>>;
+  using PavingOut_Node = PavingNode<PavingOut>;
 
-  class PavingOut : public Paving<IntervalVector>
+  class PavingOut : public Paving<PavingOut,IntervalVector>
   {
     public:
 
       PavingOut(size_t n);
       PavingOut(const IntervalVector& x);
 
-      std::list<PavingOut::ConnectedSubset_> connected_subsets(const PavingOut::NodeValue_& node_value = PavingOut::outer_approx) const;
-      std::list<PavingOut::ConnectedSubset_> connected_subsets(const IntervalVector& x0, const PavingOut::NodeValue_& node_value = PavingOut::outer_approx) const;
+      std::list<PavingOut::ConnectedSubset_> connected_subsets(const PavingOut::NodeValue_& node_value = PavingOut::outer) const;
+      std::list<PavingOut::ConnectedSubset_> connected_subsets(const IntervalVector& x0, const PavingOut::NodeValue_& node_value = PavingOut::outer) const;
 
-      static const NodeValue_ outer_approx, outer_complem_approx;
+      static const NodeValue_ outer, outer_complem;
   };
 
 
   class PavingInOut;
-  using PavingInOut_Node = PavingNode<Paving<IntervalVector,IntervalVector>>;
+  using PavingInOut_Node = PavingNode<PavingInOut>;
 
-  class PavingInOut : public Paving<IntervalVector,IntervalVector>
+  class PavingInOut : public Paving<PavingInOut,IntervalVector,IntervalVector>
   {
     public:
 
       PavingInOut(size_t n);
       PavingInOut(const IntervalVector& x);
 
-      std::list<PavingInOut::ConnectedSubset_> connected_subsets(const PavingInOut::NodeValue_& node_value = PavingInOut::outer_approx) const;
-      std::list<PavingInOut::ConnectedSubset_> connected_subsets(const IntervalVector& x0, const PavingInOut::NodeValue_& node_value = PavingInOut::outer_approx) const;
+      std::list<PavingInOut::ConnectedSubset_> connected_subsets(const PavingInOut::NodeValue_& node_value = PavingInOut::outer) const;
+      std::list<PavingInOut::ConnectedSubset_> connected_subsets(const IntervalVector& x0, const PavingInOut::NodeValue_& node_value = PavingInOut::outer) const;
 
-      static const NodeValue_ outer_approx, outer_complem_approx, inner_approx, bound_approx, all_approx;
+      static const NodeValue_ outer, outer_complem, inner, bound, all;
   };
 }
