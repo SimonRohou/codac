@@ -47,14 +47,14 @@ namespace codac2
     if(!fig)
       fig = DefaultView::selected_fig();
     init_fig(fig, x0);
-    fig->new_group("OUT");
-    fig->new_group("UNKNOWN");
+    fig->new_group("outside");
+    fig->new_group("boundary");
 
     clock_t t_start = clock();
 
     if(x0.size() > 2)
       {
-        fig->change_group("OUT");
+        fig->change_group("outside");
         fig->draw_box(x0, StyleProperties::outside());
       }
 
@@ -71,7 +71,7 @@ namespace codac2
       if(x0.size() == 2)
         for(const auto& bi : prev_x.diff(x))
         {
-          fig->change_group("OUT");
+          fig->change_group("outside");
           fig->draw_box(bi, StyleProperties::outside());
         }
           
@@ -80,7 +80,7 @@ namespace codac2
         if(x.max_diam() < eps)
         {
           n++;
-          fig->change_group("UNKNOWN");
+          fig->change_group("boundary");
           fig->draw_box(x, StyleProperties::boundary());
         }
 
@@ -108,9 +108,9 @@ namespace codac2
     if(!fig)
       fig = DefaultView::selected_fig();
     init_fig(fig, x0);
-    fig->new_group("OUT");
-    fig->new_group("UNKNOWN");
-    fig->new_group("IN");
+    fig->new_group("outside");
+    fig->new_group("boundary");
+    fig->new_group("inside");
     
     clock_t t_start = clock();
 
@@ -128,13 +128,13 @@ namespace codac2
       for(const auto& bi : x.diff(x_sep.inner))
       {
         n_inner++;
-        fig->change_group("IN");
+        fig->change_group("inside");
         fig->draw_box(bi, StyleProperties::inside());
       }
 
       for(const auto& bi : x.diff(x_sep.outer))
       {
-        fig->change_group("OUT");
+        fig->change_group("outside");
         fig->draw_box(bi, StyleProperties::outside());
       }
         
@@ -143,7 +143,7 @@ namespace codac2
         if(boundary.max_diam() < eps)
         {
           n_boundary++;
-          fig->change_group("UNKNOWN");
+          fig->change_group("boundary");
           fig->draw_box(boundary, StyleProperties::boundary());
         }
 
