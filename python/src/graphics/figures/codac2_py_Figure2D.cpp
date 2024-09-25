@@ -131,6 +131,20 @@ void export_Figure2D(py::module& m)
       VOID_FIGURE2D_DRAW_AUV_CONST_VECTOR_REF_FLOAT_CONST_STYLEPROPERTIES_REF,
       "x"_a, "size"_a, "s"_a=StyleProperties())
 
+    // Groups
+
+    .def("new_group", &Figure2D::new_group,
+      VOID_FIGURE2D_NEW_GROUP_CONST_STRING_REF,
+      "name"_a)
+
+    .def("clear_group", &Figure2D::clear_group,
+      VOID_FIGURE2D_CLEAR_GROUP_CONST_STRING_REF,
+      "name"_a)
+
+    .def("change_group", &Figure2D::change_group,
+      VOID_FIGURE2D_CHANGE_GROUP_CONST_STRING_REF,
+      "name"_a)
+
   ;
 
   py::class_<DefaultView> exported_default_view(m, "DefaultView", DEFAULTVIEW_MAIN);
@@ -191,6 +205,21 @@ void export_Figure2D(py::module& m)
     .def_static("draw_AUV", &DefaultView::draw_AUV,
       STATIC_VOID_DEFAULTVIEW_DRAW_AUV_CONST_VECTOR_REF_FLOAT_CONST_STYLEPROPERTIES_REF,
       "x"_a, "size"_a, "s"_a=StyleProperties())
+
+
+    // Groups
+
+    .def_static("new_group", &DefaultView::new_group,
+      STATIC_VOID_DEFAULTVIEW_NEW_GROUP_CONST_STRING_REF,
+      "name"_a)
+
+    .def_static("clear_group", &DefaultView::clear_group,
+      STATIC_VOID_DEFAULTVIEW_CLEAR_GROUP_CONST_STRING_REF,
+      "name"_a)
+
+    .def_static("change_group", &DefaultView::change_group,
+      STATIC_VOID_DEFAULTVIEW_CHANGE_GROUP_CONST_STRING_REF,
+      "name"_a)
 
   ;
 }
