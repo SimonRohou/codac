@@ -32,7 +32,7 @@ void export_ScalarVar(py::module& m)
       SCALARVAR_SCALARVAR)
 
     .def("size", &ScalarVar::size,
-      SIZET_SCALARVAR_SIZE_CONST)
+      INDEX_SCALARVAR_SIZE_CONST)
 
     .def("__pos__",  [](const ScalarVar& e1)                           { return ScalarExpr(ScalarExpr(e1)); }, py::is_operator())
     .def("__add__",  [](const ScalarVar& e1, const ScalarVar& e2)      { return ScalarExpr(ScalarExpr(e1) + ScalarExpr(e2)); }, py::is_operator())
@@ -60,12 +60,12 @@ void export_ScalarVar(py::module& m)
   py::implicitly_convertible<ScalarVar,ScalarExpr>();
 }
 
-ScalarExpr get_item(const VectorVar& v, size_t_type i)
+ScalarExpr get_item(const VectorVar& v, Index_type i)
 {
   matlab::test_integer(i);
   i = matlab::input_index(i);
 
-  if(i < 0 || i >= static_cast<size_t>(v.size()))
+  if(i < 0 || i >= static_cast<Index>(v.size()))
     throw py::index_error("index is out of range");
 
   return ScalarExpr(std::dynamic_pointer_cast<AnalyticExpr<ScalarOpValue>>(v[static_cast<int>(i)]->copy()));
@@ -79,37 +79,37 @@ void export_VectorVar(py::module& m)
   exported
   
     .def(py::init(
-        [](size_t_type n)
+        [](Index_type n)
         {
           matlab::test_integer(n);
           return std::make_unique<VectorVar>(n);
         }),
-      VECTORVAR_VECTORVAR_SIZET,
+      VECTORVAR_VECTORVAR_INDEX,
       "n"_a)
 
     .def("size", &VectorVar::size,
-      SIZET_VECTORVAR_SIZE_CONST);
+      INDEX_VECTORVAR_SIZE_CONST);
 
   if(FOR_MATLAB)
-    exported.def("__call__", [](const VectorVar& v, size_t_type i) -> ScalarExpr
+    exported.def("__call__", [](const VectorVar& v, Index_type i) -> ScalarExpr
       {
         return get_item(v, i);
-      }, SHARED_PTR_ANALYTICEXPR_SCALAROPVALUE_VECTORVAR_OPERATORCOMPO_SIZET_CONST);
+      }, SHARED_PTR_ANALYTICEXPR_SCALAROPVALUE_VECTORVAR_OPERATORCOMPO_INDEX_CONST);
 
   else
-    exported.def("__getitem__", [](const VectorVar& v, size_t_type i) -> ScalarExpr
+    exported.def("__getitem__", [](const VectorVar& v, Index_type i) -> ScalarExpr
       {
         return get_item(v, i);
-      }, SHARED_PTR_ANALYTICEXPR_SCALAROPVALUE_VECTORVAR_OPERATORCOMPO_SIZET_CONST);
+      }, SHARED_PTR_ANALYTICEXPR_SCALAROPVALUE_VECTORVAR_OPERATORCOMPO_INDEX_CONST);
 
   exported
 
-    .def("subvector", [](const VectorVar& v, size_t_type i, size_t_type j) -> VectorExpr
+    .def("subvector", [](const VectorVar& v, Index_type i, Index_type j) -> VectorExpr
       {
         matlab::test_integer(i, j);
         return VectorExpr(std::dynamic_pointer_cast<AnalyticExpr<VectorOpValue>>(
           v.subvector(matlab::input_index(i),matlab::input_index(j))->copy()));
-      }, SHARED_PTR_ANALYTICEXPR_VECTOROPVALUE_VECTORVAR_SUBVECTOR_SIZET_SIZET_CONST)
+      }, SHARED_PTR_ANALYTICEXPR_VECTOROPVALUE_VECTORVAR_SUBVECTOR_INDEX_INDEX_CONST)
 
     .def("__pos__",  [](const VectorVar& e1)                           { return VectorExpr(VectorExpr(e1)); }, py::is_operator())
     .def("__add__",  [](const VectorVar& e1, const VectorVar& e2)      { return VectorExpr(VectorExpr(e1) + VectorExpr(e2)); }, py::is_operator())

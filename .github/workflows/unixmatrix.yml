@@ -6,9 +6,9 @@ on:
     pull_request:
 
 jobs:
- # This job may be commented if a new release should not be created...
  deploy:
     runs-on: ubuntu-latest
+    if: (github.event_name!='pull_request')&&((github.ref_name=='codac1')||(github.ref_name=='codac2')||(github.ref_name=='codac2_codac4matlab'))
     steps: 
     - uses: softprops/action-gh-release@v2
       id: create_release
@@ -17,10 +17,10 @@ jobs:
       with:
         draft: true
         tag_name: autotagname-${{ github.sha }}
-      if: (github.event_name != 'pull_request')&&(github.ref_name == 'codac2')
 
  unixmatrix:
     runs-on: ${{ matrix.cfg.os }}
+    if: (github.ref_name!='codac2_codac4matlab')&&(github.event.pull_request.base.ref!='codac2_codac4matlab')
     defaults:
         run:
             shell: ${{ matrix.cfg.shell }}
@@ -30,9 +30,9 @@ jobs:
             cfg:
             - { os: windows-2022, shell: cmd, arch: x64, bitness: 64, runtime: vc17, cmake_params: '-G "Visual Studio 17" -T v143 -A x64', cmake_flags: ' /wd4267 /wd4244 /wd4305 /wd4996', test_config: 'Release/', desc: 'Windows Visual Studio 2022 x64' }
             - { os: windows-2022, shell: cmd, arch: x86, bitness: 32, runtime: vc17, cmake_params: '-G "Visual Studio 17" -T v143 -A Win32', cmake_flags: ' /wd4267 /wd4244 /wd4305 /wd4996', test_config: 'Release/', choco_flags: '--x86', desc: 'Windows Visual Studio 2022 x86' }
-            - { os: windows-2022, shell: cmd, arch: x64, bitness: 64, runtime: vc16, cmake_params: '-G "Visual Studio 17" -T v142 -A x64', cmake_flags: ' /wd4267 /wd4244 /wd4305 /wd4996', test_config: 'Release/', desc: 'Windows Visual Studio 2019 x64' }
-            - { os: windows-2022, shell: cmd, arch: x86, bitness: 32, runtime: vc16, cmake_params: '-G "Visual Studio 17" -T v142 -A Win32', cmake_flags: ' /wd4267 /wd4244 /wd4305 /wd4996', test_config: 'Release/', choco_flags: '--x86', desc: 'Windows Visual Studio 2019 x86' }
             # Problems related to C++20?
+            #- { os: windows-2022, shell: cmd, arch: x64, bitness: 64, runtime: vc16, cmake_params: '-G "Visual Studio 17" -T v142 -A x64', cmake_flags: ' /wd4267 /wd4244 /wd4305 /wd4996', test_config: 'Release/', desc: 'Windows Visual Studio 2019 x64' }
+            #- { os: windows-2022, shell: cmd, arch: x86, bitness: 32, runtime: vc16, cmake_params: '-G "Visual Studio 17" -T v142 -A Win32', cmake_flags: ' /wd4267 /wd4244 /wd4305 /wd4996', test_config: 'Release/', choco_flags: '--x86', desc: 'Windows Visual Studio 2019 x86' }
             #- { os: windows-2019, shell: cmd, arch: x64, bitness: 64, runtime: vc15, cmake_params: '-G "Visual Studio 16" -T v141 -A x64', cmake_flags: ' /wd4267 /wd4244 /wd4305 /wd4996', test_config: 'Release/', desc: 'Windows Visual Studio 2017 x64' }
             #- { os: windows-2019, shell: cmd, arch: x86, bitness: 32, runtime: vc15, cmake_params: '-G "Visual Studio 16" -T v141 -A Win32', cmake_flags: ' /wd4267 /wd4244 /wd4305 /wd4996', test_config: 'Release/', choco_flags: '--x86', desc: 'Windows Visual Studio 2017 x86' }
             - { os: windows-2022, shell: cmd, arch: x64, bitness: 64, runtime: mingw13, cmake_params: '-G "MinGW Makefiles"', cmake_flags: '-fPIC', desc: 'Windows MinGW 13.2.0 x64' }
@@ -50,12 +50,12 @@ jobs:
             - { os: ubuntu-22.04, shell: bash, arch: amd64, bitness: 64, runtime: jammy, cmake_flags: '-fPIC', deb: true, desc: 'Ubuntu 22.04 amd64' }
             # Problems related to C++20?
             #- { os: ubuntu-20.04, shell: bash, arch: amd64, bitness: 64, runtime: focal, cmake_flags: '-fPIC', deb: true, desc: 'Ubuntu 20.04 amd64' }
+            - { os: macos-15, shell: bash, arch: arm64, bitness: 64, runtime: sequoia, cmake_params: '-D CMAKE_SYSTEM_NAME=Darwin -D CMAKE_OSX_ARCHITECTURES=arm64', cmake_flags: '-fPIC', desc: 'macOS Sequoia arm64' }
+            - { os: macos-15, shell: bash, arch: x86_64, bitness: 64, runtime: sequoia, cmake_params: '-D CMAKE_SYSTEM_NAME=Darwin -D CMAKE_OSX_ARCHITECTURES=x86_64', cmake_flags: '-fPIC', cross: true, desc: 'macOS Sequoia x86_64 (cross)' }
             - { os: macos-14, shell: bash, arch: arm64, bitness: 64, runtime: sonoma, cmake_params: '-D CMAKE_SYSTEM_NAME=Darwin -D CMAKE_OSX_ARCHITECTURES=arm64', cmake_flags: '-fPIC', desc: 'macOS Sonoma arm64' }
             - { os: macos-14, shell: bash, arch: x86_64, bitness: 64, runtime: sonoma, cmake_params: '-D CMAKE_SYSTEM_NAME=Darwin -D CMAKE_OSX_ARCHITECTURES=x86_64', cmake_flags: '-fPIC', cross: true, desc: 'macOS Sonoma x86_64 (cross)' }
             - { os: macos-13, shell: bash, arch: arm64, bitness: 64, runtime: ventura, cmake_params: '-D CMAKE_SYSTEM_NAME=Darwin -D CMAKE_OSX_ARCHITECTURES=arm64', cmake_flags: '-fPIC', cross: true, desc: 'macOS Ventura arm64 (cross)' }
             - { os: macos-13, shell: bash, arch: x86_64, bitness: 64, runtime: ventura, cmake_params: '-D CMAKE_SYSTEM_NAME=Darwin -D CMAKE_OSX_ARCHITECTURES=x86_64', cmake_flags: '-fPIC', desc: 'macOS Ventura x86_64' }
-            - { os: macos-12, shell: bash, arch: arm64, bitness: 64, runtime: monterey, cmake_params: '-D CMAKE_SYSTEM_NAME=Darwin -D CMAKE_OSX_ARCHITECTURES=arm64', cmake_flags: '-fPIC', cross: true, desc: 'macOS Monterey arm64 (cross)' }
-            - { os: macos-12, shell: bash, arch: x86_64, bitness: 64, runtime: monterey, cmake_params: '-D CMAKE_SYSTEM_NAME=Darwin -D CMAKE_OSX_ARCHITECTURES=x86_64', cmake_flags: '-fPIC', desc: 'macOS Monterey x86_64' }
     name: ${{ matrix.cfg.desc }}
     steps: 
     - uses: actions/checkout@v4
@@ -119,31 +119,24 @@ jobs:
         echo export BASHMINGWPATH=/c/ProgramData/mingw64/mingw${{ matrix.cfg.bitness }}/bin>>%USERPROFILE%\.bashrc
       if: (matrix.cfg.runtime=='mingw13')
     - run: |
-        choco install -y -r --no-progress eigen --version=3.4.0.20240224 ${{ matrix.cfg.choco_flags }}
-        wget https://github.com/lebarsfa/ibex-lib/releases/download/ibex-2.8.9.20240417/ibex.2.8.9.20240417.nupkg --no-check-certificate -nv
-        choco install -y -r --no-progress --ignore-dependencies -s . ibex --version=2.8.9.20240417 ${{ matrix.cfg.choco_flags }} --params "'/url:https://github.com/lebarsfa/ibex-lib/releases/download/ibex-2.8.9.20240417/ibex_${{ matrix.cfg.arch }}_${{ matrix.cfg.runtime }}.zip'"
-        del /f /q ibex.2.8.9.20240417.nupkg
+        #choco install -y -r --no-progress eigen --version=3.4.0.20240224 ${{ matrix.cfg.choco_flags }}
+        wget https://github.com/lebarsfa/ibex-lib/releases/download/ibex-2.8.9.20241117/ibex.2.8.9.20241117.nupkg --no-check-certificate -nv
+        choco install -y -r --no-progress --ignore-dependencies -s . ibex --version=2.8.9.20241117 ${{ matrix.cfg.choco_flags }} --params "'/url:https://github.com/lebarsfa/ibex-lib/releases/download/ibex-2.8.9.20241117/ibex_${{ matrix.cfg.arch }}_${{ matrix.cfg.runtime }}.zip'"
+        del /f /q ibex.2.8.9.20241117.nupkg
       if: runner.os=='Windows'
     - run: |
         sudo sh -c 'echo "deb [trusted=yes] https://packages.ensta-bretagne.fr/$(if [ -z "$(. /etc/os-release && echo $UBUNTU_CODENAME)" ]; then echo debian/$(. /etc/os-release && echo $VERSION_CODENAME); else echo ubuntu/$(. /etc/os-release && echo $UBUNTU_CODENAME); fi) ./" > /etc/apt/sources.list.d/ensta-bretagne.list'
         # Replace this line by the next ones to test a specific binary package of IBEX.
-        #sudo apt-get -q update ; sudo apt-get -y install libibex-dev libeigen3-dev dpkg-dev || true
-        sudo apt-get -q update ; sudo apt-get -y install libeigen3-dev dpkg-dev || true
-        wget https://github.com/lebarsfa/ibex-lib/releases/download/ibex-2.8.9.20240417/libibex-dev-2.8.9.20240417-0${{ matrix.cfg.runtime }}0_$(dpkg --print-architecture).deb --no-check-certificate -nv
-        sudo dpkg -i libibex-dev-2.8.9.20240417-0${{ matrix.cfg.runtime }}0_$(dpkg --print-architecture).deb
-        rm -Rf libibex-dev-2.8.9.20240417-0${{ matrix.cfg.runtime }}0_$(dpkg --print-architecture).deb
+        #sudo apt-get -q update ; sudo apt-get -y install libibex-dev dpkg-dev || true
+        sudo apt-get -q update ; sudo apt-get -y install dpkg-dev || true
+        wget https://github.com/lebarsfa/ibex-lib/releases/download/ibex-2.8.9.20241117/libibex-dev-2.8.9.20241117-0${{ matrix.cfg.runtime }}0_$(dpkg --print-architecture).deb --no-check-certificate -nv
+        sudo dpkg -i libibex-dev-2.8.9.20241117-0${{ matrix.cfg.runtime }}0_$(dpkg --print-architecture).deb
+        rm -Rf libibex-dev-2.8.9.20241117-0${{ matrix.cfg.runtime }}0_$(dpkg --print-architecture).deb
       shell: bash
       if: matrix.cfg.deb==true
     - run: |
-#        git clone https://github.com/catchorg/Catch2
-#        cd Catch2
-#        git checkout v2.x
-#        mkdir build ; cd build ; cmake .. ; make ; sudo make install
-      shell: bash
-      if: runner.os=='Linux'
-    - run: |
-        brew install eigen
-        wget https://github.com/lebarsfa/ibex-lib/releases/download/ibex-2.8.9.20240417/ibex_${{ matrix.cfg.arch }}_${{ matrix.cfg.runtime }}.zip --no-check-certificate -nv
+        #brew install eigen
+        wget https://github.com/lebarsfa/ibex-lib/releases/download/ibex-2.8.9.20241117/ibex_${{ matrix.cfg.arch }}_${{ matrix.cfg.runtime }}.zip --no-check-certificate -nv
         unzip -q ibex_${{ matrix.cfg.arch }}_${{ matrix.cfg.runtime }}.zip
         rm -Rf ibex_${{ matrix.cfg.arch }}_${{ matrix.cfg.runtime }}.zip
         sudo cp -Rf ibex/* /usr/local/
@@ -163,7 +156,7 @@ jobs:
     - run: |
         if [ ${{ runner.os }} = Windows ]; then source ~/refreshenv.bashrc ; refreshenv ; export PATH=$BASHMINGWPATH:$PATH ; fi
         mkdir -p codac_standalone/example ; cd codac_standalone
-        wget https://community.chocolatey.org/api/v2/package/eigen/3.4.0.20240224 --no-check-certificate -nv ; unzip -q 3.4.0.20240224 -d eigen ; rm -Rf 3.4.0.20240224 eigen/*.xml eigen/*.nuspec eigen/_* eigen/package eigen/tools
+        #wget https://community.chocolatey.org/api/v2/package/eigen/3.4.0.20240224 --no-check-certificate -nv ; unzip -q 3.4.0.20240224 -d eigen ; rm -Rf 3.4.0.20240224 eigen/*.xml eigen/*.nuspec eigen/_* eigen/package eigen/tools
         if [ ${{ runner.os }} = Windows ]; then cp -Rf /C/ProgramData/chocolatey/lib/ibex . ; rm -Rf ibex/tools ibex/ibex.*
         elif [ ${{ matrix.cfg.deb }} = true ]; then mkdir -p ibex/include ; mkdir -p ibex/lib ; mkdir -p ibex/share ; mkdir -p ibex/bin ; cp -Rf /usr/include/ibex* ibex/include/ ; cp -Rf /usr/lib/*ibex* ibex/lib/ ; cp -Rf /usr/share/*ibex* ibex/share/ ; cp -Rf /usr/share/pkgconfig ibex/share/ ; cp -Rf /usr/bin/ibex* ibex/bin/
         else cp -Rf ../ibex .
@@ -179,7 +172,7 @@ jobs:
         ./${{ matrix.cfg.test_config }}my_project
         cd ../..
       shell: bash
-      if: (matrix.cfg.cross!=true) && (github.ref_name!='codac2_codac4matlab') && (github.event_name!='pull_request')
+      if: (matrix.cfg.cross!=true)
     - run: |
         source ~/refreshenv.bashrc ; refreshenv ; export PATH=$BASHMINGWPATH:$PATH
         cd packages/choco
@@ -220,7 +213,7 @@ jobs:
         file: "*.zip;*.nupkg;*.deb"
         overwrite: true
         tag_name: autotagname-${{ github.sha }}
-      if: (github.event_name != 'pull_request')&&(github.ref_name == 'codac2')
+      if: (github.event_name!='pull_request')&&((github.ref_name=='codac1')||(github.ref_name=='codac2')||(github.ref_name=='codac2_codac4matlab'))
     - run: |
         if [ ${{ runner.os }} = Windows ]; then source ~/refreshenv.bashrc ; refreshenv ; export PATH=$BASHMINGWPATH:$PATH ; fi
         rm -Rf codac
@@ -231,4 +224,4 @@ jobs:
         ./${{ matrix.cfg.test_config }}my_project
         cd ../..
       shell: bash
-      if: (matrix.cfg.cross!=true) && (github.ref_name!='codac2_codac4matlab') && (github.event_name!='pull_request')
+      if: (matrix.cfg.cross!=true)

@@ -68,9 +68,9 @@ def normalize_label(str_label):
     .replace("__PTR", "_PTR") \
     .replace("-1", "MINUSONE")
 
-def docstring_varname(memberdef):
+def docstring_varname(memberdef, prefix=''):
 
-  txt = normalize_label(memberdef.find(".//definition").text)
+  txt = prefix + normalize_label(memberdef.find(".//definition").text)
 
   for param in memberdef.findall("param"):
     if param.find("type") != None:
@@ -105,23 +105,29 @@ for xml_doc in files:
   class_compound = root.find("./compounddef")
 
   if class_compound == None or (class_compound.get('kind') != None and \
-    (class_compound.attrib['kind'] == "file" or class_compound.attrib['kind'] == "dir")):
+    class_compound.attrib['kind'] == "dir"):
     continue
 
   class_name = class_compound.find("./compoundname").text
 
-  with open(sys.argv[2] + "/" + get_originate_file(class_compound), 'a', encoding='utf-8') as f:
+  if class_compound.attrib['kind'] != "file":
 
-    print("/// Class " + class_name, file=f)
-    #print("const char* "
-    #   + normalize_label(class_name + "_MAIN").upper()
-    #   + " = R\"Docstring documentation will be available in next release.\";", file=f)
-    print("#define "
-       + normalize_label(class_name + "_MAIN").upper()
-       + " \"Docstring documentation will be available in next release.\"", file=f)
+    with open(sys.argv[2] + "/" + get_originate_file(class_compound), 'a', encoding='utf-8') as f:
+
+      print("/// Class " + class_name, file=f)
+      #print("const char* "
+      #   + normalize_label(class_name + "_MAIN").upper()
+      #   + " = R\"Docstring documentation will be available in next release.\";", file=f)
+      print("#define "
+         + normalize_label(class_name + "_MAIN").upper()
+         + " \"Docstring documentation will be available in next release.\"", file=f)
 
 
   # Members documentation (ex: methods, functions, etc.)
+
+  prefix = ""
+  if class_compound.attrib['kind'] == "file":
+    prefix = class_name.replace(".h", "").replace("codac2_", "") + "_"
 
   for memberdef in root.findall(".//memberdef"):
 
@@ -152,7 +158,7 @@ for xml_doc in files:
       #   + " = R\"Docstring documentation will be available in next release.\";", file=f)
 
       print("#define "
-         + docstring_varname(memberdef)
+         + docstring_varname(memberdef, prefix)
          + " \"Docstring documentation will be available in next release.\"", file=f)
 
       print("\n", file=f)

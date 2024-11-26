@@ -12,6 +12,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include "codac2_Index.h"
 #include "codac2_Figure2DInterface.h"
 #include "codac2_OutputFigure2D.h"
 #include "codac2_Paving.h"
@@ -34,12 +35,12 @@ namespace codac2
 
   struct FigureAxis
   {
-    size_t dim_id;
+    Index dim_id;
     Interval limits;
     std::string label;
   };
 
-  inline FigureAxis axis(size_t dim_id, const Interval& limits, const std::string& label = "")
+  inline FigureAxis axis(Index dim_id, const Interval& limits, const std::string& label = "")
   {
     assert_release(dim_id >= 0);
     //assert_release(!limits.is_empty());
@@ -64,7 +65,7 @@ namespace codac2
       Figure2D(const std::string& name, GraphicOutput o, bool set_as_default = false);
 
       const std::string& name() const;
-      size_t size() const;
+      Index size() const;
 
       const std::vector<FigureAxis>& axes() const;
       void set_axes(const FigureAxis& axis1, const FigureAxis& axis2);

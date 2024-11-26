@@ -335,11 +335,11 @@ void export_directed_ctc(py::module& m)
 
   py::class_<ComponentOp>(m, "ComponentOp")
 
-    .def_static("fwd", (Interval(*)(const IntervalVector&,size_t)) &ComponentOp::fwd,
-      STATIC_INTERVAL_COMPONENTOP_FWD_CONST_INTERVALVECTOR_REF_SIZET,
+    .def_static("fwd", (Interval(*)(const IntervalVector&,Index)) &ComponentOp::fwd,
+      STATIC_INTERVAL_COMPONENTOP_FWD_CONST_INTERVALVECTOR_REF_INDEX,
       "x1"_a, "i"_a)
-    .def_static("bwd", (void(*)(const Interval&,IntervalVector&,size_t)) &ComponentOp::bwd,
-      STATIC_VOID_COMPONENTOP_BWD_CONST_INTERVAL_REF_INTERVALVECTOR_REF_SIZET,
+    .def_static("bwd", (void(*)(const Interval&,IntervalVector&,Index)) &ComponentOp::bwd,
+      STATIC_VOID_COMPONENTOP_BWD_CONST_INTERVAL_REF_INTERVALVECTOR_REF_INDEX,
       "y"_a, "x1"_a, "i"_a)
 
   ;

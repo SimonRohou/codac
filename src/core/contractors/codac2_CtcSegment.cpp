@@ -9,7 +9,6 @@
 
 #include "codac2_CtcSegment.h"
 #include "codac2_directed_ctc.h"
-#include "codac2_arithmetic.h"
 
 using namespace std;
 using namespace codac2;

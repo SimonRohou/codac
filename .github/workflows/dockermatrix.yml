@@ -1,10 +1,16 @@
 # This file checks that the lib runs on ARM
 on:
     push:
-        branches: 'codac2'
+        branches:
+        - codac1
+        - codac2
+        # The following is implied by above selection...
+        #branches-ignore:
+        #- codac2_codac4matlab
         tags: '' # Restrict to blank tags
     pull_request:
-        branches: 'codac2'
+        branches-ignore:
+        - codac2_codac4matlab
 
 jobs:
  dockermatrix:
@@ -63,12 +69,13 @@ jobs:
         git config --global --add safe.directory ${PWD} && \
         if [ ${{ matrix.cfg.deb }} = true ]; then \
         sudo sh -c 'echo \"deb [trusted=yes] https://packages.ensta-bretagne.fr/\$(if [ -z \"\$(. /etc/os-release && echo \$UBUNTU_CODENAME)\" ]; then echo debian/\$(. /etc/os-release && echo \$VERSION_CODENAME); else echo ubuntu/\$(. /etc/os-release && echo \$UBUNTU_CODENAME); fi) ./\" > /etc/apt/sources.list.d/ensta-bretagne.list' && \
-        sudo apt-get -q update ; sudo apt-get -y install libeigen3-dev dpkg-dev || true && \
-        wget https://github.com/lebarsfa/ibex-lib/releases/download/ibex-2.8.9.20240417/libibex-dev-2.8.9.20240417-0${{ matrix.cfg.runtime }}0_\$(dpkg --print-architecture).deb --no-check-certificate -nv && \
-        sudo dpkg -i libibex-dev-2.8.9.20240417-0${{ matrix.cfg.runtime }}0_\$(dpkg --print-architecture).deb && \
-        rm -Rf libibex-dev-2.8.9.20240417-0${{ matrix.cfg.runtime }}0_\$(dpkg --print-architecture).deb ; \
+        #sudo apt-get -q update ; sudo apt-get -y install libeigen3-dev dpkg-dev || true && \\
+        sudo apt-get -q update ; sudo apt-get -y install dpkg-dev || true && \
+        wget https://github.com/lebarsfa/ibex-lib/releases/download/ibex-2.8.9.20241117/libibex-dev-2.8.9.20241117-0${{ matrix.cfg.runtime }}0_\$(dpkg --print-architecture).deb --no-check-certificate -nv && \
+        sudo dpkg -i libibex-dev-2.8.9.20241117-0${{ matrix.cfg.runtime }}0_\$(dpkg --print-architecture).deb && \
+        rm -Rf libibex-dev-2.8.9.20241117-0${{ matrix.cfg.runtime }}0_\$(dpkg --print-architecture).deb ; \
         else \
-        wget https://github.com/lebarsfa/ibex-lib/releases/download/ibex-2.8.9.20240417/ibex_${{ matrix.cfg.arch }}_${{ matrix.cfg.runtime }}.zip --no-check-certificate -nv && \
+        wget https://github.com/lebarsfa/ibex-lib/releases/download/ibex-2.8.9.20241117/ibex_${{ matrix.cfg.arch }}_${{ matrix.cfg.runtime }}.zip --no-check-certificate -nv && \
         unzip -q ibex_${{ matrix.cfg.arch }}_${{ matrix.cfg.runtime }}.zip && \
         rm -Rf ibex_${{ matrix.cfg.arch }}_${{ matrix.cfg.runtime }}.zip && \
         sudo cp -Rf ibex/* /usr/ ; \
@@ -112,4 +119,4 @@ jobs:
         file: "*.zip;*.deb"
         overwrite: true
         tag_name: autotagname-${{ github.sha }}
-      if: (github.event_name != 'pull_request')
+      if: (github.event_name!='pull_request')&&((github.ref_name=='codac1')||(github.ref_name=='codac2')||(github.ref_name=='codac2_codac4matlab'))

@@ -28,7 +28,7 @@ namespace codac2
 
       AnalyticExpr<T>& operator=(const AnalyticExpr<T>& x) = delete;
 
-      virtual T fwd_eval(ValuesMap& v, size_t total_input_size) const = 0;
+      virtual T fwd_eval(ValuesMap& v, Index total_input_size) const = 0;
       virtual void bwd_eval(ValuesMap& v) const = 0;
 
       T init_value(ValuesMap& v, const T& x) const
@@ -77,7 +77,7 @@ namespace codac2
         return OperationExprBase<AnalyticExpr<X>...>::replace_expr(old_expr_id, new_expr);
       }
 
-      Y fwd_eval(ValuesMap& v, size_t total_input_size) const
+      Y fwd_eval(ValuesMap& v, Index total_input_size) const
       {
         return std::apply(
           [this,&v,total_input_size](auto &&... x)
@@ -120,7 +120,7 @@ namespace codac2
   {
     public:
 
-      AnalyticOperationExpr(const std::shared_ptr<AnalyticExpr<VectorOpValue>>& x1, size_t i)
+      AnalyticOperationExpr(const std::shared_ptr<AnalyticExpr<VectorOpValue>>& x1, Index i)
         : OperationExprBase<AnalyticExpr<VectorOpValue>>(x1), _i(i)
       { }
 
@@ -138,7 +138,7 @@ namespace codac2
         return OperationExprBase<AnalyticExpr<VectorOpValue>>::replace_expr(old_expr_id, new_expr);
       }
       
-      ScalarOpValue fwd_eval(ValuesMap& v, size_t total_input_size) const
+      ScalarOpValue fwd_eval(ValuesMap& v, Index total_input_size) const
       {
         return AnalyticExpr<ScalarOpValue>::init_value(
           v, ComponentOp::fwd(std::get<0>(this->_x)->fwd_eval(v, total_input_size), _i));
@@ -157,7 +157,7 @@ namespace codac2
 
     protected:
 
-      const size_t _i;
+      const Index _i;
   };
 
   template<>
@@ -165,7 +165,7 @@ namespace codac2
   {
     public:
 
-      AnalyticOperationExpr(const std::shared_ptr<AnalyticExpr<VectorOpValue>>& x1, size_t i, size_t j)
+      AnalyticOperationExpr(const std::shared_ptr<AnalyticExpr<VectorOpValue>>& x1, Index i, Index j)
         : OperationExprBase<AnalyticExpr<VectorOpValue>>(x1), _i(i), _j(j)
       { }
 
@@ -183,7 +183,7 @@ namespace codac2
         return OperationExprBase<AnalyticExpr<VectorOpValue>>::replace_expr(old_expr_id, new_expr);
       }
       
-      VectorOpValue fwd_eval(ValuesMap& v, size_t total_input_size) const
+      VectorOpValue fwd_eval(ValuesMap& v, Index total_input_size) const
       {
         return AnalyticExpr<VectorOpValue>::init_value(
           v, SubvectorOp::fwd(std::get<0>(this->_x)->fwd_eval(v, total_input_size), _i, _j));
@@ -202,6 +202,6 @@ namespace codac2
 
     protected:
 
-      const size_t _i, _j;
+      const Index _i, _j;
   };
 }

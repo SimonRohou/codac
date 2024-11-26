@@ -11,6 +11,7 @@
 
 #include <limits>
 #include "codac2_IntervalVector.h"
+#include "codac2_matrices.h"
 
 namespace codac2
 {
@@ -26,7 +27,12 @@ namespace codac2
     public:
 
       explicit Approx(const T& x, double eps = std::numeric_limits<double>::epsilon()*10)
-        : _x(x ), _eps(eps)
+        : _x(x), _eps(eps)
+      { }
+
+      template<typename OtherDerived>
+      explicit Approx(const Eigen::MatrixBase<OtherDerived>& x, double eps = std::numeric_limits<double>::epsilon()*10)
+        : _x(x.eval()), _eps(eps)
       { }
 
       friend bool operator==(const T& x1, const Approx<T>& x2)
@@ -47,7 +53,7 @@ namespace codac2
         {
           if constexpr(std::is_same_v<T,IntervalVector> || std::is_same_v<T,Vector>)
           {
-            for(size_t i = 0 ; i < x1.size() ; i++)
+            for(Index i = 0 ; i < x1.size() ; i++)
               if(!(((std::fabs(_lb(x1[i])-_lb(x2._x[i])) < x2._eps) && _ub(x1[i]) == _ub(x2._x[i]))
                 || ((std::fabs(_ub(x1[i])-_ub(x2._x[i])) < x2._eps) && _lb(x1[i]) == _lb(x2._x[i]))
                 || ((std::fabs(_lb(x1[i])-_lb(x2._x[i])) < x2._eps) && std::fabs(_ub(x1[i])-_ub(x2._x[i])) < x2._eps)))
@@ -56,8 +62,8 @@ namespace codac2
 
           else
           {
-            for(size_t i = 0 ; i < x1.nb_rows() ; i++)
-              for(size_t j = 0 ; j < x1.nb_cols() ; j++)
+            for(Index i = 0 ; i < x1.rows() ; i++)
+              for(Index j = 0 ; j < x1.cols() ; j++)
                 if(!(((std::fabs(_lb(x1(i,j))-_lb(x2._x(i,j))) < x2._eps) && _ub(x1(i,j)) == _ub(x2._x(i,j)))
                   || ((std::fabs(_ub(x1(i,j))-_ub(x2._x(i,j))) < x2._eps) && _lb(x1(i,j)) == _lb(x2._x(i,j)))
                   || ((std::fabs(_lb(x1(i,j))-_lb(x2._x(i,j))) < x2._eps) && std::fabs(_ub(x1(i,j))-_ub(x2._x(i,j))) < x2._eps)))

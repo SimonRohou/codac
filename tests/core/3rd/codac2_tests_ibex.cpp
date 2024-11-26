@@ -38,13 +38,13 @@ TEST_CASE("IBEX")
 
   // [Vector] Codac -> IBEX
   {
-    CHECK(codac2::to_ibex(codac2::Vector(2)) == ibex::Vector(2));
+    CHECK(codac2::to_ibex(codac2::Vector::zero(2)) == ibex::Vector(2));
     CHECK(codac2::to_ibex(codac2::Vector({1,2,3})) == ibex::Vector({1,2,3}));
   }
 
   // [Vector] IBEX -> Codac
   {
-    CHECK(codac2::to_codac(ibex::Vector(2)) == codac2::Vector(2));
+    CHECK(codac2::to_codac(ibex::Vector::zeros(2)) == codac2::Vector::zero(2));
     CHECK(codac2::to_codac(ibex::Vector({1,2,3})) == codac2::Vector({1,2,3}));
   }
 
@@ -64,14 +64,14 @@ TEST_CASE("IBEX")
 
   // [Matrix] Codac -> IBEX
   {
-    CHECK(codac2::to_ibex(codac2::Matrix(2,3)) == ibex::Matrix(2,3));
+    CHECK(codac2::to_ibex(codac2::Matrix::zero(2,3)) == ibex::Matrix(2,3));
     CHECK(codac2::to_ibex(codac2::Matrix({{1,2,3},{4,5,6}}))
       == ibex::Matrix({{1,2,3},{4,5,6}}));
   }
 
   // [Matrix] IBEX -> Codac
   {
-    CHECK(codac2::to_codac(ibex::Matrix(2,3)) == codac2::Matrix(2,3));
+    CHECK(codac2::to_codac(ibex::Matrix(2,3)) == codac2::Matrix::zero(2,3));
     CHECK(codac2::to_codac(ibex::Matrix({{1,2,3},{4,5,6}}))
       == codac2::Matrix({{1,2,3},{4,5,6}}));
   }

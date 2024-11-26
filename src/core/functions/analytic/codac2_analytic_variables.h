@@ -28,15 +28,15 @@ namespace codac2
         return AnalyticExpr<T>::unique_id();
       }
 
-      T fwd_eval(ValuesMap& v, size_t total_input_size) const
+      T fwd_eval(ValuesMap& v, [[maybe_unused]] Index total_input_size) const
       {
         return AnalyticExpr<T>::value(v);
       }
       
-      void bwd_eval(ValuesMap& v) const
+      void bwd_eval([[maybe_unused]] ValuesMap& v) const
       { }
 
-      void replace_expr(const ExprID& old_expr_id, const std::shared_ptr<ExprBase>& new_expr)
+      void replace_expr([[maybe_unused]] const ExprID& old_expr_id, [[maybe_unused]] const std::shared_ptr<ExprBase>& new_expr)
       { }
       
       operator std::shared_ptr<AnalyticExpr<T>>() const
@@ -74,7 +74,7 @@ namespace codac2
         return std::make_shared<ScalarVar>(*this);
       }
 
-      size_t size() const
+      Index size() const
       {
         return 1;
       }
@@ -89,7 +89,7 @@ namespace codac2
   {
     public:
 
-      explicit VectorVar(size_t n)
+      explicit VectorVar(Index n)
         : _n(n)
       {
         assert_release(n > 0);
@@ -109,19 +109,19 @@ namespace codac2
         return std::make_shared<VectorVar>(*this);
       }
 
-      size_t size() const
+      Index size() const
       {
         return _n;
       }
 
-      std::shared_ptr<AnalyticExpr<ScalarOpValue>> operator[](size_t i) const
+      std::shared_ptr<AnalyticExpr<ScalarOpValue>> operator[](Index i) const
       {
         assert_release(i >= 0 && i < _n);
         return std::make_shared<AnalyticOperationExpr<ComponentOp,ScalarOpValue,VectorOpValue>>(
           std::dynamic_pointer_cast<AnalyticExpr<VectorOpValue>>(this->copy()), i);
       }
 
-      std::shared_ptr<AnalyticExpr<VectorOpValue>> subvector(size_t i, size_t j) const
+      std::shared_ptr<AnalyticExpr<VectorOpValue>> subvector(Index i, Index j) const
       {
         assert_release(i >= 0 && i < _n && j >= i && j < _n);
         return std::make_shared<AnalyticOperationExpr<SubvectorOp,VectorOpValue,VectorOpValue>>(
@@ -130,6 +130,6 @@ namespace codac2
 
     protected:
 
-      size_t _n;
+      Index _n;
   };
 }

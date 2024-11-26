@@ -178,7 +178,7 @@ def cart_prod(*args):
       if mode != -1 and mode != 0:
         codac_error("cart_prod: invalid input arguments, was expecting a " + mode_str[mode] + ", got a scalar domain")
       mode = 0
-      lst.append(IntervalVector(1,Interval(arg)))
+      lst.append(IntervalVector([Interval(arg)]))
 
     elif isinstance(arg, (list,Vector,IntervalVector)):
       if mode != -1 and mode != 0:

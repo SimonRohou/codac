@@ -2,8 +2,9 @@
 on:
     push:
         branches:
-            - codac2
-            - codac2_codac4matlab
+        - codac1
+        - codac2
+        - codac2_codac4matlab
         tags: '' # Restrict to blank tags
     pull_request:
 
@@ -20,20 +21,22 @@ jobs:
         fail-fast: false
         matrix:
             cfg:
+            - { os: macos-14, shell: bash, arch: arm64, runtime: sonoma, cmake_flags: '-fPIC', trgt: '11.0', cpcfg: '-macosx_11_0_arm64', py_v_maj: 3, py_v_min: 13, desc: 'macOS Sonoma Python 3.13 arm64' }
             - { os: macos-14, shell: bash, arch: arm64, runtime: sonoma, cmake_flags: '-fPIC', trgt: '11.0', cpcfg: '-macosx_11_0_arm64', py_v_maj: 3, py_v_min: 12, desc: 'macOS Sonoma Python 3.12 arm64' }
             - { os: macos-14, shell: bash, arch: arm64, runtime: sonoma, cmake_flags: '-fPIC', trgt: '11.0', cpcfg: '-macosx_11_0_arm64', py_v_maj: 3, py_v_min: 11, desc: 'macOS Sonoma Python 3.11 arm64' }
-            - { os: macos-12, shell: bash, arch: arm64, runtime: monterey, cmake_flags: '-fPIC', trgt: '11.0', cpcfg: '-macosx_11_0_arm64', py_v_maj: 3, py_v_min: 10, cross: true, desc: 'macOS Monterey Python 3.10 arm64 (cross)' }
-            - { os: macos-12, shell: bash, arch: arm64, runtime: monterey, cmake_flags: '-fPIC', trgt: '11.0', cpcfg: '-macosx_11_0_arm64', py_v_maj: 3, py_v_min: 9, cross: true, desc: 'macOS Monterey Python 3.9 arm64 (cross)' }
-            - { os: macos-12, shell: bash, arch: arm64, runtime: monterey, cmake_flags: '-fPIC', trgt: '11.0', cpcfg: '-macosx_11_0_arm64', py_v_maj: 3, py_v_min: 8, cross: true, desc: 'macOS Monterey Python 3.8 arm64 (cross)' }
-            - { os: macos-12, shell: bash, arch: arm64, runtime: monterey, cmake_flags: '-fPIC', trgt: '11.0', cpcfg: 'm-macosx_11_0_arm64', py_v_maj: 3, py_v_min: 7, cross: true, desc: 'macOS Monterey Python 3.7 arm64 (cross)' }
-            - { os: macos-12, shell: bash, arch: arm64, runtime: monterey, cmake_flags: '-fPIC', trgt: '11.0', cpcfg: 'm-macosx_11_0_arm64', py_v_maj: 3, py_v_min: 6, cross: true, desc: 'macOS Monterey Python 3.6 arm64 (cross)' }
-            - { os: macos-12, shell: bash, arch: x86_64, runtime: monterey, cmake_flags: '-fPIC', trgt: '10.16', cpcfg: '-macosx_10_16_x86_64', py_v_maj: 3, py_v_min: 12, desc: 'macOS Monterey Python 3.12 x86_64' }
-            - { os: macos-12, shell: bash, arch: x86_64, runtime: monterey, cmake_flags: '-fPIC', trgt: '10.16', cpcfg: '-macosx_10_16_x86_64', py_v_maj: 3, py_v_min: 11, desc: 'macOS Monterey Python 3.11 x86_64' }
-            - { os: macos-12, shell: bash, arch: x86_64, runtime: monterey, cmake_flags: '-fPIC', trgt: '10.16', cpcfg: '-macosx_10_16_x86_64', py_v_maj: 3, py_v_min: 10, desc: 'macOS Monterey Python 3.10 x86_64' }
-            - { os: macos-12, shell: bash, arch: x86_64, runtime: monterey, cmake_flags: '-fPIC', trgt: '10.16', cpcfg: '-macosx_10_16_x86_64', py_v_maj: 3, py_v_min: 9, desc: 'macOS Monterey Python 3.9 x86_64' }
-            - { os: macos-12, shell: bash, arch: x86_64, runtime: monterey, cmake_flags: '-fPIC', trgt: '10.16', cpcfg: '-macosx_10_16_x86_64', py_v_maj: 3, py_v_min: 8, desc: 'macOS Monterey Python 3.8 x86_64' }
-            - { os: macos-12, shell: bash, arch: x86_64, runtime: monterey, cmake_flags: '-fPIC', trgt: '10.16', cpcfg: 'm-macosx_10_16_x86_64', py_v_maj: 3, py_v_min: 7, desc: 'macOS Monterey Python 3.7 x86_64' }
-            - { os: macos-12, shell: bash, arch: x86_64, runtime: monterey, cmake_flags: '-fPIC', trgt: '10.16', cpcfg: 'm-macosx_10_16_x86_64', py_v_maj: 3, py_v_min: 6, desc: 'macOS Monterey Python 3.6 x86_64' } # Was 10.14 because of error $MACOSX_DEPLOYMENT_TARGET mismatch: now "10.9" but "10.14" during configure. Now 10.16 due to C++20 problems...
+            - { os: macos-13, shell: bash, arch: arm64, runtime: ventura, cmake_flags: '-fPIC', trgt: '11.0', cpcfg: '-macosx_11_0_arm64', py_v_maj: 3, py_v_min: 10, cross: true, desc: 'macOS Ventura Python 3.10 arm64 (cross)' }
+            - { os: macos-13, shell: bash, arch: arm64, runtime: ventura, cmake_flags: '-fPIC', trgt: '11.0', cpcfg: '-macosx_11_0_arm64', py_v_maj: 3, py_v_min: 9, cross: true, desc: 'macOS Ventura Python 3.9 arm64 (cross)' }
+            - { os: macos-13, shell: bash, arch: arm64, runtime: ventura, cmake_flags: '-fPIC', trgt: '11.0', cpcfg: '-macosx_11_0_arm64', py_v_maj: 3, py_v_min: 8, cross: true, desc: 'macOS Ventura Python 3.8 arm64 (cross)' }
+            - { os: macos-13, shell: bash, arch: arm64, runtime: ventura, cmake_flags: '-fPIC', trgt: '11.0', cpcfg: 'm-macosx_11_0_arm64', py_v_maj: 3, py_v_min: 7, cross: true, desc: 'macOS Ventura Python 3.7 arm64 (cross)' }
+            - { os: macos-13, shell: bash, arch: arm64, runtime: ventura, cmake_flags: '-fPIC', trgt: '11.0', cpcfg: 'm-macosx_11_0_arm64', py_v_maj: 3, py_v_min: 6, cross: true, desc: 'macOS Ventura Python 3.6 arm64 (cross)' }
+            - { os: macos-13, shell: bash, arch: x86_64, runtime: ventura, cmake_flags: '-fPIC', trgt: '10.16', cpcfg: '-macosx_10_16_x86_64', py_v_maj: 3, py_v_min: 13, desc: 'macOS Ventura Python 3.13 x86_64' }
+            - { os: macos-13, shell: bash, arch: x86_64, runtime: ventura, cmake_flags: '-fPIC', trgt: '10.16', cpcfg: '-macosx_10_16_x86_64', py_v_maj: 3, py_v_min: 12, desc: 'macOS Ventura Python 3.12 x86_64' }
+            - { os: macos-13, shell: bash, arch: x86_64, runtime: ventura, cmake_flags: '-fPIC', trgt: '10.16', cpcfg: '-macosx_10_16_x86_64', py_v_maj: 3, py_v_min: 11, desc: 'macOS Ventura Python 3.11 x86_64' }
+            - { os: macos-13, shell: bash, arch: x86_64, runtime: ventura, cmake_flags: '-fPIC', trgt: '10.16', cpcfg: '-macosx_10_16_x86_64', py_v_maj: 3, py_v_min: 10, desc: 'macOS Ventura Python 3.10 x86_64' }
+            - { os: macos-13, shell: bash, arch: x86_64, runtime: ventura, cmake_flags: '-fPIC', trgt: '10.16', cpcfg: '-macosx_10_16_x86_64', py_v_maj: 3, py_v_min: 9, desc: 'macOS Ventura Python 3.9 x86_64' }
+            - { os: macos-13, shell: bash, arch: x86_64, runtime: ventura, cmake_flags: '-fPIC', trgt: '10.16', cpcfg: '-macosx_10_16_x86_64', py_v_maj: 3, py_v_min: 8, desc: 'macOS Ventura Python 3.8 x86_64' }
+            - { os: macos-13, shell: bash, arch: x86_64, runtime: ventura, cmake_flags: '-fPIC', trgt: '10.16', cpcfg: 'm-macosx_10_16_x86_64', py_v_maj: 3, py_v_min: 7, desc: 'macOS Ventura Python 3.7 x86_64' }
+            - { os: macos-13, shell: bash, arch: x86_64, runtime: ventura, cmake_flags: '-fPIC', trgt: '10.16', cpcfg: 'm-macosx_10_16_x86_64', py_v_maj: 3, py_v_min: 6, desc: 'macOS Ventura Python 3.6 x86_64' } # Was 10.14 because of error $MACOSX_DEPLOYMENT_TARGET mismatch: now "10.9" but "10.14" during configure. Now 10.16 due to C++20 problems...
     name: ${{ matrix.cfg.desc }}
     steps: 
     - uses: actions/checkout@v4
@@ -52,12 +55,12 @@ jobs:
       if: matrix.cfg.py_v_maj!=''
     - run: echo "VERBOSE=1" >> $GITHUB_ENV
       shell: bash
-    - run: brew install eigen
-      if: runner.os=='macOS'
+    #- run: brew install eigen
+    #  if: runner.os=='macOS'
     - run: brew install graphviz ; brew install --formula doxygen ; python -m pip install --upgrade pip ; pip install --upgrade wheel setuptools sphinx breathe sphinx_rtd_theme sphinx-tabs sphinx-issues sphinx-reredirects
       if: runner.os=='macOS'
     - run: |
-        wget https://github.com/lebarsfa/ibex-lib/releases/download/ibex-2.8.9.20240417/ibex_${{ matrix.cfg.arch }}_${{ matrix.cfg.runtime }}.zip --no-check-certificate -nv
+        wget https://github.com/lebarsfa/ibex-lib/releases/download/ibex-2.8.9.20241117/ibex_${{ matrix.cfg.arch }}_${{ matrix.cfg.runtime }}.zip --no-check-certificate -nv
         unzip -q ibex_${{ matrix.cfg.arch }}_${{ matrix.cfg.runtime }}.zip
         rm -Rf ibex_${{ matrix.cfg.arch }}_${{ matrix.cfg.runtime }}.zip
         sudo cp -Rf ibex/* /usr/local/
@@ -76,7 +79,7 @@ jobs:
         file: "*.whl"
         overwrite: true
         tag_name: autotagname-${{ github.sha }}
-      if: (github.event_name!='pull_request')&&((github.ref_name=='codac2')||(github.ref_name=='codac2_codac4matlab'))
+      if: (github.event_name!='pull_request')&&((github.ref_name=='codac1')||(github.ref_name=='codac2')||(github.ref_name=='codac2_codac4matlab'))
     - run: |
         pip install --no-deps --no-index *.whl
         python -c "import sys; print(sys.version)" ; python examples/02_centered_form/main.py
@@ -85,4 +88,4 @@ jobs:
         cd build && ctest -C Release -V --output-on-failure
         cd ..
       shell: bash
-      if: (matrix.cfg.cross!=true) && (github.ref_name!='codac2_codac4matlab') && (github.event_name!='pull_request')
+      if: (matrix.cfg.cross!=true)&&(github.ref_name!='codac2_codac4matlab')&&(github.event.pull_request.base.ref!='codac2_codac4matlab')

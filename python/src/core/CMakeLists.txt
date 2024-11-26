@@ -13,14 +13,19 @@
     contractors/codac2_py_Ctc.h
     contractors/codac2_py_CtcAction.cpp
     contractors/codac2_py_CtcCartProd.cpp
+    contractors/codac2_py_CtcCtcBoundary.cpp
+    contractors/codac2_py_CtcEmpty.cpp
     contractors/codac2_py_CtcFixpoint.cpp
     contractors/codac2_py_CtcInnerOuter.cpp
+    contractors/codac2_py_CtcIdentity.cpp
     contractors/codac2_py_CtcInter.cpp
     contractors/codac2_py_CtcInverse.h
     contractors/codac2_py_CtcInverseNotIn.h
     contractors/codac2_py_CtcLazy.cpp
     contractors/codac2_py_CtcNot.cpp
     contractors/codac2_py_CtcPolar.cpp
+    contractors/codac2_py_CtcPolygon.cpp
+    contractors/codac2_py_CtcProj.cpp
     contractors/codac2_py_CtcSegment.cpp
     contractors/codac2_py_CtcUnion.cpp
     contractors/codac2_py_CtcWrapper.cpp
@@ -52,7 +57,7 @@
     matrices/codac2_py_arithmetic_div.cpp
     matrices/codac2_py_Matrix.cpp
     matrices/codac2_py_MatrixBase.h
-    matrices/codac2_py_MatrixBaseBlock.h
+    matrices/codac2_py_MatrixBlock.h
     matrices/codac2_py_Vector.cpp
     matrices/codac2_py_VectorBase.h
 

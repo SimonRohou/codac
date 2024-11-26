@@ -25,10 +25,6 @@ StyleProperties::StyleProperties(std::initializer_list<Color> colors)
   assert(colors.size() <= 2);
 }
 
-StyleProperties::StyleProperties(const string& vibes_style)
-  : stroke_color(Color::green()), fill_color(Color::none())
-{ }
-
 StyleProperties StyleProperties::inside()
 {
   StyleProperties s;

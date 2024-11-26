@@ -7,6 +7,7 @@
  *  \license    GNU Lesser General Public License (LGPL)
  */
 
+#include "codac2_Index.h"
 #include "codac2_Figure2D.h"
 #include "codac2_Figure2D_VIBes.h"
 #include "codac2_Figure2D_IPE.h"
@@ -35,7 +36,7 @@ const std::string& Figure2D::name() const
   return _name;
 }
 
-size_t Figure2D::size() const
+Index Figure2D::size() const
 {
   return _axes.size();
 }
@@ -146,7 +147,7 @@ void Figure2D::draw_polyline(const vector<Vector>& x, float tip_length, const St
 {
   assert_release(x.size() > 1);
   assert_release(tip_length >= 0.); // 0 = disabled tip
-  for(const auto& xi : x)
+  for([[maybe_unused]] const auto& xi : x)
   {
     assert_release(this->size() <= xi.size());
   }
@@ -158,7 +159,7 @@ void Figure2D::draw_polyline(const vector<Vector>& x, float tip_length, const St
 void Figure2D::draw_polygone(const vector<Vector>& x, const StyleProperties& s)
 {
   assert_release(x.size() > 1);
-  for(const auto& xi : x)
+  for([[maybe_unused]] const auto& xi : x)
   {
     assert_release(this->size() <= xi.size());
   }

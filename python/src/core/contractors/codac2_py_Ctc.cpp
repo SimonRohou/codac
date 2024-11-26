@@ -36,11 +36,11 @@ py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector> export_CtcIntervalVector
   py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector> py_ctc_iv(m, "CtcIntervalVector"/*, py_ctc*/);
   py_ctc_iv
 
-    .def(py::init<size_t>(),
-      CTCBASE_X_CTCBASE_SIZET)
+    .def(py::init<Index>(),
+      CTCBASE_X_CTCBASE_INDEX)
 
     .def("size", &CtcBase<IntervalVector>::size,
-      SIZET_CTCBASE_X_SIZE_CONST)
+      INDEX_CTCBASE_X_SIZE_CONST)
 
     .def("copy", [](const CtcBase<IntervalVector>& c)
         {

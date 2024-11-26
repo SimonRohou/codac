@@ -2,7 +2,7 @@
 #  Codac - cmake configuration file
 # ==================================================================
 
-  cmake_minimum_required(VERSION 3.0.2)
+  cmake_minimum_required(VERSION 3.14...3.25)
 
   list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/scripts/CMakeModules/)
   include(version_from_git)
@@ -28,15 +28,6 @@
   set(PROJECT_HOMEPAGE_URL "http://codac.io")
   message(STATUS "Configuring build for ${PROJECT_NAME} ${PROJECT_VERSION}")
 
-  if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Debug)
-    message(STATUS "Configuring ${PROJECT_NAME} in DEBUG mode as none was specified.")
-    if(MSVC)
-      add_compile_options(/MD) # Temporary fix to avoid debug vs release inconsistencies...
-    else()
-      add_compile_options(-O3)
-    endif()
-  endif()
 
 ################################################################################
 # Options for directories
@@ -54,6 +45,22 @@
 # Compilation configuration
 ################################################################################
 
+  if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Debug)
+    message(STATUS "Configuring ${PROJECT_NAME} in DEBUG mode as none was specified.")
+    if(MSVC)
+      add_compile_options(/MD) # Temporary fix to avoid debug vs release inconsistencies...
+    else()
+      add_compile_options(-O3)
+    endif()
+  endif()
+
+  if(MSVC)
+    #add_compile_options(/W4 /WX) # temporarily removed because of multiple "the following warning is treated as an error" with WS
+  else()
+    add_compile_options(-Wall -Wextra -Wpedantic)
+  endif()
+
 #  # Check that the compiler supports c++20
 #  include(CheckCXXCompilerFlag)
 #  check_cxx_compiler_flag("-std=c++2a" COMPILER_SUPPORTS_CXX20)
@@ -62,11 +69,6 @@
 #    add_compile_options(-std=c++2a)
 #  else()
 #    message(FATAL_ERROR "Codac needs a compiler with C++20 support")
-#  endif()
-
-#  if(WIN32)
-#    # We need this for strdup under Windows (see issue #287 of ibex-lib repo)
-#    add_definitions(-U__STRICT_ANSI__)
 #  endif()
 
   #if(NOT CMAKE_CXX_STANDARD)
@@ -88,7 +90,7 @@
 # Looking for Eigen3
 ################################################################################
 
-  find_package(Eigen3 3.4 REQUIRED NO_MODULE)
+  add_subdirectory(3rd/eigen)
   message(STATUS "Found Eigen3 version ${Eigen3_VERSION}")
   add_definitions(${EIGEN3_DEFINITIONS})
 
@@ -114,7 +116,8 @@
 ################################################################################
   
   if(FAST_RELEASE)
-    add_compile_definitions(FAST_RELEASE=1)
+    add_compile_definitions(FAST_RELEASE)
+    message(STATUS "You are running Codac in fast release mode. (option -DCMAKE_BUILD_TYPE=Release is required)")
   endif()
   
   add_subdirectory(src) # C++ sources

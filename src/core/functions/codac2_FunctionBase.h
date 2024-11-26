@@ -70,7 +70,7 @@ namespace codac2
         return std::dynamic_pointer_cast<E>(expr_copy);
       }
 
-      size_t input_size() const
+      Index input_size() const
       {
         return this->_args.total_size();
       }

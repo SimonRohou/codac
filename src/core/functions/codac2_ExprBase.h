@@ -26,14 +26,14 @@ namespace codac2
 
       ExprID();
       ExprID(const ExprID& i) = default;
-      size_t id() const;
+      Index id() const;
       bool operator==(const ExprID& i) const;
       bool operator<(const ExprID& i) const;
 
     protected:
 
-      const size_t _id;
-      static size_t _id_counter;
+      const Index _id;
+      static Index _id_counter;
   };
 
   class ExprBase : public std::enable_shared_from_this<ExprBase>

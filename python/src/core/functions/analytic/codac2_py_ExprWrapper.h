@@ -39,7 +39,7 @@ struct ExprWrapperBase
 };
 
 template<>
-struct ExprWrapper<ScalarOpValue> : public ExprWrapperBase
+struct ExprWrapper<ScalarOpValue>
 {
   ExprWrapper(const Interval& e)
     : e(std::dynamic_pointer_cast<AnalyticExpr<ScalarOpValue>>(const_value(e)->copy()))
@@ -110,7 +110,7 @@ inline ScalarExpr operator/(const ScalarExpr& e1, const ScalarExpr& e2)
 }
 
 template<>
-struct ExprWrapper<VectorOpValue> : public ExprWrapperBase
+struct ExprWrapper<VectorOpValue>
 {
   ExprWrapper(const IntervalVector& e)
     : e(std::dynamic_pointer_cast<AnalyticExpr<VectorOpValue>>(const_value(e)->copy()))

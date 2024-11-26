@@ -12,7 +12,10 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/operators.h>
 #include <codac2_Interval.h>
+#include <codac2_Vector.h>
 #include <codac2_IntervalVector.h>
+#include <codac2_Matrix.h>
+#include <codac2_IntervalMatrix.h>
 #include <codac2_Approx.h>
 #include "codac2_py_Approx_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py):
 #include "codac2_py_doc.h"

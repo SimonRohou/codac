@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include "codac2_Index.h"
+
 namespace codac2
 {
   template<typename T>
@@ -27,14 +29,14 @@ namespace codac2
         return std::make_shared<ConstValueExpr<T>>(*this);
       }
 
-      T fwd_eval(ValuesMap& v, size_t total_input_size) const
+      T fwd_eval(ValuesMap& v, Index total_input_size) const
       {
         return AnalyticExpr<T>::init_value(v, T(
             // the mid is not considered for const values in centered form expression:
             _x,
             _x,
             // the derivative of a const value is zero:
-            IntervalMatrix::zeros(_x.size(),total_input_size),
+            IntervalMatrix::zero(_x.size(),total_input_size),
             // the definition domain is necesarily met at this point:
             true
           ));
@@ -45,10 +47,10 @@ namespace codac2
         AnalyticExpr<T>::value(v).a &= _x;
       }
 
-      void replace_expr(const ExprID& old_expr_id, const std::shared_ptr<ExprBase>& new_expr)
+      void replace_expr([[maybe_unused]] const ExprID& old_expr_id, [[maybe_unused]] const std::shared_ptr<ExprBase>& new_expr)
       { }
 
-      virtual bool belongs_to_args_list(const FunctionArgsList& args) const
+      virtual bool belongs_to_args_list([[maybe_unused]] const FunctionArgsList& args) const
       {
         return true;
       }

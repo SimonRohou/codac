@@ -36,12 +36,12 @@ void export_Figure2D(py::module& m)
     .def_readwrite("label", &FigureAxis::label)
   ;
 
-  m.def("axis", [](size_t_type n, const Interval& limits, const std::string& label)
+  m.def("axis", [](Index_type n, const Interval& limits, const std::string& label)
       {
         matlab::test_integer(n);
         return axis(matlab::input_index(n), limits, label);
       },
-    FIGUREAXIS_AXIS_SIZET_CONST_INTERVAL_REF_CONST_STRING_REF,
+    FIGUREAXIS_AXIS_INDEX_CONST_INTERVAL_REF_CONST_STRING_REF,
     "dim_id"_a, "limits"_a, "label"_a="");
 
   py::class_<Figure2D, std::shared_ptr<Figure2D> /* due to enable_shared_from_this */>
@@ -56,7 +56,7 @@ void export_Figure2D(py::module& m)
       CONST_STRING_REF_FIGURE2D_NAME_CONST)
   
     .def("size", &Figure2D::size,
-      SIZET_FIGURE2D_SIZE_CONST)
+      INDEX_FIGURE2D_SIZE_CONST)
   
     .def("axes", &Figure2D::axes,
       CONST_VECTOR_FIGUREAXIS_REF_FIGURE2D_AXES_CONST)

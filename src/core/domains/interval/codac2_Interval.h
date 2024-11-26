@@ -19,6 +19,7 @@
 #include <list>
 #include <array>
 #include <ibex_Interval.h>
+#include "codac2_Index.h"
 #include "codac2_Domain.h"
 
 namespace codac2
@@ -164,6 +165,25 @@ namespace codac2
       double mid() const;
 
       /**
+       * \brief Returns the magnitude of this 
+       * i.e. max(|lower bound|, |upper bound|).
+       * 
+       * \return the magnitude of the interval
+       */
+      double mag() const;
+
+      /**
+       * \brief Returns the mignitude of this 
+       * 
+       * +(lower bound) if lower_bound > 0
+       * -(upper bound) if upper_bound < 0
+       * 0 otherwise.
+       * 
+       * \return the mignitude of the interval
+       */
+      double mig() const;
+
+      /**
        * \brief Returns a random value inside the interval
        *
        * \note The seed of the pseudo-random number generator is 
@@ -206,7 +226,7 @@ namespace codac2
        * 
        * \return 1
        */
-      size_t size() const;
+      Index size() const;
     
       /**
        * \brief Sets this interval to the empty set
@@ -545,88 +565,88 @@ namespace codac2
         friend Interval f(const Interval&, double); \
         friend Interval f(const Interval&, const Interval&); \
 
-      _dec_friend_interval_arithm_op(operator&);
-      _dec_friend_interval_arithm_op(operator|);
-      _dec_friend_interval_arithm_op(operator+);
-      _dec_friend_interval_arithm_op(operator-);
-      _dec_friend_interval_arithm_op(operator*);
-      _dec_friend_interval_arithm_op(operator/);
+      _dec_friend_interval_arithm_op(operator&)
+      _dec_friend_interval_arithm_op(operator|)
+      _dec_friend_interval_arithm_op(operator+)
+      _dec_friend_interval_arithm_op(operator-)
+      _dec_friend_interval_arithm_op(operator*)
+      _dec_friend_interval_arithm_op(operator/)
 
       #define _dec_friend_interval_unary_op(f) \
         friend Interval f(const Interval&); \
 
-      _dec_friend_interval_unary_op(sqr);
-      _dec_friend_interval_unary_op(sqrt);
-      _dec_friend_interval_unary_op(exp);
-      _dec_friend_interval_unary_op(log);
-      _dec_friend_interval_unary_op(cos);
-      _dec_friend_interval_unary_op(sin);
-      _dec_friend_interval_unary_op(tan);
-      _dec_friend_interval_unary_op(acos);
-      _dec_friend_interval_unary_op(asin);
-      _dec_friend_interval_unary_op(atan);
-      _dec_friend_interval_unary_op(cosh);
-      _dec_friend_interval_unary_op(sinh);
-      _dec_friend_interval_unary_op(tanh);
-      _dec_friend_interval_unary_op(acosh);
-      _dec_friend_interval_unary_op(asinh);
-      _dec_friend_interval_unary_op(atanh);
-      _dec_friend_interval_unary_op(abs);
-      _dec_friend_interval_unary_op(sign);
-      _dec_friend_interval_unary_op(integer);
-      _dec_friend_interval_unary_op(floor);
-      _dec_friend_interval_unary_op(ceil);
+      _dec_friend_interval_unary_op(sqr)
+      _dec_friend_interval_unary_op(sqrt)
+      _dec_friend_interval_unary_op(exp)
+      _dec_friend_interval_unary_op(log)
+      _dec_friend_interval_unary_op(cos)
+      _dec_friend_interval_unary_op(sin)
+      _dec_friend_interval_unary_op(tan)
+      _dec_friend_interval_unary_op(acos)
+      _dec_friend_interval_unary_op(asin)
+      _dec_friend_interval_unary_op(atan)
+      _dec_friend_interval_unary_op(cosh)
+      _dec_friend_interval_unary_op(sinh)
+      _dec_friend_interval_unary_op(tanh)
+      _dec_friend_interval_unary_op(acosh)
+      _dec_friend_interval_unary_op(asinh)
+      _dec_friend_interval_unary_op(atanh)
+      _dec_friend_interval_unary_op(abs)
+      _dec_friend_interval_unary_op(sign)
+      _dec_friend_interval_unary_op(integer)
+      _dec_friend_interval_unary_op(floor)
+      _dec_friend_interval_unary_op(ceil)
 
       #define _dec_friend_interval_binary_op(f) \
         friend Interval f(const Interval&, const Interval&); \
 
-      _dec_friend_interval_binary_op(max);
-      _dec_friend_interval_binary_op(min);
-      _dec_friend_interval_binary_op(atan2);
+      _dec_friend_interval_binary_op(max)
+      _dec_friend_interval_binary_op(min)
+      _dec_friend_interval_binary_op(atan2)
 
       friend Interval pow(const Interval&, int);
       friend Interval pow(const Interval&, double);
 
-      _dec_friend_interval_binary_op(pow);
+      _dec_friend_interval_binary_op(pow)
 
       friend Interval root(const Interval&, int);
 
       #define _dec_friend_interval_unary_bwd(f) \
         friend void f(const Interval&, Interval&); \
 
-      _dec_friend_interval_unary_bwd(bwd_sqr);
-      _dec_friend_interval_unary_bwd(bwd_sqrt);
-      _dec_friend_interval_unary_bwd(bwd_exp);
-      _dec_friend_interval_unary_bwd(bwd_log);
-      _dec_friend_interval_unary_bwd(bwd_cos);
-      _dec_friend_interval_unary_bwd(bwd_sin);
-      _dec_friend_interval_unary_bwd(bwd_tan);
-      _dec_friend_interval_unary_bwd(bwd_acos);
-      _dec_friend_interval_unary_bwd(bwd_asin);
-      _dec_friend_interval_unary_bwd(bwd_atan);
-      _dec_friend_interval_unary_bwd(bwd_cosh);
-      _dec_friend_interval_unary_bwd(bwd_sinh);
-      _dec_friend_interval_unary_bwd(bwd_tanh);
-      _dec_friend_interval_unary_bwd(bwd_acosh);
-      _dec_friend_interval_unary_bwd(bwd_asinh);
-      _dec_friend_interval_unary_bwd(bwd_atanh);
-      _dec_friend_interval_unary_bwd(bwd_abs);
-      _dec_friend_interval_unary_bwd(bwd_sign);
-      _dec_friend_interval_unary_bwd(bwd_floor);
-      _dec_friend_interval_unary_bwd(bwd_ceil);
-      _dec_friend_interval_unary_bwd(bwd_saw);
+      _dec_friend_interval_unary_bwd(bwd_sqr)
+      _dec_friend_interval_unary_bwd(bwd_sqrt)
+      _dec_friend_interval_unary_bwd(bwd_exp)
+      _dec_friend_interval_unary_bwd(bwd_log)
+      _dec_friend_interval_unary_bwd(bwd_cos)
+      _dec_friend_interval_unary_bwd(bwd_sin)
+      _dec_friend_interval_unary_bwd(bwd_tan)
+      _dec_friend_interval_unary_bwd(bwd_acos)
+      _dec_friend_interval_unary_bwd(bwd_asin)
+      _dec_friend_interval_unary_bwd(bwd_atan)
+      _dec_friend_interval_unary_bwd(bwd_cosh)
+      _dec_friend_interval_unary_bwd(bwd_sinh)
+      _dec_friend_interval_unary_bwd(bwd_tanh)
+      _dec_friend_interval_unary_bwd(bwd_acosh)
+      _dec_friend_interval_unary_bwd(bwd_asinh)
+      _dec_friend_interval_unary_bwd(bwd_atanh)
+      _dec_friend_interval_unary_bwd(bwd_abs)
+      _dec_friend_interval_unary_bwd(bwd_sign)
+      _dec_friend_interval_unary_bwd(bwd_floor)
+      _dec_friend_interval_unary_bwd(bwd_ceil)
+      _dec_friend_interval_unary_bwd(bwd_saw)
 
       #define _dec_friend_interval_binary_bwd(f) \
         friend void f(const Interval&, Interval&, Interval&); \
       
-      _dec_friend_interval_binary_bwd(bwd_add);
-      _dec_friend_interval_binary_bwd(bwd_sub);
-      _dec_friend_interval_binary_bwd(bwd_mul);
-      _dec_friend_interval_binary_bwd(bwd_div);
-      _dec_friend_interval_binary_bwd(bwd_pow);
-      _dec_friend_interval_binary_bwd(bwd_min);
-      _dec_friend_interval_binary_bwd(bwd_max);
-      _dec_friend_interval_binary_bwd(bwd_atan2);
+      _dec_friend_interval_binary_bwd(bwd_add)
+      _dec_friend_interval_binary_bwd(bwd_sub)
+      _dec_friend_interval_binary_bwd(bwd_mul)
+      _dec_friend_interval_binary_bwd(bwd_div)
+      _dec_friend_interval_binary_bwd(bwd_pow)
+      _dec_friend_interval_binary_bwd(bwd_min)
+      _dec_friend_interval_binary_bwd(bwd_max)
+      _dec_friend_interval_binary_bwd(bwd_atan2)
 
       friend void bwd_pow(const Interval&, Interval&, int);
       friend void bwd_root(const Interval&, Interval&, int);

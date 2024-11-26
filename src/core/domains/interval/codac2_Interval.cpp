@@ -98,6 +98,16 @@ namespace codac2
     return ibex::Interval::mid();
   }
 
+  double Interval::mag() const
+  {
+    return ibex::Interval::mag();
+  }
+
+  double Interval::mig() const
+  {
+    return ibex::Interval::mig();
+  }
+
   double Interval::rand() const
   {
     if(is_empty())
@@ -123,7 +133,7 @@ namespace codac2
     return ibex::Interval::diam();
   }
 
-  size_t Interval::size() const
+  Index Interval::size() const
   {
     return 1;
   }

@@ -112,7 +112,7 @@ namespace codac2
         return eval_(x...).da;
       }
 
-      friend std::ostream& operator<<(std::ostream& os, const AnalyticFunction<T>& f)
+      friend std::ostream& operator<<(std::ostream& os, [[maybe_unused]] const AnalyticFunction<T>& f)
       {
         if constexpr(std::is_same_v<typename T::Domain,Interval>) 
           os << "scalar function";
@@ -127,18 +127,18 @@ namespace codac2
       friend class CtcInverse;
 
       template<typename D>
-      void add_value_to_arg_map(ValuesMap& v, const D& x, size_t i) const
+      void add_value_to_arg_map(ValuesMap& v, const D& x, Index i) const
       {
-        assert(i >= 0 && i < this->args().size());
+        assert(i >= 0 && i < (Index)this->args().size());
         assert_release(size_of(x) == this->args()[i]->size() && "provided arguments do not match function inputs");
 
-        IntervalMatrix d = IntervalMatrix::zeros(size_of(x), this->args().total_size());
+        IntervalMatrix d = IntervalMatrix::zero(size_of(x), this->args().total_size());
         
-        size_t p = 0, j = 0;
+        Index p = 0, j = 0;
         for( ; j < i ; j++)
           p += this->args()[j]->size();
 
-        for(size_t k = p ; k < p+size_of(x) ; k++)
+        for(Index k = p ; k < p+size_of(x) ; k++)
           d(k-p,k) = 1.;
 
         using D_DOMAIN = typename Wrapper<D>::Domain;
@@ -150,12 +150,12 @@ namespace codac2
       template<typename... Args>
       void fill_from_args(ValuesMap& v, const Args&... x) const
       {
-        size_t i = 0;
+        Index i = 0;
         (add_value_to_arg_map(v, x, i++), ...);
       }
 
       template<typename D>
-      void intersect_value_from_arg_map(const ValuesMap& v, D& x, size_t i) const
+      void intersect_value_from_arg_map(const ValuesMap& v, D& x, Index i) const
       {
         assert(v.find(this->args()[i]->unique_id()) != v.end() && "argument cannot be found");
         x &= std::dynamic_pointer_cast<typename Wrapper<D>::Domain>(v.at(this->args()[i]->unique_id()))->a;
@@ -164,7 +164,7 @@ namespace codac2
       template<typename... Args>
       void intersect_from_args(const ValuesMap& v, Args&... x) const
       {
-        size_t i = 0;
+        Index i = 0;
         (intersect_value_from_arg_map(v, x, i++), ...);
       }
 
@@ -186,7 +186,7 @@ namespace codac2
       template<typename... Args>
       void check_valid_inputs(const Args&... x) const
       {
-        size_t n = 0;
+        [[maybe_unused]] Index n = 0;
         ((n += size_of(x)), ...);
 
         assert_release(this->_args.total_size() == n && 

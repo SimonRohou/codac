@@ -2,8 +2,9 @@
 on:
     push:
         branches:
-            - codac2
-            - codac2_codac4matlab
+        - codac1
+        - codac2
+        - codac2_codac4matlab
         tags: '' # Restrict to blank tags
     pull_request:
 
@@ -32,8 +33,10 @@ jobs:
         docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
       if: (matrix.cfg.arch!='x86_64')&&(matrix.cfg.arch!='i386')
     - run: |
-        chmod a+x scripts/docker/build_pybinding.sh
-        docker run ${{ matrix.cfg.docker_flags }} --rm -v `pwd`:/io ${{ matrix.cfg.img }} /io/scripts/docker/build_pybinding.sh
+        chmod a+x scripts/docker/*.sh
+        if [ ${{ github.ref_name }} = 'codac2_codac4matlab' ] || [ ${{ github.event.pull_request.base.ref }} = 'codac2_codac4matlab' ]; then docker run ${{ matrix.cfg.docker_flags }} --rm -v `pwd`:/io ${{ matrix.cfg.img }} /io/scripts/docker/build_pybinding_codac4matlab.sh
+        else docker run ${{ matrix.cfg.docker_flags }} --rm -v `pwd`:/io ${{ matrix.cfg.img }} /io/scripts/docker/build_pybinding.sh
+        fi        
         ls wheelhouse
     - uses: xresloader/upload-to-github-release@v1
       env:
@@ -42,4 +45,4 @@ jobs:
         file: "wheelhouse/*.whl"
         overwrite: true
         tag_name: autotagname-${{ github.sha }}
-      if: (github.event_name!='pull_request')&&((github.ref_name=='codac2')||(github.ref_name=='codac2_codac4matlab'))
+      if: (github.event_name!='pull_request')&&((github.ref_name=='codac1')||(github.ref_name=='codac2')||(github.ref_name=='codac2_codac4matlab'))

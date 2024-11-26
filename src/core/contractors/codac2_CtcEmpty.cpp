@@ -1,5 +1,5 @@
 /** 
- *  \file codac2_arithmetic.h
+ *  codac2_CtcEmpty.cp
  * ----------------------------------------------------------------------------
  *  \date       2024
  *  \author     Simon Rohou
@@ -7,9 +7,16 @@
  *  \license    GNU Lesser General Public License (LGPL)
  */
 
-#pragma once
+#include "codac2_CtcEmpty.h"
 
-#include "codac2_arithmetic_add.h"
-#include "codac2_arithmetic_sub.h"
-#include "codac2_arithmetic_mul.h"
-#include "codac2_arithmetic_div.h"
+using namespace std;
+using namespace codac2;
+
+CtcEmpty::CtcEmpty(Index n)
+  : Ctc<CtcEmpty,IntervalVector>(n)
+{ }
+
+void CtcEmpty::contract(IntervalVector& x) const
+{
+  x.set_empty();
+}

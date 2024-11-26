@@ -96,7 +96,7 @@ class TestAnalyticFunction(unittest.TestCase):
       # .def("__rmul__", [](const ScalarVar& e1, const Interval& e2)
       self.assertTrue(test_eval(AnalyticFunction([x1], Interval(6.)*x1), 5.) == 30.)
       # .def("__mul__",  [](const ScalarVar& e1, const VectorVar& e2)
-      self.assertTrue(test_eval(AnalyticFunction([v1,v2], v1[0]*v2), Vector([5.,10.]),IntervalVector(2,3.)) == Vector(2,15.))
+      self.assertTrue(test_eval(AnalyticFunction([v1,v2], v1[0]*v2), Vector([5.,10.]),IntervalVector([[3],[3]])) == Vector([15,15]))
       # .def("__mul__",  [](const ScalarVar& e1, const IntervalVector& e2)
       self.assertTrue(test_eval(AnalyticFunction([x1], x1*IntervalVector([[-2,3],[0,1]])), 5.) == IntervalVector([[-10,15],[0,5]]))
       # .def("__truediv__",  [](const ScalarVar& e1, const ScalarVar& e2)

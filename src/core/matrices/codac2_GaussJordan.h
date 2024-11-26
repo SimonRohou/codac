@@ -10,7 +10,6 @@
 #pragma once
 
 #include <ostream>
-#include "codac2_eigen.h"
 #include "codac2_Matrix.h"
 
 namespace codac2

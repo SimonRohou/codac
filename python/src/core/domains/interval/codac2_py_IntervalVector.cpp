@@ -13,11 +13,27 @@
 #include <pybind11/operators.h>
 #include <pybind11/stl.h>
 #include <codac2_IntervalVector.h>
+#include <codac2_IntervalMatrix.h>
 
-#include "codac2_py_VectorBase_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
-#include "codac2_py_MatrixBase_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
-#include "codac2_py_IntervalMatrixBase_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
-#include "codac2_py_IntervalVector_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_doc.h"
+#include "codac2_py_Matrix_addons_Base_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+//#include "codac2_py_Matrix_addons_IntervalMatrix_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_Matrix_addons_IntervalMatrixBase_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_Matrix_addons_IntervalVector_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+//#include "codac2_py_Matrix_addons_Matrix_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_Matrix_addons_MatrixBase_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_Matrix_addons_Vector_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_Matrix_addons_VectorBase_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_MatrixBase_addons_Base_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+//#include "codac2_py_MatrixBase_addons_IntervalMatrix_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_MatrixBase_addons_IntervalMatrixBase_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_MatrixBase_addons_IntervalVector_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+//#include "codac2_py_MatrixBase_addons_Matrix_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+//#include "codac2_py_MatrixBase_addons_MatrixBase_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_MatrixBase_addons_Vector_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_MatrixBase_addons_VectorBase_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_matrices_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_IntervalVector_docs.h"
 
 #include "codac2_py_VectorBase.h"
 #include "codac2_py_IntervalMatrixBase.h"
@@ -29,39 +45,29 @@ using namespace pybind11::literals;
 
 py::class_<IntervalVector> export_IntervalVector(py::module& m)
 {
-  py::class_<IntervalVector> exported_intervalvector_class(m, "IntervalVector", INTERVALVECTOR_MAIN);
+  py::class_<IntervalVector> exported_intervalvector_class(m, "IntervalVector", DOC_TO_BE_DEFINED);
   export_IntervalMatrixBase<IntervalVector,Vector,true>(m, exported_intervalvector_class);
   export_VectorBase<IntervalVector,IntervalMatrix,Interval>(m, exported_intervalvector_class);
 
   exported_intervalvector_class
 
     .def(py::init(
-        [](size_t_type n)
+        [](Index_type n)
         {
           matlab::test_integer(n);
           return std::make_unique<IntervalVector>(n);
         }),
-      INTERVALVECTOR_INTERVALVECTOR_SIZET,
+      DOC_TO_BE_DEFINED,
       "n"_a)
-
-    .def(py::init(
-        [](size_t_type n, const Interval& x)
-        {
-          matlab::test_integer(n);
-          return std::make_unique<IntervalVector>(n,x);
-        }),
-      INTERVALVECTOR_INTERVALVECTOR_SIZET_CONST_INTERVAL_REF,
-      "n"_a, "x"_a)
 
     .def(py::init<const IntervalVector&>(),
       "x"_a)
 
     .def(py::init<const Vector&>(),
-      INTERVALVECTOR_INTERVALVECTOR_CONST_VECTOR_REF,
       "x"_a)
 
     .def(py::init<const Vector&,const Vector&>(),
-      INTERVALVECTOR_INTERVALVECTOR_CONST_VECTOR_REF_CONST_VECTOR_REF,
+      MATRIX_ADDONS_INTERVALMATRIXBASE_MATRIX_CONST_MATRIX_DOUBLERC_REF_CONST_MATRIX_DOUBLERC_REF,
       "lb"_a, "ub"_a)
 
     .def(py::init( // this constructor must be the last one to be declared
@@ -72,40 +78,22 @@ py::class_<IntervalVector> export_IntervalVector(py::module& m)
             (*iv)[i] = v[i];
           return iv;
         }),
-      INTERVALVECTOR_INTERVALVECTOR_INITIALIZER_LIST_INTERVAL,
+      MATRIX_ADDONS_INTERVALVECTOR_MATRIX_CONST_INITIALIZER_LIST_INTERVAL_REF,
       "v"_a)
 
-    .def(py::init( // this constructor must be the last one to be declared
-        [](const std::vector<std::vector<double>>& v)
-        {
-          auto iv = std::make_unique<IntervalVector>(v.size());
-          for(size_t i = 0 ; i < v.size() ; i++)
-          {
-            if(v[i].size() == 1)
-              (*iv)[i] = Interval(v[i][0]);
-            else if(v[i].size() == 2)
-              (*iv)[i] = Interval(v[i][0],v[i][1]);
-            else
-              throw invalid_argument("Interval is not made of one or two values.");
-          }
-          return iv;
-        }),
-      INTERVALVECTOR_INTERVALVECTOR_INITIALIZER_LIST_INTERVAL,
-      "v"_a)
+    .def("complementary", [](const IntervalVector& x) { return x.complementary(); },
+      MATRIXBASE_ADDONS_INTERVALVECTOR_AUTO_COMPLEMENTARY_CONST)
 
-    .def("complementary", &IntervalVector::complementary,
-      LIST_INTERVALVECTOR_INTERVALVECTOR_COMPLEMENTARY_CONST)
-
-    .def("diff", &IntervalVector::diff,
-      LIST_INTERVALVECTOR_INTERVALVECTOR_DIFF_CONST_INTERVALVECTOR_REF_BOOL_CONST,
+    .def("diff", [](const IntervalVector& x, const IntervalVector& y, bool compactness = true) { return x.diff(y,compactness); },
+      MATRIXBASE_ADDONS_INTERVALVECTOR_LIST_MATRIX_INTERVALRC_DIFF_CONST_MATRIXBASE_OTHERDERIVED_REF_BOOL_CONST,
       "y"_a, "compactness"_a = true)
     
-    .def_static("empty", [](size_t_type n)
+    .def_static("empty", [](Index_type n)
         {
           matlab::test_integer(n);
           return IntervalVector::empty(n);
         },
-      STATIC_INTERVALVECTOR_INTERVALVECTOR_EMPTY_SIZET,
+      MATRIX_ADDONS_INTERVALVECTOR_STATIC_AUTO_EMPTY_INDEX,
       "n"_a)
 
     .def("__repr__", [](const IntervalVector& x)
@@ -119,6 +107,7 @@ py::class_<IntervalVector> export_IntervalVector(py::module& m)
   ;
 
   py::implicitly_convertible<py::list,IntervalVector>();
+  py::implicitly_convertible<Vector,IntervalVector>();
 
   m.def("cart_prod_boxes", [](const std::list<IntervalVector>& l)
       {
@@ -130,8 +119,8 @@ py::class_<IntervalVector> export_IntervalVector(py::module& m)
     INTERVALVECTOR_CART_PROD_CONST_X_REF_VARIADIC);
   // The variadic version of this function is defined in __init__.py file
 
-  m.def("hull", &codac2::hull,
-    INTERVALVECTOR_HULL_CONST_LIST_INTERVALVECTOR_REF,
+  m.def("hull", [](const std::list<IntervalVector>& l) { return hull(l); },
+    AUTO_HULL_CONST_LIST_EIGEN_MATRIX_SCALARROWSATCOMPILETIMECOLSATCOMPILETIME_REF,
     "l"_a);
 
   return exported_intervalvector_class;

@@ -2,7 +2,7 @@
  *  \file codac2_Color.h
  * ----------------------------------------------------------------------------
  *  \date       2024
- *  \author     Simon Rohou
+ *  \author     Simon Rohou, Maël Godard
  *  \copyright  Copyright 2024 Codac Team
  *  \license    GNU Lesser General Public License (LGPL)
  */
@@ -27,8 +27,9 @@ namespace codac2
     float alpha = 1.;     ///< opacity, value between 0. (transparent) and 1. (opaque)
     std::string hex_str;  ///< represents an RGB value in a HTML standard
 
-    explicit Color(float r_, float g_, float b_, float alpha_ = 1.);
-    explicit Color(int r_, int g_, int b_, int alpha_ = 255);
+    explicit Color(float r, float g, float b, float alpha = 1.);
+    explicit Color(int r, int g, int b, int alpha = 255);
+    explicit Color(const std::string& hex_str);
 
     static Color none()                      { return Color(255, 255, 255, 0               ); };
     static Color black(float alpha = 1)      { return Color(0,   0,   0,   (int)(alpha*255)); };

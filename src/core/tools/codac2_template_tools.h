@@ -15,16 +15,6 @@
 
 namespace codac2
 {
-  template<class T>
-  concept IsMatrix = (std::is_same_v<Matrix,T> 
-      || std::is_same_v<MatrixBaseBlock<EigenMatrix<double>&,double>,T> 
-      || std::is_same_v<MatrixBaseBlock<const EigenMatrix<double>&,double>,T>);
-
-  template<class T>
-  concept IsIntervalMatrix = (std::is_same_v<IntervalMatrix,T> 
-      || std::is_same_v<MatrixBaseBlock<EigenMatrix<Interval>&,Interval>,T> 
-      || std::is_same_v<MatrixBaseBlock<const EigenMatrix<Interval>&,Interval>,T>);
-
   template<class C,class X>
   concept IsCtcBaseOrPtr = (std::is_base_of_v<CtcBase<X>,C>
       || std::is_same_v<std::shared_ptr<CtcBase<X>>,C>);
@@ -36,22 +26,22 @@ namespace codac2
   concept IsSepBaseOrPtr = (std::is_base_of_v<SepBase,S>
     || std::is_base_of_v<S,std::shared_ptr<SepBase>>);
 
-  inline size_t size_of(int x)
+  inline Index size_of([[maybe_unused]] int x)
   {
     return 1;
   }
   
-  inline size_t size_of(double x)
+  inline Index size_of([[maybe_unused]] double x)
   {
     return 1;
   }
 
-  inline size_t size_of(const std::shared_ptr<CtcBase<IntervalVector>>& x)
+  inline Index size_of(const std::shared_ptr<CtcBase<IntervalVector>>& x)
   {
     return x->size();
   }
 
-  inline size_t size_of(const std::shared_ptr<SepBase>& x)
+  inline Index size_of(const std::shared_ptr<SepBase>& x)
   {
     return x->size();
   }
@@ -60,7 +50,7 @@ namespace codac2
     requires (!std::is_base_of_v<std::shared_ptr<CtcBase<IntervalVector>>,T>
       && !std::is_base_of_v<std::shared_ptr<SepBase>,T>
       && !std::is_same_v<int,T> && !std::is_same_v<double,T>)
-  inline size_t size_of(const T& x)
+  inline Index size_of(const T& x)
   {
     return x.size();
   }
@@ -78,7 +68,7 @@ namespace codac2
   }
 
   template<class... T>
-  size_t size_first_item(const T&... x)
+  Index size_first_item(const T&... x)
   {
     return size_of(std::get<0>(std::make_tuple(x...)));
   }

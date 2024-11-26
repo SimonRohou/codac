@@ -55,13 +55,13 @@ namespace codac2
   }
 
   inline SetExpr_ptr
-  proj(const SetExpr_ptr& x1, const std::vector<size_t>& proj_indices, double eps = 0.01)
+  proj(const SetExpr_ptr& x1, const std::vector<Index>& proj_indices, double eps = 0.01)
   {
     return std::make_shared<SetOperationExpr<ProjSetOp,SetExpr>>(x1,proj_indices,eps);
   }
 
   inline SetExpr_ptr
-  proj(const SetExpr_ptr& x1, const std::vector<size_t>& proj_indices, const IntervalVector& y, double eps = 0.01)
+  proj(const SetExpr_ptr& x1, const std::vector<Index>& proj_indices, const IntervalVector& y, double eps = 0.01)
   {
     return std::make_shared<SetOperationExpr<ProjSetOp,SetExpr>>(x1,proj_indices,y,eps);
   }

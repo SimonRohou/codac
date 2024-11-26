@@ -68,7 +68,7 @@ void export_AnalyticFunction(py::module& m, const std::string& export_name)
       [](const std::vector<py::object>& l, const ExprWrapper<T>& expr)
       {
         FunctionArgsList args {};
-        size_t i = 0;
+        Index i = 0;
 
         for(const auto& li : l)
         {
@@ -89,7 +89,7 @@ void export_AnalyticFunction(py::module& m, const std::string& export_name)
     ), ANALYTICFUNCTION_T_ANALYTICFUNCTION_CONST_FUNCTIONARGSLIST_REF_CONST_SHARED_PTR_ANALYTICEXPR_T_REF)
 
     .def("input_size", &AnalyticFunction<T>::input_size,
-      SIZET_FUNCTIONBASE_E_INPUT_SIZE_CONST)
+      INDEX_FUNCTIONBASE_E_INPUT_SIZE_CONST)
 
     .def("__call__", [](const AnalyticFunction<T>& f, const std::vector<ExprWrapperBase>& x)
       {

@@ -9,8 +9,9 @@
 
 #pragma once
 
+#include <numbers>
+
 namespace codac2
 {
-  constexpr double pi = 3.141592653589793238462643383279;
-  // To be replaced by C++20 implementation providing portable pi value.
+  constexpr double pi = std::numbers::pi; // Need C++20
 }

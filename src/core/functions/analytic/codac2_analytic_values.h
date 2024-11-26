@@ -10,6 +10,8 @@
 #pragma once
 
 #include <codac2_Interval.h>
+#include <codac2_Vector.h>
+#include <codac2_Matrix.h>
 #include <codac2_IntervalVector.h>
 #include <codac2_IntervalMatrix.h>
 
@@ -59,7 +61,7 @@ namespace codac2
   };
 
   template<>
-  struct Wrapper<size_t> {
+  struct Wrapper<Index> {
     using Domain = ScalarOpValue;
   };
 

@@ -77,6 +77,12 @@ py::class_<Interval> export_Interval(py::module& m)
     .def("mid", &Interval::mid,
       DOUBLE_INTERVAL_MID_CONST)
 
+    .def("mag", &Interval::mag,
+      DOUBLE_INTERVAL_MAG_CONST)
+
+    .def("mig", &Interval::mig,
+      DOUBLE_INTERVAL_MIG_CONST)
+
     .def("rand", &Interval::rand,
       DOUBLE_INTERVAL_RAND_CONST)
 
@@ -90,7 +96,7 @@ py::class_<Interval> export_Interval(py::module& m)
       DOUBLE_INTERVAL_VOLUME_CONST)
 
     .def("size", &Interval::size,
-      SIZET_INTERVAL_SIZE_CONST)
+      INDEX_INTERVAL_SIZE_CONST)
 
     .def("set_empty", &Interval::set_empty,
       VOID_INTERVAL_SET_EMPTY)
