@@ -316,3 +316,11 @@ For example, the operator ``cos`` is proposed with:
       :start-after: [9-beg]
       :end-before: [9-end]
       :dedent: 4
+
+  .. group-tab:: Matlab
+
+    .. literalinclude:: src.m
+      :language: matlab
+      :start-after: [9-beg]
+      :end-before: [9-end]
+      :dedent: 0

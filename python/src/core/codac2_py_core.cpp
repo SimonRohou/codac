@@ -212,6 +212,12 @@ PYBIND11_MODULE(_core, m)
     .def(py::self | py::self, EVALMODE_OPERATOROR_EVALMODE_EVALMODE)
   ;
 
+  #if FOR_MATLAB // Python enums do not seem to be callable in matlab
+  m.attr("EvalMode_NATURAL") = EvalMode::NATURAL;
+  m.attr("EvalMode_CENTERED") = EvalMode::CENTERED;
+  m.attr("EvalMode_DEFAULT") = EvalMode::DEFAULT;
+  #endif
+
   export_ScalarExpr(m);
   export_VectorExpr(m);
   export_MatrixExpr(m);
