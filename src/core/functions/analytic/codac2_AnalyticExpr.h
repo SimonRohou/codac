@@ -2,7 +2,7 @@
  *  \file codac2_AnalyticExpr.h
  * ----------------------------------------------------------------------------
  *  \date       2024
- *  \author     Simon Rohou
+ *  \author     Simon Rohou, Damien Massé
  *  \copyright  Copyright 2024 Codac Team
  *  \license    GNU Lesser General Public License (LGPL)
  */
@@ -14,12 +14,12 @@
 #include <utility>
 #include "codac2_ExprBase.h"
 #include "codac2_Domain.h"
-#include "codac2_directed_ctc.h"
 #include "codac2_FunctionArgsList.h"
+#include "codac2_AnalyticType.h"
 
 namespace codac2
 {
-  using ValuesMap = std::map<ExprID,std::shared_ptr<OpValueBase>>;
+  using ValuesMap = std::map<ExprID,std::shared_ptr<AnalyticTypeBase>>;
 
   template<typename T>
   class AnalyticExpr : public ExprBase
@@ -28,8 +28,9 @@ namespace codac2
 
       AnalyticExpr<T>& operator=(const AnalyticExpr<T>& x) = delete;
 
-      virtual T fwd_eval(ValuesMap& v, Index total_input_size) const = 0;
+      virtual T fwd_eval(ValuesMap& v, Index total_input_size, bool natural_eval) const = 0;
       virtual void bwd_eval(ValuesMap& v) const = 0;
+      virtual std::pair<Index,Index> output_shape() const = 0;
 
       T init_value(ValuesMap& v, const T& x) const
       {
@@ -52,6 +53,8 @@ namespace codac2
       }
 
       virtual bool belongs_to_args_list(const FunctionArgsList& args) const = 0;
+      virtual std::string str(bool in_parentheses = false) const = 0;
+      virtual bool is_str_leaf() const = 0;
   };
 
   template<typename C,typename Y,typename... X>
@@ -72,17 +75,21 @@ namespace codac2
         return std::make_shared<AnalyticOperationExpr<C,Y,X...>>(*this);
       }
 
-      void replace_expr(const ExprID& old_expr_id, const std::shared_ptr<ExprBase>& new_expr)
+      void replace_arg(const ExprID& old_arg_id, const std::shared_ptr<ExprBase>& new_expr)
       {
-        return OperationExprBase<AnalyticExpr<X>...>::replace_expr(old_expr_id, new_expr);
+        return OperationExprBase<AnalyticExpr<X>...>::replace_arg(old_arg_id, new_expr);
       }
 
-      Y fwd_eval(ValuesMap& v, Index total_input_size) const
+      Y fwd_eval(ValuesMap& v, Index total_input_size, bool natural_eval) const
       {
         return std::apply(
-          [this,&v,total_input_size](auto &&... x)
+          [this,&v,total_input_size,natural_eval](auto &&... x)
           {
-            return AnalyticExpr<Y>::init_value(v, C::fwd(x->fwd_eval(v, total_input_size)...));
+            if(natural_eval)
+              return AnalyticExpr<Y>::init_value(v, C::fwd_natural(x->fwd_eval(v, total_input_size, natural_eval)...));
+
+            else
+              return AnalyticExpr<Y>::init_value(v, C::fwd_centered(x->fwd_eval(v, total_input_size, natural_eval)...));
           },
         this->_x);
       }
@@ -102,6 +109,31 @@ namespace codac2
         }, this->_x);
       }
 
+      virtual std::string str(bool in_parentheses = false) const
+      {
+        std::string s;
+        std::apply([&s](auto &&... x)
+        {
+          s = C::str(x...);
+        }, this->_x);
+        return in_parentheses ? "(" + s + ")" : s;
+      }
+
+      virtual bool is_str_leaf() const
+      {
+        return false;
+      }
+
+      std::pair<Index,Index> output_shape() const
+      {
+        std::pair<Index,Index> s;
+        std::apply([&s](auto &&... x)
+        {
+          s = C::output_shape(x...);
+        }, this->_x);
+        return s;
+      }
+
       virtual bool belongs_to_args_list(const FunctionArgsList& args) const
       {
         bool b = true;
@@ -113,95 +145,5 @@ namespace codac2
 
         return b;
       }
-  };
-
-  template<>
-  class AnalyticOperationExpr<ComponentOp,ScalarOpValue,VectorOpValue> : public AnalyticExpr<ScalarOpValue>, public OperationExprBase<AnalyticExpr<VectorOpValue>>
-  {
-    public:
-
-      AnalyticOperationExpr(const std::shared_ptr<AnalyticExpr<VectorOpValue>>& x1, Index i)
-        : OperationExprBase<AnalyticExpr<VectorOpValue>>(x1), _i(i)
-      { }
-
-      AnalyticOperationExpr(const AnalyticOperationExpr& e)
-        : OperationExprBase<AnalyticExpr<VectorOpValue>>(e), _i(e._i)
-      { }
-
-      std::shared_ptr<ExprBase> copy() const
-      {
-        return std::make_shared<AnalyticOperationExpr<ComponentOp,ScalarOpValue,VectorOpValue>>(*this);
-      }
-
-      void replace_expr(const ExprID& old_expr_id, const std::shared_ptr<ExprBase>& new_expr)
-      {
-        return OperationExprBase<AnalyticExpr<VectorOpValue>>::replace_expr(old_expr_id, new_expr);
-      }
-      
-      ScalarOpValue fwd_eval(ValuesMap& v, Index total_input_size) const
-      {
-        return AnalyticExpr<ScalarOpValue>::init_value(
-          v, ComponentOp::fwd(std::get<0>(this->_x)->fwd_eval(v, total_input_size), _i));
-      }
-      
-      void bwd_eval(ValuesMap& v) const
-      {
-        ComponentOp::bwd(AnalyticExpr<ScalarOpValue>::value(v).a, std::get<0>(this->_x)->value(v).a, _i);
-        std::get<0>(this->_x)->bwd_eval(v);
-      }
-
-      virtual bool belongs_to_args_list(const FunctionArgsList& args) const
-      {
-        return std::get<0>(this->_x)->belongs_to_args_list(args);
-      }
-
-    protected:
-
-      const Index _i;
-  };
-
-  template<>
-  class AnalyticOperationExpr<SubvectorOp,VectorOpValue,VectorOpValue> : public AnalyticExpr<VectorOpValue>, public OperationExprBase<AnalyticExpr<VectorOpValue>>
-  {
-    public:
-
-      AnalyticOperationExpr(const std::shared_ptr<AnalyticExpr<VectorOpValue>>& x1, Index i, Index j)
-        : OperationExprBase<AnalyticExpr<VectorOpValue>>(x1), _i(i), _j(j)
-      { }
-
-      AnalyticOperationExpr(const AnalyticOperationExpr& e)
-        : OperationExprBase<AnalyticExpr<VectorOpValue>>(e), _i(e._i), _j(e._j)
-      { }
-
-      std::shared_ptr<ExprBase> copy() const
-      {
-        return std::make_shared<AnalyticOperationExpr<SubvectorOp,VectorOpValue,VectorOpValue>>(*this);
-      }
-
-      void replace_expr(const ExprID& old_expr_id, const std::shared_ptr<ExprBase>& new_expr)
-      {
-        return OperationExprBase<AnalyticExpr<VectorOpValue>>::replace_expr(old_expr_id, new_expr);
-      }
-      
-      VectorOpValue fwd_eval(ValuesMap& v, Index total_input_size) const
-      {
-        return AnalyticExpr<VectorOpValue>::init_value(
-          v, SubvectorOp::fwd(std::get<0>(this->_x)->fwd_eval(v, total_input_size), _i, _j));
-      }
-      
-      void bwd_eval(ValuesMap& v) const
-      {
-        SubvectorOp::bwd(AnalyticExpr<VectorOpValue>::value(v).a, std::get<0>(this->_x)->value(v).a, _i, _j);
-        std::get<0>(this->_x)->bwd_eval(v);
-      }
-
-      virtual bool belongs_to_args_list(const FunctionArgsList& args) const
-      {
-        return std::get<0>(this->_x)->belongs_to_args_list(args);
-      }
-
-    protected:
-
-      const Index _i, _j;
   };
 }

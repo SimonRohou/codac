@@ -14,6 +14,10 @@
  */
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
+  requires (R == -1 || C == -1)
+Matrix() = delete;
+
+template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires (!IsVectorOrRow<R,C>)
 explicit Matrix(int r, int c, const Scalar values[])
   : Matrix<Scalar,R,C>(r,c)

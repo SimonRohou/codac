@@ -19,24 +19,12 @@ namespace codac2
   inline std::ostream& operator<<(std::ostream& os, const IntervalMatrix& x)
   {
     if(x.is_empty())
-      return os << "( empty matrix )";
+      return os << "[ empty " << x.rows() << "x" << x.cols() << " mat ]";
 
     else
-      return operator<<(os,
-        static_cast<const Eigen::DenseBase<IntervalMatrix>&>(x));
-
-    #if 0 // IBEX style
-      os << "(";
-      for(Index i = 0 ; i < x.rows() ; i++)
-      {
-        os << (i!=0 ? " " : "") << "(";
-        for(Index j = 0 ; j < x.cols() ; j++)
-          os << x(i,j) << (j<x.cols()-1 ? " ; " : "");
-        os << ")";
-        if(i < x.rows()-1) os << std::endl;
-      }
-      os << ")";
+    {
+      os << x.format(codac_matrix_fmt());
       return os;
-    #endif
+    }
   }
 }

@@ -31,6 +31,14 @@ void export_VectorBase([[maybe_unused]] py::module& m, py::class_<S>& pyclass)
 
   pyclass
 
+    .def(py::init(
+        [](const Eigen::Matrix<T,-1,-1>& x)
+        {
+          return std::make_unique<S>(x);
+        }),
+      DOC_TO_BE_DEFINED,
+      "x"_a)
+
     .def("__getitem__", [](const S& x, Index_type index) -> const T&
         {
           matlab::test_integer(index);

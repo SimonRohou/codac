@@ -25,15 +25,9 @@ namespace py = pybind11;
 using namespace pybind11::literals;
 
 
-/*py::class_<Ctc,pyCtc> export_Ctc(py::module& m)
+py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector> export_CtcIntervalVector(py::module& m)
 {
-  py::class_<Ctc,pyCtc> py_ctc(m, "CtcBase");
-  return py_ctc;
-}*/
-
-py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector> export_CtcIntervalVector(py::module& m/*, py::class_<Ctc,pyCtc>& py_ctc*/)
-{
-  py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector> py_ctc_iv(m, "CtcIntervalVector"/*, py_ctc*/);
+  py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector> py_ctc_iv(m, "CtcIntervalVector");
   py_ctc_iv
 
     .def(py::init<Index>(),
@@ -61,7 +55,7 @@ py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector> export_CtcIntervalVector
 
     .def("__and__", [](const CtcBase<IntervalVector>& c1, const IntervalVector& x2)
         {
-          auto c2 = CtcWrapper_<IntervalVector>(x2);
+          auto c2 = CtcWrapper(x2);
           return CtcInter<IntervalVector>(
             std::dynamic_pointer_cast<CtcBase<IntervalVector>>(c1.copy()),
             std::dynamic_pointer_cast<CtcBase<IntervalVector>>(c2.copy()));
@@ -70,7 +64,7 @@ py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector> export_CtcIntervalVector
 
     .def("__rand__", [](const CtcBase<IntervalVector>& c1, const IntervalVector& x2)
         {
-          auto c2 = CtcWrapper_<IntervalVector>(x2);
+          auto c2 = CtcWrapper(x2);
           return CtcInter<IntervalVector>(
             std::dynamic_pointer_cast<CtcBase<IntervalVector>>(c1.copy()),
             std::dynamic_pointer_cast<CtcBase<IntervalVector>>(c2.copy()));
@@ -89,7 +83,7 @@ py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector> export_CtcIntervalVector
 
     .def("__or__", [](const CtcBase<IntervalVector>& c1, const IntervalVector& x2)
         {
-          auto c2 = CtcWrapper_<IntervalVector>(x2);
+          auto c2 = CtcWrapper(x2);
           return CtcUnion<IntervalVector>(
             std::dynamic_pointer_cast<CtcBase<IntervalVector>>(c1.copy()),
             std::dynamic_pointer_cast<CtcBase<IntervalVector>>(c2.copy()));
@@ -98,7 +92,7 @@ py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector> export_CtcIntervalVector
 
     .def("__ror__", [](const CtcBase<IntervalVector>& c1, const IntervalVector& x2)
         {
-          auto c2 = CtcWrapper_<IntervalVector>(x2);
+          auto c2 = CtcWrapper(x2);
           return CtcUnion<IntervalVector>(
             std::dynamic_pointer_cast<CtcBase<IntervalVector>>(c1.copy()),
             std::dynamic_pointer_cast<CtcBase<IntervalVector>>(c2.copy()));

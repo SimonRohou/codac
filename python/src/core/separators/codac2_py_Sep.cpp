@@ -47,7 +47,7 @@ py::class_<SepBase,pySep> export_Sep(py::module& m)
     .def("__repr__", [](const BoxPair& x) {
           std::ostringstream stream;
           stream << x;
-          return string(stream.str()); 
+          return std::string(stream.str()); 
         },
       OSTREAM_REF_OPERATOROUT_OSTREAM_REF_CONST_BOXPAIR_REF)
   ;
@@ -78,14 +78,14 @@ py::class_<SepBase,pySep> export_Sep(py::module& m)
 
     .def("__and__", [](const SepBase& s1, const IntervalVector& x2)
         {
-          auto s2 = SepWrapper_<IntervalVector>(x2);
+          auto s2 = SepWrapper(x2);
           return SepInter(s1.copy(),s2.copy());
         },
       SEPINTER_OPERATORAND_CONST_INTERVALVECTOR_REF_CONST_S2_REF)
 
     .def("__rand__", [](const SepBase& s1, const IntervalVector& x2)
         {
-          auto s2 = SepWrapper_<IntervalVector>(x2);
+          auto s2 = SepWrapper(x2);
           return SepInter(s1.copy(),s2.copy());
         },
       SEPINTER_OPERATORAND_CONST_INTERVALVECTOR_REF_CONST_S2_REF)
@@ -100,14 +100,14 @@ py::class_<SepBase,pySep> export_Sep(py::module& m)
 
     .def("__or__", [](const SepBase& s1, const IntervalVector& x2)
         {
-          auto s2 = SepWrapper_<IntervalVector>(x2);
+          auto s2 = SepWrapper(x2);
           return SepUnion(s1.copy(),s2.copy());
         },
       SEPUNION_OPERATOROR_CONST_INTERVALVECTOR_REF_CONST_S2_REF)
 
     .def("__ror__", [](const SepBase& s1, const IntervalVector& x2)
         {
-          auto s2 = SepWrapper_<IntervalVector>(x2);
+          auto s2 = SepWrapper(x2);
           return SepUnion(s1.copy(),s2.copy());
         },
       SEPUNION_OPERATOROR_CONST_INTERVALVECTOR_REF_CONST_S2_REF)

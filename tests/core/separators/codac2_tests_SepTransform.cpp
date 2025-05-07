@@ -20,7 +20,7 @@ TEST_CASE("SepTransform")
 {
   {
     VectorVar x(2);
-    SepInverse<Interval> s1(AnalyticFunction({x}, sqr(x[0])+sqr(x[1])), Interval(0,1));
+    SepInverse s1(AnalyticFunction({x}, sqr(x[0])+sqr(x[1])), Interval(0,1));
     SepTransform s2(s1,
       AnalyticFunction({x}, vec(x[0]+2,x[1]+2)),
       AnalyticFunction({x}, vec(x[0]-2,x[1]-2)));
@@ -36,9 +36,9 @@ TEST_CASE("SepTransform")
     CHECK(xs.outer == IntervalVector({{-2.2,-1.8},{-2.2,-1.8}}));
 
     IntervalVector b({{-2.5,-1.5},{-2,10}});
-    //DefaultView::draw_box(b,Color::purple());
+    //DefaultFigure::draw_box(b,Color::purple());
     xs = s2.separate(b);
-    //DefaultView::draw_box(xs.inner,Color::green());
+    //DefaultFigure::draw_box(xs.inner,Color::green());
     CHECK(Approx(xs.inner,1e-1) == IntervalVector({{-2.5,-1.5},{-1.134,10}}));
     CHECK(Approx(xs.outer,1e-1) == IntervalVector({{-2.5,-1.5},{-2,-1}}));
   }

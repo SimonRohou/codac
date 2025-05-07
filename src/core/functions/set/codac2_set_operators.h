@@ -94,14 +94,14 @@ namespace codac2
 
   struct InverseSetOp
   {
-    static std::shared_ptr<CtcBase<IntervalVector>> create_ctc(const AnalyticFunction<VectorOpValue>& f, const std::shared_ptr<CtcBase<IntervalVector>>& s1)
+    static std::shared_ptr<CtcBase<IntervalVector>> create_ctc(const AnalyticFunction<VectorType>& f, const std::shared_ptr<CtcBase<IntervalVector>>& s1)
     {
-      return std::make_shared<CtcInverse_<IntervalVector,IntervalVector>>(f,s1);
+      return std::make_shared<CtcInverse<IntervalVector,IntervalVector>>(f,s1);
     }
 
-    static std::shared_ptr<SepBase> create_sep(const AnalyticFunction<VectorOpValue>& f, const std::shared_ptr<SepBase>& s1)
+    static std::shared_ptr<SepBase> create_sep(const AnalyticFunction<VectorType>& f, const std::shared_ptr<SepBase>& s1)
     {
-      return std::make_shared<SepInverse<IntervalVector>>(f,s1);
+      return std::make_shared<SepInverse>(f,s1);
     }
   };
 

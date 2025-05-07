@@ -14,6 +14,7 @@
 #include <pybind11/stl.h>
 #include <codac2_Interval.h>
 #include "codac2_py_Interval_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py):
+#include "codac2_py_Interval_impl_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py):
 
 using namespace std;
 using namespace codac2;

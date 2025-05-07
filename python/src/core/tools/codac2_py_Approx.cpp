@@ -11,6 +11,7 @@
 #include <sstream>
 #include <pybind11/pybind11.h>
 #include <pybind11/operators.h>
+#include <pybind11/stl.h>
 #include <codac2_Interval.h>
 #include <codac2_Vector.h>
 #include <codac2_IntervalVector.h>
@@ -49,9 +50,14 @@ void _export_Approx(py::module& m, const string& class_name)
 
 void export_Approx(py::module& m)
 {
+  _export_Approx<double>(m, "Approx_double");
   _export_Approx<Interval>(m, "Approx_Interval");
   _export_Approx<Vector>(m, "Approx_Vector");
   _export_Approx<IntervalVector>(m, "Approx_IntervalVector");
+  _export_Approx<Row>(m, "Approx_Row");
+  _export_Approx<IntervalRow>(m, "Approx_IntervalRow");
   _export_Approx<Matrix>(m, "Approx_Matrix");
   _export_Approx<IntervalMatrix>(m, "Approx_IntervalMatrix");
+  _export_Approx<Segment>(m, "Approx_Segment");
+  _export_Approx<Polygon>(m, "Approx_Polygon");
 }

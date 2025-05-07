@@ -61,6 +61,12 @@ void export_IntervalMatrixBase(py::module& m, py::class_<S>& pyclass)
     .def("diam", [](const S& x) { return x.diam(); },
       MATRIXBASE_ADDONS_INTERVALMATRIXBASE_AUTO_DIAM_CONST)
 
+    .def("min_rad", [](const S& x) { return x.min_rad(); },
+      MATRIX_ADDONS_INTERVALMATRIXBASE_DOUBLE_MIN_RAD_CONST)
+
+    .def("max_rad", [](const S& x) { return x.max_rad(); },
+      MATRIX_ADDONS_INTERVALMATRIXBASE_DOUBLE_MAX_RAD_CONST)
+
     .def("min_diam", [](const S& x) { return x.min_diam(); },
       MATRIX_ADDONS_INTERVALMATRIXBASE_DOUBLE_MIN_DIAM_CONST)
 

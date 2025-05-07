@@ -15,10 +15,17 @@
 #include "codac2_OutputFigure2D.h"
 #include "codac2_Vector.h"
 #include "codac2_IntervalVector.h"
+#include "codac2_Ellipsoid.h"
 #include "vibes.h"
 
 namespace codac2
 {
+  /**
+   * \class Figure2D_IPE
+   * \brief IPE output class
+   * 
+   * This class is used to manage the IPE output. It generates an XML file that can be opened with the IPE editor.
+   */
   class Figure2D_IPE : public OutputFigure2D
   {
     public:
@@ -28,7 +35,7 @@ namespace codac2
       void update_axes();
       void update_window_properties();
       void center_viewbox(const Vector& c, const Vector& r);
-      void begin_path(const StyleProperties& s,bool tip);
+      void begin_path(const StyleProperties& s,bool tip = false);
 
       /* For future doc:
       https://github.com/codac-team/codac/pull/126#discussion_r1829030491
@@ -47,7 +54,10 @@ namespace codac2
          pen="heavier" 
          matrix="0.00948009 11.9048 -11.9047 0.00948009 166.667 166.667">
       */
-      void begin_path_with_matrix(const Vector& x, float length, const StyleProperties& s);
+      void begin_path_with_matrix(const Vector& x, float length, const StyleProperties& s = StyleProperties());
+
+      void draw_text(const Vector& c,const Vector& r, const std::string& text, const StyleProperties& s = StyleProperties());
+      void draw_axes();
 
       // Geometric shapes
       void draw_point(const Vector& c, const StyleProperties& s = StyleProperties());
@@ -55,13 +65,14 @@ namespace codac2
       void draw_circle(const Vector& c, double r, const StyleProperties& s = StyleProperties());
       void draw_ring(const Vector& c, const Interval& r, const StyleProperties& s = StyleProperties());
       void draw_polyline(const std::vector<Vector>& x, float tip_length, const StyleProperties& s = StyleProperties());
-      void draw_polygone(const std::vector<Vector>& x, const StyleProperties& s = StyleProperties());
+      void draw_polygon(const std::vector<Vector>& x, const StyleProperties& s = StyleProperties());
       void draw_pie(const Vector& c, const Interval& r, const Interval& theta, const StyleProperties& s = StyleProperties());
       void draw_ellipse(const Vector& c, const Vector& ab, double theta, const StyleProperties& s = StyleProperties());
 
       // Robots
       void draw_tank(const Vector& x, float size, const StyleProperties& s = StyleProperties());
       void draw_AUV(const Vector& x, float size, const StyleProperties& s = StyleProperties());
+      void draw_motor_boat(const Vector& x, float size, const StyleProperties& s = StyleProperties());
 
     protected:
 

@@ -22,28 +22,36 @@ using namespace pybind11::literals;
 template<typename T>
 void export_CtcInverse(py::module& m, const std::string& export_name, py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector>& pyctc)
 {
-  py::class_<CtcInverse_<T>> exported(m, export_name.c_str(), pyctc, CTCINVERSE_MAIN);
+  using D = typename T::Domain;
+  py::class_<CtcInverse<D>> exported(m, export_name.c_str(), pyctc, CTCINVERSE_MAIN);
 
   exported
-    .def(py::init<const AnalyticFunction<OpValue<T,IntervalMatrix>>&, const T&, bool>(),
+    .def(py::init<const AnalyticFunction<T>&, const D&, bool>(),
       "f"_a, "y"_a, "with_centered_form"_a = true,
-      CTCINVERSE_Y_CTCINVERSE_CONST_ANALYTICFUNCTION_TYPENAME_WRAPPER_Y_DOMAIN_REF_CONST_Y_REF_BOOL_BOOL);
+      CTCINVERSE_YX_CTCINVERSE_CONST_ANALYTICFUNCTION_TYPENAME_VALUETYPE_Y_TYPE_REF_CONST_Y_REF_BOOL_BOOL);
 
-  if constexpr(std::is_same_v<T,IntervalVector>) // separators only associated with interval vectors
+  if constexpr(std::is_same_v<T,VectorType>) // contractors only associated with interval vectors
   {
     exported
-    .def(py::init<const AnalyticFunction<OpValue<T,IntervalMatrix>>&, const pyCtcIntervalVector&, bool>(),
-      "f"_a, "c"_a, "with_centered_form"_a = true,
-      CTCINVERSE_Y_CTCINVERSE_CONST_ANALYTICFUNCTION_TYPENAME_WRAPPER_Y_DOMAIN_REF_CONST_C_REF_BOOL_BOOL);
+    .def(py::init(
+        [](const py::object& f, const CtcBase<IntervalVector>& c, bool with_centered_form)
+        {
+          return std::make_unique<CtcInverse<D>>(
+            cast<AnalyticFunction<T>>(f),
+            c.copy(), with_centered_form);
+        }
+      ),
+      CTCINVERSE_YX_CTCINVERSE_CONST_ANALYTICFUNCTION_TYPENAME_VALUETYPE_Y_TYPE_REF_CONST_C_REF_BOOL_BOOL,
+      "f"_a, "c"_a, "with_centered_form"_a = true);
   }
 
   exported
 
-    .def(CONTRACT_BOX_METHOD(CtcInverse_<T>,
-      VOID_CTCINVERSE_Y_CONTRACT_X_REF_VARIADIC_CONST))
+    .def(CONTRACT_BOX_METHOD(CtcInverse<D>,
+      VOID_CTCINVERSE__Y_CONTRACT_X_REF_VARIADIC_CONST))
 
-    .def("function", &CtcInverse_<T>::function,
-      CONST_ANALYTICFUNCTION_TYPENAME_WRAPPER_Y_DOMAIN_REF_CTCINVERSE_Y_FUNCTION_CONST)
+    .def("function", &CtcInverse<D>::function,
+      CONST_ANALYTICFUNCTION_TYPENAME_VALUETYPE_Y_TYPE_REF_CTCINVERSE__Y_FUNCTION_CONST)
     
   ;
 }

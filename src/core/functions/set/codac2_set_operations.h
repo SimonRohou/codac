@@ -85,13 +85,13 @@ namespace codac2
   }
 
   inline SetExpr_ptr
-  inverse(const AnalyticFunction<VectorOpValue>& f, const SetExpr_ptr& x1)
+  inverse(const AnalyticFunction<VectorType>& f, const SetExpr_ptr& x1)
   {
     return std::make_shared<SetOperationExpr<InverseSetOp,SetExpr>>(f,x1);
   }
 
   inline SetExpr_ptr
-  inverse(const AnalyticFunction<VectorOpValue>& f, const IntervalVector& x1)
+  inverse(const AnalyticFunction<VectorType>& f, const IntervalVector& x1)
   {
     return std::make_shared<SetOperationExpr<InverseSetOp,SetExpr>>(f,const_set(x1));
   }

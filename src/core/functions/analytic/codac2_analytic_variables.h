@@ -2,7 +2,7 @@
  *  \file codac2_analytic_variables.h
  * ----------------------------------------------------------------------------
  *  \date       2024
- *  \author     Simon Rohou
+ *  \author     Simon Rohou, Damien Massé
  *  \copyright  Copyright 2024 Codac Team
  *  \license    GNU Lesser General Public License (LGPL)
  */
@@ -12,15 +12,20 @@
 #include <iostream>
 #include "codac2_AnalyticExpr.h"
 #include "codac2_VarBase.h"
+#include "codac2_component.h"
 
 namespace codac2
 {
+  template<typename T>
+  struct AnalyticExprWrapper;
+
   template<typename T>
   class AnalyticVarExpr : public AnalyticExpr<T>, public VarBase
   {
     public:
 
-      AnalyticVarExpr()
+      explicit AnalyticVarExpr(const std::string& name)
+        : VarBase(name)
       { }
 
       virtual const ExprID& unique_id() const
@@ -28,7 +33,7 @@ namespace codac2
         return AnalyticExpr<T>::unique_id();
       }
 
-      T fwd_eval(ValuesMap& v, [[maybe_unused]] Index total_input_size) const
+      T fwd_eval(ValuesMap& v, [[maybe_unused]] Index total_input_size, [[maybe_unused]] bool natural_eval) const
       {
         return AnalyticExpr<T>::value(v);
       }
@@ -36,13 +41,8 @@ namespace codac2
       void bwd_eval([[maybe_unused]] ValuesMap& v) const
       { }
 
-      void replace_expr([[maybe_unused]] const ExprID& old_expr_id, [[maybe_unused]] const std::shared_ptr<ExprBase>& new_expr)
+      void replace_arg([[maybe_unused]] const ExprID& old_arg_id, [[maybe_unused]] const std::shared_ptr<ExprBase>& new_expr)
       { }
-      
-      operator std::shared_ptr<AnalyticExpr<T>>() const
-      {
-        return std::dynamic_pointer_cast<AnalyticExpr<T>>(this->copy());
-      }
 
       virtual bool belongs_to_args_list(const FunctionArgsList& args) const
       {
@@ -51,85 +51,69 @@ namespace codac2
             return true;
         return false;
       }
-  };
 
-  class ScalarVar : public AnalyticVarExpr<ScalarOpValue>
-  {
-    public:
-
-      ScalarVar()
-      { }
-
-      ScalarVar(const ScalarVar& x)
-        : AnalyticVarExpr<ScalarOpValue>(x)
-      { }
-
-      std::shared_ptr<VarBase> arg_copy() const
+      virtual std::string str(bool in_parentheses = false) const
       {
-        return std::make_shared<ScalarVar>(*this);
+        return in_parentheses ? "(" + _name + ")" : _name;
       }
 
-      std::shared_ptr<ExprBase> copy() const
+      virtual bool is_str_leaf() const
       {
-        return std::make_shared<ScalarVar>(*this);
-      }
-
-      Index size() const
-      {
-        return 1;
-      }
-
-      std::shared_ptr<AnalyticExpr<ScalarOpValue>> operator-() const
-      {
-        return std::make_shared<AnalyticOperationExpr<SubOp,ScalarOpValue,ScalarOpValue>>(*this);
+        return true;
       }
   };
 
-  class VectorVar : public AnalyticVarExpr<VectorOpValue>
+  class ScalarVar : public AnalyticVarExpr<ScalarType>
   {
     public:
 
-      explicit VectorVar(Index n)
-        : _n(n)
-      {
-        assert_release(n > 0);
-      }
+      explicit ScalarVar(const std::string& name = "?");
 
-      VectorVar(const VectorVar& x)
-        : AnalyticVarExpr<VectorOpValue>(x), _n(x._n)
-      { }
+      std::shared_ptr<VarBase> arg_copy() const;
+      std::shared_ptr<ExprBase> copy() const;
+      Index size() const;
+      std::pair<Index,Index> output_shape() const;
 
-      std::shared_ptr<VarBase> arg_copy() const
-      {
-        return std::make_shared<VectorVar>(*this);
-      }
+      AnalyticExprWrapper<ScalarType> operator-() const;
+  };
 
-      std::shared_ptr<ExprBase> copy() const
-      {
-        return std::make_shared<VectorVar>(*this);
-      }
+  class VectorVar : public AnalyticVarExpr<VectorType>
+  {
+    public:
 
-      Index size() const
-      {
-        return _n;
-      }
+      explicit VectorVar(Index n, const std::string& name = "?");
 
-      std::shared_ptr<AnalyticExpr<ScalarOpValue>> operator[](Index i) const
-      {
-        assert_release(i >= 0 && i < _n);
-        return std::make_shared<AnalyticOperationExpr<ComponentOp,ScalarOpValue,VectorOpValue>>(
-          std::dynamic_pointer_cast<AnalyticExpr<VectorOpValue>>(this->copy()), i);
-      }
+      std::shared_ptr<VarBase> arg_copy() const;
+      std::shared_ptr<ExprBase> copy() const;
+      Index size() const;
+      std::pair<Index,Index> output_shape() const;
 
-      std::shared_ptr<AnalyticExpr<VectorOpValue>> subvector(Index i, Index j) const
-      {
-        assert_release(i >= 0 && i < _n && j >= i && j < _n);
-        return std::make_shared<AnalyticOperationExpr<SubvectorOp,VectorOpValue,VectorOpValue>>(
-          std::dynamic_pointer_cast<AnalyticExpr<VectorOpValue>>(this->copy()), i, j);
-      }
+      AnalyticExprWrapper<ScalarType> operator[](Index i) const;
+      AnalyticExprWrapper<VectorType> subvector(Index i, Index j) const;
 
     protected:
 
       Index _n;
+  };
+
+  class MatrixVar : public AnalyticVarExpr<MatrixType>
+  {
+    public:
+
+      explicit MatrixVar(Index r, Index c, const std::string& name = "?");
+
+      std::shared_ptr<VarBase> arg_copy() const;
+      std::shared_ptr<ExprBase> copy() const;
+      Index size() const;
+      Index rows() const;
+      Index cols() const;
+      std::pair<Index,Index> output_shape() const;
+
+      AnalyticExprWrapper<ScalarType> operator()(Index i, Index j) const;
+      //AnalyticExprWrapper<VectorType> col(Index i) const;
+
+    protected:
+
+      Index _r, _c;
   };
 }

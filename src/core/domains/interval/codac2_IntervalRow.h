@@ -18,10 +18,12 @@ namespace codac2
   inline std::ostream& operator<<(std::ostream& os, const IntervalRow& x)
   {
     if(x.is_empty())
-      return os << "( empty row )";
+      return os << "[ empty row ]";
 
     else
-      return operator<<(os,
-        static_cast<const Eigen::DenseBase<IntervalRow>&>(x));
+    {
+      os << x.format(codac_row_fmt());
+      return os;
+    }
   }
 }

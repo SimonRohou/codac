@@ -14,4 +14,10 @@
 namespace codac2
 {
   using Matrix = Eigen::Matrix<double,-1,-1>;
+
+  inline std::ostream& operator<<(std::ostream& os, const Matrix& x)
+  {
+    os << x.format(codac_matrix_fmt());
+    return os;
+  }
 }

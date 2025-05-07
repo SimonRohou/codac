@@ -7,7 +7,7 @@
  *
  * ----------------------------------------------------------------------------
  *  \date       2024
- *  \author     Gilles Chabert, (Simon Rohou)
+ *  \author     Gilles Chabert, Simon Rohou
  *  \copyright  Copyright 2024 Codac Team
  *  \license    GNU Lesser General Public License (LGPL)
  */
@@ -671,6 +671,64 @@ TEST_CASE("IntervalMatrix - mixing type")
       {{11,11},{15,15}},
       {{21,21},{29,29}}
     }));
+  }
+
+  {
+    IntervalMatrix test1 {
+      { {0,1}, {0,2}, {0,0} }
+    };
+    CHECK(test1.rows() == 1);
+    CHECK(test1.cols() == 3);
+    CHECK(test1(0,0) == Interval(0,1));
+    CHECK(test1(0,1) == Interval(0,2));
+    CHECK(test1(0,2) == Interval(0,0));
+
+    IntervalMatrix test2 {
+      {0,1},
+      {2,3},
+      {4,5}
+    };
+    CHECK(test2.rows() == 3);
+    CHECK(test2.cols() == 2);
+    CHECK(test2(0,0) == Interval(0));
+    CHECK(test2(0,1) == Interval(1));
+    CHECK(test2(1,0) == Interval(2));
+    CHECK(test2(1,1) == Interval(3));
+    CHECK(test2(2,0) == Interval(4));
+    CHECK(test2(2,1) == Interval(5));
+
+    IntervalMatrix test3 {
+      {{1,oo},{2,oo}},
+      {{3,oo},{4,oo}},
+      {{5,oo},{6,oo}}
+    };
+    CHECK(test3.rows() == 3);
+    CHECK(test3.cols() == 2);
+    CHECK(test3(0,0) == Interval(1,oo));
+    CHECK(test3(0,1) == Interval(2,oo));
+    CHECK(test3(1,0) == Interval(3,oo));
+    CHECK(test3(1,1) == Interval(4,oo));
+    CHECK(test3(2,0) == Interval(5,oo));
+    CHECK(test3(2,1) == Interval(6,oo));
+
+    IntervalMatrix test4 {
+      {{1,2}},
+      {{3,4}},
+      {{5,6}}
+    };
+    CHECK(test4.rows() == 3);
+    CHECK(test4.cols() == 1);
+    CHECK(test4(0,0) == Interval(1,2));
+    CHECK(test4(1,0) == Interval(3,4));
+    CHECK(test4(2,0) == Interval(5,6));
+
+    IntervalVector iv({{1,2},{3,4},{5,6}});
+    IntervalMatrix test5(iv);
+    CHECK(test5.rows() == 3);
+    CHECK(test5.cols() == 1);
+    CHECK(test5(0,0) == Interval(1,2));
+    CHECK(test5(1,0) == Interval(3,4));
+    CHECK(test5(2,0) == Interval(5,6));
   }
 }
 

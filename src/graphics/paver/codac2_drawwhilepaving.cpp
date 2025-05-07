@@ -24,14 +24,7 @@ namespace codac2
     }
 
     fig->set_axes(axis(0,x0[0],"x_1"), axis(1,x0[1],"x_2"));
-
-    Vector w = fig->window_size();
-    if(x0[0].diam() > x0[1].diam())
-      w[1] *= x0[1].diam()/x0[0].diam();
-    else
-      w[0] *= x0[0].diam()/x0[1].diam();
-
-    fig->set_window_properties(fig->pos(), w);
+    fig->auto_scale();
   }
 
   void draw_while_paving(const IntervalVector& x0, shared_ptr<const CtcBase<IntervalVector>> c, double eps, std::shared_ptr<Figure2D> fig)
@@ -45,7 +38,7 @@ namespace codac2
     assert_release(c.size() >= 2 && "cannot reveal 1d contractors");
     
     if(!fig)
-      fig = DefaultView::selected_fig();
+      fig = DefaultFigure::selected_fig();
     init_fig(fig, x0);
 
     clock_t t_start = clock();
@@ -97,13 +90,12 @@ namespace codac2
     assert_release(s.size() >= 2 && "cannot reveal 1d separators");
 
     if(!fig)
-      fig = DefaultView::selected_fig();
+      fig = DefaultFigure::selected_fig();
     init_fig(fig, x0);
     
     clock_t t_start = clock();
 
     list<IntervalVector> l { x0 };
-    Index n_inner = 0, n_boundary = 0;
 
     while(!l.empty())
     {
@@ -114,10 +106,7 @@ namespace codac2
       auto boundary = x_sep.inner & x_sep.outer;
 
       for(const auto& bi : x.diff(x_sep.inner))
-      {
-        n_inner++;
         fig->draw_box(bi, StyleProperties::inside());
-      }
 
       for(const auto& bi : x.diff(x_sep.outer))
         fig->draw_box(bi, StyleProperties::outside());
@@ -125,10 +114,7 @@ namespace codac2
       if(!boundary.is_empty())
       {
         if(boundary.max_diam() <= eps)
-        {
-          n_boundary++;
           fig->draw_box(boundary, StyleProperties::boundary());
-        }
 
         else
         {
@@ -138,7 +124,6 @@ namespace codac2
       }
     }
     
-    printf("Computation time: %.4fs, %ld inner boxes, %ld boundary boxes\n",
-      (double)(clock()-t_start)/CLOCKS_PER_SEC, n_inner, n_boundary);
+    printf("Computation time: %.4fs\n", (double)(clock()-t_start)/CLOCKS_PER_SEC);
   }
 }

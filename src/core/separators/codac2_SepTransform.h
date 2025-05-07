@@ -15,7 +15,6 @@
 #include "codac2_AnalyticFunction.h"
 #include "codac2_CtcWrapper.h"
 #include "codac2_CtcInverse.h"
-#include "codac2_template_tools.h"
 
 namespace codac2
 {
@@ -25,7 +24,7 @@ namespace codac2
 
       template<typename S>
         requires IsSepBaseOrPtr<S>
-      SepTransform(const S& s, const AnalyticFunction<VectorOpValue>& f, const AnalyticFunction<VectorOpValue>& f_inv)
+      SepTransform(const S& s, const AnalyticFunction<VectorType>& f, const AnalyticFunction<VectorType>& f_inv)
         : Sep<SepTransform>(f.args()[0]->size() /* f must have only one arg, see following assert */),
           _sep(s), _ctc_inv(f, IntervalVector(f_inv.args()[0]->size())), _f(f), _f_inv(f_inv)
       {
@@ -38,7 +37,7 @@ namespace codac2
     protected:
 
       const Collection<SepBase> _sep;
-      const CtcInverse_<IntervalVector> _ctc_inv;
-      const AnalyticFunction<VectorOpValue> _f, _f_inv;
+      const CtcInverse<IntervalVector> _ctc_inv;
+      const AnalyticFunction<VectorType> _f, _f_inv;
   };
 }

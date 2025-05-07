@@ -14,4 +14,10 @@
 namespace codac2
 {
   using Vector = Eigen::Matrix<double,-1,1>;
+
+  inline std::ostream& operator<<(std::ostream& os, const Vector& x)
+  {
+    os << x.format(codac_vector_fmt());
+    return os;
+  }
 }

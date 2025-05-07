@@ -29,6 +29,12 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
     .def(py::self == py::self)
     .def(py::self != py::self)
 
+    .def("__eq__", [](const S& x1, const Eigen::Matrix<T,-1,-1>& x2)
+        {
+          return x1 == x2;
+        },
+      DOC_TO_BE_DEFINED)
+
     .def("__len__", [](const S& x)
         {
           return x.size();
@@ -160,7 +166,7 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
 
     pyclass
 
-      .def("block", [](S& x, Index_type i, Index_type j, Index_type p, Index_type q) -> Eigen::Block<S>
+      .def("block", [](S& x, Index_type i, Index_type j, Index_type p, Index_type q) -> Eigen::Matrix<T,-1,-1>
           {
             matlab::test_integer(i,j);
             matlab::test_integer(p,q);
@@ -180,6 +186,63 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
           {
             matlab::test_integer(i);
             return x.row(matlab::input_index(i)).eval();
+          },
+        DOC_TO_BE_DEFINED)
+
+      .def("set_block", [](S& x, Index_type i, Index_type j, Index_type p, Index_type q, const S& y)
+          {
+            matlab::test_integer(i,j);
+            matlab::test_integer(p,q);
+            x.block(matlab::input_index(i),matlab::input_index(j),matlab::input_index(p),matlab::input_index(q)) = y;
+          },
+        py::keep_alive<0,1>(),
+        DOC_TO_BE_DEFINED)
+
+      .def("set_block", [](S& x, Index_type i, Index_type j, Index_type p, Index_type q, const Eigen::Matrix<T,-1,1>& y)
+          {
+            matlab::test_integer(i,j);
+            matlab::test_integer(p,q);
+            x.block(matlab::input_index(i),matlab::input_index(j),matlab::input_index(p),matlab::input_index(q)) = y;
+          },
+        py::keep_alive<0,1>(),
+        DOC_TO_BE_DEFINED)
+
+      .def("set_block", [](S& x, Index_type i, Index_type j, Index_type p, Index_type q, const Eigen::Matrix<T,1,-1>& y)
+          {
+            matlab::test_integer(i,j);
+            matlab::test_integer(p,q);
+            x.block(matlab::input_index(i),matlab::input_index(j),matlab::input_index(p),matlab::input_index(q)) = y;
+          },
+        py::keep_alive<0,1>(),
+        DOC_TO_BE_DEFINED)
+
+      .def("set_col", [](S& x, Index_type i, const Eigen::Matrix<T,-1,1>& y)
+          {
+            matlab::test_integer(i);
+            x.col(matlab::input_index(i)) = y;
+          },
+        DOC_TO_BE_DEFINED)
+
+      .def("set_col", [](S& x, Index_type i, const Eigen::Matrix<T,-1,-1>& y)
+          {
+            assert_release(y.cols() == 1);
+            matlab::test_integer(i);
+            x.col(matlab::input_index(i)) = y;
+          },
+        DOC_TO_BE_DEFINED)
+
+      .def("set_row", [](S& x, Index_type i, const Eigen::Matrix<T,1,-1>& y)
+          {
+            matlab::test_integer(i);
+            x.row(matlab::input_index(i)) = y;
+          },
+        DOC_TO_BE_DEFINED)
+
+      .def("set_row", [](S& x, Index_type i, const Eigen::Matrix<T,-1,-1>& y)
+          {
+            assert_release(y.rows() == 1);
+            matlab::test_integer(i);
+            x.row(matlab::input_index(i)) = y;
           },
         DOC_TO_BE_DEFINED)
 
@@ -249,7 +312,24 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
     ;
   }
   
-  //S abs(const MatrixBase<S,T>& x)
   m.def("abs", [](const S& x) { return abs(x); },
     AUTO_ABS_CONST_EIGEN_MATRIXBASE_OTHERDERIVED_REF);
+  
+  if constexpr(std::is_same_v<T,double>)
+  {
+    m.def("floor", [](const S& x) -> S { return floor(x); },
+      AUTO_FLOOR_CONST_EIGEN_MATRIXBASE_OTHERDERIVED_REF);
+    
+    m.def("ceil", [](const S& x) -> S { return ceil(x); },
+      AUTO_CEIL_CONST_EIGEN_MATRIXBASE_OTHERDERIVED_REF);
+    
+    m.def("round", [](const S& x) -> S { return round(x); },
+      AUTO_ROUND_CONST_EIGEN_MATRIXBASE_OTHERDERIVED_REF);
+
+    pyclass.def("is_nan", [](const S& x)
+        {
+          return x.is_nan();
+        },
+      MATRIXBASE_ADDONS_BASE_BOOL_IS_NAN_CONST);
+  }
 }

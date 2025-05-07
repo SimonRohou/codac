@@ -1,8 +1,8 @@
 /** 
- *  Codac binding (core)
+ *  Codac binding (graphics)
  * ----------------------------------------------------------------------------
  *  \date       2024
- *  \author     Simon Rohou
+ *  \author     Simon Rohou, Maël Godard
  *  \copyright  Copyright 2024 Codac Team
  *  \license    GNU Lesser General Public License (LGPL)
  */
@@ -10,10 +10,13 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/operators.h>
 #include <pybind11/stl.h>
+#include <codac2_Paving.h>
+#include <codac2_Subpaving.h>
 #include <codac2_Figure2D.h>
+#include <codac2_Polygon.h>
 #include "codac2_py_Figure2D_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py):
 #include "codac2_py_matlab.h"
-#include <codac2_Paving.h>
+#include "codac2_py_cast.h"
 
 using namespace std;
 using namespace codac2;
@@ -65,6 +68,12 @@ void export_Figure2D(py::module& m)
       VOID_FIGURE2D_SET_AXES_CONST_FIGUREAXIS_REF_CONST_FIGUREAXIS_REF,
       "axis1"_a, "axis2"_a)
   
+    .def("i", &Figure2D::i,
+      CONST_INDEX_REF_FIGURE2D_I_CONST)
+  
+    .def("j", &Figure2D::j,
+      CONST_INDEX_REF_FIGURE2D_J_CONST)
+  
     .def("pos", &Figure2D::pos,
       CONST_VECTOR_REF_FIGURE2D_POS_CONST)
   
@@ -82,11 +91,17 @@ void export_Figure2D(py::module& m)
     .def("scaled_unit", &Figure2D::scaled_unit,
       DOUBLE_FIGURE2D_SCALED_UNIT_CONST)
   
+    .def("auto_scale", &Figure2D::auto_scale,
+      VOID_FIGURE2D_AUTO_SCALE)
+  
     .def("is_default", &Figure2D::is_default,
       BOOL_FIGURE2D_IS_DEFAULT_CONST)
   
     .def("set_as_default", &Figure2D::set_as_default,
       VOID_FIGURE2D_SET_AS_DEFAULT)
+  
+    .def("set_tdomain", &Figure2D::set_tdomain,
+      VOID_FIGURE2D_SET_TDOMAIN_CONST_INTERVAL_REF)
 
     // Geometric shapes
 
@@ -106,6 +121,18 @@ void export_Figure2D(py::module& m)
       VOID_FIGURE2D_DRAW_RING_CONST_VECTOR_REF_CONST_INTERVAL_REF_CONST_STYLEPROPERTIES_REF,
       "c"_a, "r"_a, "s"_a=StyleProperties())
 
+    .def("draw_line", (void(Figure2D::*)(const Vector&,const Vector&,const StyleProperties&))&Figure2D::draw_line,
+      VOID_FIGURE2D_DRAW_LINE_CONST_VECTOR_REF_CONST_VECTOR_REF_CONST_STYLEPROPERTIES_REF,
+      "p1"_a, "p2"_a, "s"_a=StyleProperties())
+
+    .def("draw_line", (void(Figure2D::*)(const Segment&,const StyleProperties&))&Figure2D::draw_line,
+      VOID_FIGURE2D_DRAW_LINE_CONST_SEGMENT_REF_CONST_STYLEPROPERTIES_REF,
+      "e"_a, "s"_a=StyleProperties())
+
+    .def("draw_arrow", &Figure2D::draw_arrow,
+      VOID_FIGURE2D_DRAW_ARROW_CONST_VECTOR_REF_CONST_VECTOR_REF_FLOAT_CONST_STYLEPROPERTIES_REF,
+      "p1"_a, "p2"_a, "tip_length"_a, "s"_a=StyleProperties())
+
     .def("draw_polyline", (void(Figure2D::*)(const std::vector<Vector>&,const StyleProperties&))&Figure2D::draw_polyline,
       VOID_FIGURE2D_DRAW_POLYLINE_CONST_VECTOR_VECTOR_REF_CONST_STYLEPROPERTIES_REF,
       "x"_a, "s"_a=StyleProperties())
@@ -114,17 +141,60 @@ void export_Figure2D(py::module& m)
       VOID_FIGURE2D_DRAW_POLYLINE_CONST_VECTOR_VECTOR_REF_FLOAT_CONST_STYLEPROPERTIES_REF,
       "x"_a, "r"_a, "s"_a=StyleProperties())
 
-    .def("draw_polygone", (void(Figure2D::*)(const std::vector<Vector>&,const StyleProperties&))&Figure2D::draw_polygone,
-      VOID_FIGURE2D_DRAW_POLYGONE_CONST_VECTOR_VECTOR_REF_CONST_STYLEPROPERTIES_REF,
+    .def("draw_polygon", (void(Figure2D::*)(const Polygon&,const StyleProperties&))&Figure2D::draw_polygon,
+      VOID_FIGURE2D_DRAW_POLYGON_CONST_POLYGON_REF_CONST_STYLEPROPERTIES_REF,
       "x"_a, "s"_a=StyleProperties())
+
+    .def("draw_parallelepiped", &Figure2D::draw_parallelepiped,
+      VOID_FIGURE2D_DRAW_PARALLELEPIPED_CONST_VECTOR_REF_CONST_MATRIX_REF_CONST_STYLEPROPERTIES_REF,
+      "z"_a, "A"_a, "s"_a=StyleProperties())
 
     .def("draw_pie", &Figure2D::draw_pie,
       VOID_FIGURE2D_DRAW_PIE_CONST_VECTOR_REF_CONST_INTERVAL_REF_CONST_INTERVAL_REF_CONST_STYLEPROPERTIES_REF,
       "c"_a, "r"_a, "theta"_a, "s"_a=StyleProperties())
 
     .def("draw_ellipse", &Figure2D::draw_ellipse,
-      STATIC_VOID_DEFAULTVIEW_DRAW_ELLIPSE_CONST_VECTOR_REF_CONST_VECTOR_REF_DOUBLE_CONST_STYLEPROPERTIES_REF,
+      VOID_FIGURE2D_DRAW_ELLIPSE_CONST_VECTOR_REF_CONST_VECTOR_REF_DOUBLE_CONST_STYLEPROPERTIES_REF,
       "c"_a, "ab"_a, "theta"_a, "s"_a=StyleProperties())
+
+    .def("draw_ellipsoid", &Figure2D::draw_ellipsoid,
+      VOID_FIGURE2D_DRAW_ELLIPSOID_CONST_ELLIPSOID_REF_CONST_STYLEPROPERTIES_REF,
+      "e"_a, "s"_a=StyleProperties())
+
+    .def("draw_trajectory", (void(Figure2D::*)(const SampledTraj<Vector>&,const StyleProperties&))&Figure2D::draw_trajectory,
+      VOID_FIGURE2D_DRAW_TRAJECTORY_CONST_SAMPLEDTRAJ_VECTOR_REF_CONST_STYLEPROPERTIES_REF,
+      "x"_a, "s"_a=StyleProperties())
+
+    .def("draw_trajectory", [](Figure2D& fig, const py::object& x, const StyleProperties& s)
+        {
+          if(!is_instance<AnalyticTraj<VectorType>>(x)) {
+            assert_release("draw_trajectory: invalid function type");
+          }
+
+          fig.draw_trajectory(cast<AnalyticTraj<VectorType>>(x), s);
+        },
+      VOID_FIGURE2D_DRAW_TRAJECTORY_CONST_ANALYTICTRAJ_VECTORTYPE_REF_CONST_STYLEPROPERTIES_REF,
+      "x"_a, "s"_a=StyleProperties())
+
+    .def("draw_trajectory", (void(Figure2D::*)(const SampledTraj<Vector>&,const ColorMap&))&Figure2D::draw_trajectory,
+      VOID_FIGURE2D_DRAW_TRAJECTORY_CONST_SAMPLEDTRAJ_VECTOR_REF_CONST_COLORMAP_REF,
+      "x"_a, "cmap"_a)
+
+    .def("draw_trajectory", [](Figure2D& fig, const py::object& x, const ColorMap& cmap)
+        {
+          if(!is_instance<AnalyticTraj<VectorType>>(x)) {
+            assert_release("draw_trajectory: invalid function type");
+          }
+
+          fig.draw_trajectory(cast<AnalyticTraj<VectorType>>(x), cmap);
+        },
+      VOID_FIGURE2D_DRAW_TRAJECTORY_CONST_ANALYTICTRAJ_VECTORTYPE_REF_CONST_COLORMAP_REF,
+      "x"_a, "cmap"_a)
+
+    .def("plot_trajectory", (void(Figure2D::*)(const SampledTraj<double>&,const StyleProperties&))&Figure2D::plot_trajectory,
+      VOID_FIGURE2D_PLOT_TRAJECTORY_CONST_SAMPLEDTRAJ_DOUBLE_REF_CONST_STYLEPROPERTIES_REF,
+      "x"_a, "s"_a=StyleProperties())
+
 
     // Robots
 
@@ -136,76 +206,164 @@ void export_Figure2D(py::module& m)
       VOID_FIGURE2D_DRAW_AUV_CONST_VECTOR_REF_FLOAT_CONST_STYLEPROPERTIES_REF,
       "x"_a, "size"_a, "s"_a=StyleProperties())
 
-  ;
-
-  py::class_<DefaultView> exported_default_view(m, "DefaultView", DEFAULTVIEW_MAIN);
-  exported_default_view
-  
-    .def_static("selected_fig", &DefaultView::selected_fig,
-      STATIC_SHARED_PTR_FIGURE2D_DEFAULTVIEW_SELECTED_FIG)
-  
-    .def_static("set", &DefaultView::set,
-      STATIC_VOID_DEFAULTVIEW_SET_SHARED_PTR_FIGURE2D)
-  
-    .def_static("set_axes", &DefaultView::set_axes,
-      STATIC_VOID_DEFAULTVIEW_SET_AXES_CONST_FIGUREAXIS_REF_CONST_FIGUREAXIS_REF)
-  
-    .def_static("set_window_properties", &DefaultView::set_window_properties,
-      STATIC_VOID_DEFAULTVIEW_SET_WINDOW_PROPERTIES_CONST_VECTOR_REF_CONST_VECTOR_REF)
-
-    // Geometric shapes
-
-    .def_static("draw_point", &DefaultView::draw_point,
-      STATIC_VOID_DEFAULTVIEW_DRAW_POINT_CONST_VECTOR_REF_CONST_STYLEPROPERTIES_REF,
-      "c"_a, "s"_a=StyleProperties())
-
-    .def_static("draw_box", &DefaultView::draw_box,
-      STATIC_VOID_DEFAULTVIEW_DRAW_BOX_CONST_INTERVALVECTOR_REF_CONST_STYLEPROPERTIES_REF,
-      "x"_a, "s"_a=StyleProperties())
-
-    .def_static("draw_circle", &DefaultView::draw_circle,
-      STATIC_VOID_DEFAULTVIEW_DRAW_CIRCLE_CONST_VECTOR_REF_DOUBLE_CONST_STYLEPROPERTIES_REF,
-      "c"_a, "r"_a, "s"_a=StyleProperties())
-
-    .def_static("draw_ring", &DefaultView::draw_ring,
-      STATIC_VOID_DEFAULTVIEW_DRAW_RING_CONST_VECTOR_REF_CONST_INTERVAL_REF_CONST_STYLEPROPERTIES_REF,
-      "c"_a, "r"_a, "s"_a=StyleProperties())
-
-    .def_static("draw_polyline", (void(*)(const std::vector<Vector>&,const StyleProperties&))&DefaultView::draw_polyline,
-      STATIC_VOID_DEFAULTVIEW_DRAW_POLYLINE_CONST_VECTOR_VECTOR_REF_CONST_STYLEPROPERTIES_REF,
-      "x"_a, "s"_a=StyleProperties())
-
-    .def_static("draw_polyline", (void(*)(const std::vector<Vector>&,float,const StyleProperties&))&DefaultView::draw_polyline,
-      STATIC_VOID_DEFAULTVIEW_DRAW_POLYLINE_CONST_VECTOR_VECTOR_REF_FLOAT_CONST_STYLEPROPERTIES_REF,
-      "x"_a, "r"_a, "s"_a=StyleProperties())
-
-    .def_static("draw_polygone", (void(*)(const std::vector<Vector>&,const StyleProperties&))&DefaultView::draw_polygone,
-      STATIC_VOID_DEFAULTVIEW_DRAW_POLYGONE_CONST_VECTOR_VECTOR_REF_CONST_STYLEPROPERTIES_REF,
-      "x"_a, "s"_a=StyleProperties())
-
-    .def_static("draw_pie", &DefaultView::draw_pie,
-      STATIC_VOID_DEFAULTVIEW_DRAW_PIE_CONST_VECTOR_REF_CONST_INTERVAL_REF_CONST_INTERVAL_REF_CONST_STYLEPROPERTIES_REF,
-      "c"_a, "r"_a, "theta"_a, "s"_a=StyleProperties())
-
-    // Robots
-
-    .def_static("draw_tank", &DefaultView::draw_tank,
-      STATIC_VOID_DEFAULTVIEW_DRAW_TANK_CONST_VECTOR_REF_FLOAT_CONST_STYLEPROPERTIES_REF,
-      "x"_a, "size"_a, "s"_a=StyleProperties())
-
-    .def_static("draw_AUV", &DefaultView::draw_AUV,
-      STATIC_VOID_DEFAULTVIEW_DRAW_AUV_CONST_VECTOR_REF_FLOAT_CONST_STYLEPROPERTIES_REF,
+    .def("draw_motor_boat", &Figure2D::draw_motor_boat,
+      VOID_FIGURE2D_DRAW_MOTOR_BOAT_CONST_VECTOR_REF_FLOAT_CONST_STYLEPROPERTIES_REF,
       "x"_a, "size"_a, "s"_a=StyleProperties())
 
     // Pavings
 
-    .def_static("draw_paving", (void(*)(const PavingOut&,const StyleProperties&,const StyleProperties&))&DefaultView::draw_paving,
-      STATIC_VOID_DEFAULTVIEW_DRAW_PAVING_CONST_PAVINGOUT_REF_CONST_STYLEPROPERTIES_REF_CONST_STYLEPROPERTIES_REF,
+    .def("draw_paving", (void(Figure2D::*)(const PavingOut&,const StyleProperties&,const StyleProperties&))&Figure2D::draw_paving,
+      VOID_FIGURE2D_DRAW_PAVING_CONST_PAVINGOUT_REF_CONST_STYLEPROPERTIES_REF_CONST_STYLEPROPERTIES_REF,
       "p"_a, "boundary_style"_a=StyleProperties::boundary(), "outside_style"_a=StyleProperties::outside())
 
-    .def_static("draw_paving", (void(*)(const PavingInOut&,const StyleProperties&,const StyleProperties&,const StyleProperties&))&DefaultView::draw_paving,
-      STATIC_VOID_DEFAULTVIEW_DRAW_PAVING_CONST_PAVINGINOUT_REF_CONST_STYLEPROPERTIES_REF_CONST_STYLEPROPERTIES_REF_CONST_STYLEPROPERTIES_REF,
+    .def("draw_paving", (void(Figure2D::*)(const PavingInOut&,const StyleProperties&,const StyleProperties&,const StyleProperties&))&Figure2D::draw_paving,
+      VOID_FIGURE2D_DRAW_PAVING_CONST_PAVINGINOUT_REF_CONST_STYLEPROPERTIES_REF_CONST_STYLEPROPERTIES_REF_CONST_STYLEPROPERTIES_REF,
       "p"_a, "boundary_style"_a=StyleProperties::boundary(), "outside_style"_a=StyleProperties::outside(), "inside_style"_a=StyleProperties::inside())
+
+    .def("draw_subpaving", (void(Figure2D::*)(const Subpaving<PavingOut>&,const StyleProperties&))&Figure2D::draw_subpaving,
+      VOID_FIGURE2D_DRAW_SUBPAVING_CONST_SUBPAVING_P_REF_CONST_STYLEPROPERTIES_REF,
+      "p"_a, "s"_a=StyleProperties())
+
+    .def("draw_subpaving", (void(Figure2D::*)(const Subpaving<PavingInOut>&,const StyleProperties&))&Figure2D::draw_subpaving,
+      VOID_FIGURE2D_DRAW_SUBPAVING_CONST_SUBPAVING_P_REF_CONST_STYLEPROPERTIES_REF,
+      "p"_a, "s"_a=StyleProperties())
+
+  ;
+
+  py::class_<DefaultFigure> exported_default_view(m, "DefaultFigure", DEFAULTFIGURE_MAIN);
+  exported_default_view
+  
+    .def_static("selected_fig", &DefaultFigure::selected_fig,
+      STATIC_SHARED_PTR_FIGURE2D_DEFAULTFIGURE_SELECTED_FIG)
+  
+    .def_static("set", &DefaultFigure::set,
+      STATIC_VOID_DEFAULTFIGURE_SET_SHARED_PTR_FIGURE2D)
+  
+    .def_static("set_axes", &DefaultFigure::set_axes,
+      STATIC_VOID_DEFAULTFIGURE_SET_AXES_CONST_FIGUREAXIS_REF_CONST_FIGUREAXIS_REF)
+  
+    .def_static("set_window_properties", &DefaultFigure::set_window_properties,
+      STATIC_VOID_DEFAULTFIGURE_SET_WINDOW_PROPERTIES_CONST_VECTOR_REF_CONST_VECTOR_REF)
+
+    // Geometric shapes
+
+    .def_static("draw_point", &DefaultFigure::draw_point,
+      STATIC_VOID_DEFAULTFIGURE_DRAW_POINT_CONST_VECTOR_REF_CONST_STYLEPROPERTIES_REF,
+      "c"_a, "s"_a=StyleProperties())
+
+    .def_static("draw_box", &DefaultFigure::draw_box,
+      STATIC_VOID_DEFAULTFIGURE_DRAW_BOX_CONST_INTERVALVECTOR_REF_CONST_STYLEPROPERTIES_REF,
+      "x"_a, "s"_a=StyleProperties())
+
+    .def_static("draw_circle", &DefaultFigure::draw_circle,
+      STATIC_VOID_DEFAULTFIGURE_DRAW_CIRCLE_CONST_VECTOR_REF_DOUBLE_CONST_STYLEPROPERTIES_REF,
+      "c"_a, "r"_a, "s"_a=StyleProperties())
+
+    .def_static("draw_ring", &DefaultFigure::draw_ring,
+      STATIC_VOID_DEFAULTFIGURE_DRAW_RING_CONST_VECTOR_REF_CONST_INTERVAL_REF_CONST_STYLEPROPERTIES_REF,
+      "c"_a, "r"_a, "s"_a=StyleProperties())
+
+    .def_static("draw_line", (void(*)(const Vector&,const Vector&,const StyleProperties&))&DefaultFigure::draw_line,
+      STATIC_VOID_DEFAULTFIGURE_DRAW_LINE_CONST_VECTOR_REF_CONST_VECTOR_REF_CONST_STYLEPROPERTIES_REF,
+      "p1"_a, "p2"_a, "s"_a=StyleProperties())
+
+    .def_static("draw_line", (void(*)(const Segment&,const StyleProperties&))&DefaultFigure::draw_line,
+      STATIC_VOID_DEFAULTFIGURE_DRAW_LINE_CONST_SEGMENT_REF_CONST_STYLEPROPERTIES_REF,
+      "e"_a, "s"_a=StyleProperties())
+
+    .def_static("draw_arrow", &DefaultFigure::draw_arrow,
+      STATIC_VOID_DEFAULTFIGURE_DRAW_ARROW_CONST_VECTOR_REF_CONST_VECTOR_REF_FLOAT_CONST_STYLEPROPERTIES_REF,
+      "p1"_a, "p2"_a, "tip_length"_a, "s"_a=StyleProperties())
+
+    .def_static("draw_polyline", (void(*)(const std::vector<Vector>&,const StyleProperties&))&DefaultFigure::draw_polyline,
+      STATIC_VOID_DEFAULTFIGURE_DRAW_POLYLINE_CONST_VECTOR_VECTOR_REF_CONST_STYLEPROPERTIES_REF,
+      "x"_a, "s"_a=StyleProperties())
+
+    .def_static("draw_polyline", (void(*)(const std::vector<Vector>&,float,const StyleProperties&))&DefaultFigure::draw_polyline,
+      STATIC_VOID_DEFAULTFIGURE_DRAW_POLYLINE_CONST_VECTOR_VECTOR_REF_FLOAT_CONST_STYLEPROPERTIES_REF,
+      "x"_a, "r"_a, "s"_a=StyleProperties())
+
+    .def_static("draw_polygon", (void(*)(const Polygon&,const StyleProperties&))&DefaultFigure::draw_polygon,
+      STATIC_VOID_DEFAULTFIGURE_DRAW_POLYGON_CONST_POLYGON_REF_CONST_STYLEPROPERTIES_REF,
+      "x"_a, "s"_a=StyleProperties())
+
+    .def_static("draw_parallelepiped", &DefaultFigure::draw_parallelepiped,
+      STATIC_VOID_DEFAULTFIGURE_DRAW_PARALLELEPIPED_CONST_VECTOR_REF_CONST_MATRIX_REF_CONST_STYLEPROPERTIES_REF,
+      "z"_a, "A"_a, "s"_a=StyleProperties())
+
+    .def_static("draw_pie", &DefaultFigure::draw_pie,
+      STATIC_VOID_DEFAULTFIGURE_DRAW_PIE_CONST_VECTOR_REF_CONST_INTERVAL_REF_CONST_INTERVAL_REF_CONST_STYLEPROPERTIES_REF,
+      "c"_a, "r"_a, "theta"_a, "s"_a=StyleProperties())
+
+    .def_static("draw_ellipse", &DefaultFigure::draw_ellipse,
+      STATIC_VOID_DEFAULTFIGURE_DRAW_ELLIPSE_CONST_VECTOR_REF_CONST_VECTOR_REF_DOUBLE_CONST_STYLEPROPERTIES_REF,
+      "c"_a, "ab"_a, "theta"_a, "s"_a=StyleProperties())
+
+    .def_static("draw_ellipsoid", &DefaultFigure::draw_ellipsoid,
+      STATIC_VOID_DEFAULTFIGURE_DRAW_ELLIPSOID_CONST_ELLIPSOID_REF_CONST_STYLEPROPERTIES_REF,
+      "e"_a, "s"_a=StyleProperties())
+    
+    .def_static("draw_trajectory", (void(*)(const SampledTraj<Vector>&,const StyleProperties&))&DefaultFigure::draw_trajectory,
+      STATIC_VOID_DEFAULTFIGURE_DRAW_TRAJECTORY_CONST_SAMPLEDTRAJ_VECTOR_REF_CONST_STYLEPROPERTIES_REF,
+      "x"_a, "s"_a=StyleProperties())
+
+    .def_static("draw_trajectory", [](const py::object& x, const StyleProperties& s)
+        {
+          if(!is_instance<AnalyticTraj<VectorType>>(x)) {
+            assert_release("draw_trajectory: invalid function type");
+          }
+
+          DefaultFigure::draw_trajectory(cast<AnalyticTraj<VectorType>>(x), s);
+        },
+      STATIC_VOID_DEFAULTFIGURE_DRAW_TRAJECTORY_CONST_ANALYTICTRAJ_VECTORTYPE_REF_CONST_STYLEPROPERTIES_REF,
+      "x"_a, "s"_a=StyleProperties())
+
+    .def_static("draw_trajectory", (void(*)(const SampledTraj<Vector>&,const ColorMap&))&DefaultFigure::draw_trajectory,
+      STATIC_VOID_DEFAULTFIGURE_DRAW_TRAJECTORY_CONST_SAMPLEDTRAJ_VECTOR_REF_CONST_COLORMAP_REF,
+      "x"_a, "cmap"_a)
+
+    .def_static("draw_trajectory", [](const py::object& x, const ColorMap& cmap)
+        {
+          if(!is_instance<AnalyticTraj<VectorType>>(x)) {
+            assert_release("draw_trajectory: invalid function type");
+          }
+
+          DefaultFigure::draw_trajectory(cast<AnalyticTraj<VectorType>>(x), cmap);
+        },
+      STATIC_VOID_DEFAULTFIGURE_DRAW_TRAJECTORY_CONST_ANALYTICTRAJ_VECTORTYPE_REF_CONST_COLORMAP_REF,
+      "x"_a, "cmap"_a)
+
+    // Robots
+
+    .def_static("draw_tank", &DefaultFigure::draw_tank,
+      STATIC_VOID_DEFAULTFIGURE_DRAW_TANK_CONST_VECTOR_REF_FLOAT_CONST_STYLEPROPERTIES_REF,
+      "x"_a, "size"_a, "s"_a=StyleProperties())
+
+    .def_static("draw_AUV", &DefaultFigure::draw_AUV,
+      STATIC_VOID_DEFAULTFIGURE_DRAW_AUV_CONST_VECTOR_REF_FLOAT_CONST_STYLEPROPERTIES_REF,
+      "x"_a, "size"_a, "s"_a=StyleProperties())
+
+    .def_static("draw_motor_boat", &DefaultFigure::draw_motor_boat,
+      STATIC_VOID_DEFAULTFIGURE_DRAW_MOTOR_BOAT_CONST_VECTOR_REF_FLOAT_CONST_STYLEPROPERTIES_REF,
+      "x"_a, "size"_a, "s"_a=StyleProperties())
+
+    // Pavings
+
+    .def_static("draw_paving", (void(*)(const PavingOut&,const StyleProperties&,const StyleProperties&))&DefaultFigure::draw_paving,
+      STATIC_VOID_DEFAULTFIGURE_DRAW_PAVING_CONST_PAVINGOUT_REF_CONST_STYLEPROPERTIES_REF_CONST_STYLEPROPERTIES_REF,
+      "p"_a, "boundary_style"_a=StyleProperties::boundary(), "outside_style"_a=StyleProperties::outside())
+
+    .def_static("draw_paving", (void(*)(const PavingInOut&,const StyleProperties&,const StyleProperties&,const StyleProperties&))&DefaultFigure::draw_paving,
+      STATIC_VOID_DEFAULTFIGURE_DRAW_PAVING_CONST_PAVINGINOUT_REF_CONST_STYLEPROPERTIES_REF_CONST_STYLEPROPERTIES_REF_CONST_STYLEPROPERTIES_REF,
+      "p"_a, "boundary_style"_a=StyleProperties::boundary(), "outside_style"_a=StyleProperties::outside(), "inside_style"_a=StyleProperties::inside())
+
+    .def_static("draw_subpaving", (void(*)(const Subpaving<PavingOut>&,const StyleProperties&))&DefaultFigure::draw_subpaving,
+      STATIC_VOID_DEFAULTFIGURE_DRAW_SUBPAVING_CONST_SUBPAVING_P_REF_CONST_STYLEPROPERTIES_REF,
+      "p"_a, "s"_a=StyleProperties())
+
+    .def_static("draw_subpaving", (void(*)(const Subpaving<PavingInOut>&,const StyleProperties&))&DefaultFigure::draw_subpaving,
+      STATIC_VOID_DEFAULTFIGURE_DRAW_SUBPAVING_CONST_SUBPAVING_P_REF_CONST_STYLEPROPERTIES_REF,
+      "p"_a, "s"_a=StyleProperties())
 
   ;
 }

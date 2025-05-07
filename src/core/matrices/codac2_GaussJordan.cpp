@@ -2,11 +2,12 @@
  *  codac2_GaussJordan.cpp
  * ----------------------------------------------------------------------------
  *  \date       2024
- *  \author     Simon Rohou
+ *  \author     Luc Jaulin, Simon Rohou, Damien Massé
  *  \copyright  Copyright 2024 Codac Team
  *  \license    GNU Lesser General Public License (LGPL)
  */
 
+#include <iostream>
 #include "codac2_GaussJordan.h"
 
 using namespace std;
@@ -40,17 +41,18 @@ namespace codac2
 
   Matrix gauss_jordan(const Matrix& A)
   {
-    Index n = A.rows();//, m = A.cols();
+    Index n = A.rows(), m = A.cols();
     Eigen::FullPivLU<Matrix> lu(A);
 
     Matrix L = Matrix::Identity(n,n);
-    //if(std::pow(L.determinant(),2) < 1e-5)
-    //{
-    //  cout << "[Matrix gauss_jordan(const Matrix& A)] -> eye Matrix" << endl;
-    //  return Matrix::eye(n,n);
-    //}
+    if(std::pow(L.determinant(),2) < 1e-5)
+    {
+      cout << "[Matrix gauss_jordan(const Matrix& A)] -> eye Matrix" << endl;
+      return Matrix::eye(n,n);
+    }
 
-    L.block(0,0,n,n).triangularView<Eigen::StrictlyLower>() = lu.matrixLU();
+    L.block(0,0,n,std::min(m,n)).triangularView<Eigen::StrictlyLower>() = 
+        lu.matrixLU().block(0,0,n,std::min(m,n));
 
     Matrix P = lu.permutationP();
     Matrix U = lu.matrixLU().triangularView<Eigen::Upper>();
