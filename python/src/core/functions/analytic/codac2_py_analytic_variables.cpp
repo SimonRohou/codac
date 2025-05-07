@@ -102,21 +102,18 @@ void export_VectorVar(py::module& m)
       "n"_a, "name"_a = "?")
 
     .def("size", &VectorVar::size,
-      INDEX_VECTORVAR_SIZE_CONST);
-
-  if(FOR_MATLAB)
-    exported.def("__call__", [](const VectorVar& v, Index_type i) -> ScalarExpr
+      INDEX_VECTORVAR_SIZE_CONST)
+    
+    .def(
+        #if FOR_MATLAB
+          "__call__"
+        #else
+          "__getitem__"
+        #endif
+        , [](const VectorVar& v, Index_type i) -> ScalarExpr
       {
         return get_item(v, i);
-      }, ANALYTICEXPRWRAPPER_SCALARTYPE_VECTORVAR_OPERATORCOMPO_INDEX_CONST);
-
-  else
-    exported.def("__getitem__", [](const VectorVar& v, Index_type i) -> ScalarExpr
-      {
-        return get_item(v, i);
-      }, ANALYTICEXPRWRAPPER_SCALARTYPE_VECTORVAR_OPERATORCOMPO_INDEX_CONST);
-
-  exported
+      }, ANALYTICEXPRWRAPPER_SCALARTYPE_VECTORVAR_OPERATORCOMPO_INDEX_CONST)
 
     .def("subvector", [](const VectorVar& v, Index_type i, Index_type j) -> VectorExpr
       {

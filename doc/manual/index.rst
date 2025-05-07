@@ -103,24 +103,25 @@ The following code allows to compute the set of vectors :math:`\mathbf{x}\in\mat
   
   .. code-tab:: py
 
-    x = VectorVar(2)
-    f = AnalyticFunction([x], x[0]*cos(x[0]-x[1])+x[1])
-    sep = SepInverse(f, [-oo,0])
-    draw_while_paving([[-10,10],[-10,10]], sep, 0.004)
+   x = VectorVar(2)
+   f = AnalyticFunction([x], x[0]*cos(x[0]-x[1])+x[1])
+   sep = SepInverse(f, [-oo,0])
+   draw_while_paving([[-10,10],[-10,10]], sep, 0.004)
 
   .. code-tab:: c++
 
-    VectorVar x(2);
-    AnalyticFunction f({x}, x[0]*cos(x[0]-x[1])+x[1]);
-    SepInverse sep(f, {-oo,0});
-    draw_while_paving({{-10,10},{-10,10}}, sep, 0.1);
+   VectorVar x(2);
+   AnalyticFunction f({x}, x[0]*cos(x[0]-x[1])+x[1]);
+   SepInverse sep(f, {-oo,0});
+   draw_while_paving({{-10,10},{-10,10}}, sep, 0.1);
 
   .. code-tab:: matlab
 
-    x = VectorVar(2);
-    f = AnalyticFunction({x}, x(0)*cos(x(0)-x(1))+x(1));
-    sep = SepInverse(f, {-oo,0});
-    draw_while_paving(IntervalVector({{-10,10},{-10,10}}), sep, 0.1);
+   x = VectorVar(2);
+   f = AnalyticFunction({x}, x(1)*cos(x(1)-x(2))+x(2));
+   sep = SepInverse(f, Interval(-oo,0));
+   draw_while_paving(IntervalVector({{-10,10},{-10,10}}), sep, 0.1);
+
 
 .. figure:: manual/example_ineq.png
   :width: 400px
