@@ -32,6 +32,7 @@
 #include "codac2_py_cross_prod_docs.h"
 #include "codac2_py_det_docs.h"
 #include "codac2_py_exp_docs.h"
+#include "codac2_py_flatten_docs.h"
 #include "codac2_py_floor_docs.h"
 #include "codac2_py_log_docs.h"
 #include "codac2_py_mat_docs.h"
@@ -47,6 +48,7 @@
 #include "codac2_py_subvector_docs.h"
 #include "codac2_py_tan_docs.h"
 #include "codac2_py_tanh_docs.h"
+#include "codac2_py_transpose_docs.h"
 #include "codac2_py_vec_docs.h"
 
 using namespace std;
@@ -410,6 +412,22 @@ void export_operators(py::module& m)
     SCALAREXPR_FLOOR_CONST_SCALAREXPR_REF,
     "x1"_a);
 
+  py::class_<FlattenOp>(m, "FlattenOp")
+    .def(py::init<>()) // for using static methods in Matlab
+    .def_static("fwd", (IntervalVector(*)(const IntervalMatrix&)) 
+		&FlattenOp::fwd,
+      STATIC_INTERVALVECTOR_FLATTENOP_FWD_CONST_INTERVALMATRIX_REF,
+      "x1"_a)
+    .def_static("bwd", (void(*)(const IntervalVector&,IntervalMatrix&))
+		 &FlattenOp::bwd,
+      STATIC_VOID_FLATTENOP_BWD_CONST_INTERVALVECTOR_REF_INTERVALMATRIX_REF, 
+      "y"_a, "x1"_a)
+  ;
+
+  m.def("flatten", [](const MatrixExpr& e1) { return flatten(e1); },
+    VECTOREXPR_FLATTEN_CONST_MATRIXEXPR_REF,
+    "x1"_a);
+
   py::class_<LogOp>(m, "LogOp")
     .def(py::init<>()) // for using static methods in Matlab
     .def_static("fwd", (Interval(*)(const Interval&)) &LogOp::fwd,
@@ -648,6 +666,22 @@ void export_operators(py::module& m)
 
   m.def("tanh", [](const ScalarExpr& e1) { return tanh(e1); },
     SCALAREXPR_TANH_CONST_SCALAREXPR_REF,
+    "x1"_a);
+
+  py::class_<TransposeOp>(m, "TransposeOp")
+    .def(py::init<>()) // for using static methods in Matlab
+    .def_static("fwd", (IntervalMatrix(*)(const IntervalMatrix&)) 
+		&TransposeOp::fwd,
+      STATIC_INTERVALMATRIX_TRANSPOSEOP_FWD_CONST_INTERVALMATRIX_REF,
+      "x1"_a)
+    .def_static("bwd", (void(*)(const IntervalMatrix&,IntervalMatrix&))
+		 &TransposeOp::bwd,
+      STATIC_VOID_TRANSPOSEOP_BWD_CONST_INTERVALMATRIX_REF_INTERVALMATRIX_REF,
+      "y"_a, "x1"_a)
+  ;
+
+  m.def("transpose", [](const MatrixExpr& e1) { return transpose(e1); },
+    MATRIXEXPR_TRANSPOSE_CONST_MATRIXEXPR_REF,
     "x1"_a);
 
   py::class_<VectorOp>(m, "VectorOp")
