@@ -10,6 +10,7 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_Ctc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcAction.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcAction.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcBinaryImage.h
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcCartProd.h
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcConstell.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcConstell.h
@@ -220,8 +221,11 @@
 
     ${CMAKE_CURRENT_SOURCE_DIR}/tools/codac2_Approx.h
     ${CMAKE_CURRENT_SOURCE_DIR}/tools/codac2_assert.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/tools/codac2_BinaryImage.h
     ${CMAKE_CURRENT_SOURCE_DIR}/tools/codac2_Collection.h
     ${CMAKE_CURRENT_SOURCE_DIR}/tools/codac2_fixpoint.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/tools/codac2_Grid.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/tools/codac2_Grid.h
     ${CMAKE_CURRENT_SOURCE_DIR}/tools/codac2_Index.h
     ${CMAKE_CURRENT_SOURCE_DIR}/tools/codac2_math.h
     ${CMAKE_CURRENT_SOURCE_DIR}/tools/codac2_object_file_format.cpp
