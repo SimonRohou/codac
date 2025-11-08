@@ -72,8 +72,8 @@ Available line styles are:
 
   .. code-tab:: c++
 
-    fig.draw_box({{2.2,2.5},{2.2,2.5}}, StyleProperties(Color.red(), "..", "layer1")); // Red edge, dotted line, line width of 0.1 and layer1
-    // fig.draw_box({{2.2,2.5},{2.2,2.5}}, {Color.red(), "..", "layer1", "0.1"}); //equivalent
+    fig.draw_box({{2.2,2.5},{2.2,2.5}}, StyleProperties(Color::red(), "..", "layer1")); // Red edge, dotted line, line width of 0.1 and layer1
+    // fig.draw_box({{2.2,2.5},{2.2,2.5}}, {Color::red(), "..", "layer1", "0.1"}); //equivalent
 
 Colors
 ------
@@ -196,6 +196,20 @@ Color maps are used to convert a scalar value (between 0 and 1) to a color. The 
 These five color maps are displayed below:
 
 .. figure:: img/colormaps.png
+
+A paramater ``alpha`` can be passed to the predefined color maps to set the opacity of the colors (between 0 and 1). The default value is 1 (full opacity).
+
+.. tabs::
+
+  .. code-tab:: py
+
+    # Create a haxby color map with 50% opacity
+    cmap = ColorMap.haxby(0.5)
+
+  .. code-tab:: c++
+
+    // Create a haxby color map with 50% opacity
+    ColorMap cmap = ColorMap::haxby(0.5);
 
 The method ``color()`` is used to get the color corresponding to a scalar value. The argument is a float between 0 and 1.
 

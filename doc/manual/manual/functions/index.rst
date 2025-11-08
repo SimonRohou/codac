@@ -7,4 +7,5 @@ Inclusion functions
 
    analytic/analytic_functions.rst
    analytic/analytic_operators.rst
+   parallelepiped/parallelepiped_eval.rst
    .. Set-membership functions

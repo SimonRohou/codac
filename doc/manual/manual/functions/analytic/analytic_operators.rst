@@ -139,6 +139,12 @@ When operators are available for operations 2--3, then an ``AnalyticFunction`` c
 
 .. |MatrixOp| replace:: :raw-html:`<a href="https://github.com/codac-team/codac/blob/codac2/src/core/operators/codac2_mat.h"><code class="docutils literal notranslate"><span class="pre">MatrixOp</span></code></a>`
 
+.. |OctaSymOp| replace:: :raw-html:`<a href="https://github.com/codac-team/codac/blob/codac2/src/core/actions/codac2_OctaSym_operator.h"><code class="docutils literal notranslate"><span class="pre">OctaSymOp</span></code></a>`
+
+.. |TrajOp| replace:: :raw-html:`<a href="https://github.com/codac-team/codac/blob/codac2/src/core/trajectory/codac2_Traj_operator.h"><code class="docutils literal notranslate"><span class="pre">TrajectoryOp</span></code></a>`
+
+.. |TubeOp| replace:: :raw-html:`<a href="https://github.com/codac-team/codac/blob/codac2/src/core/domains/tube/codac2_Tube_operator.h"><code class="docutils literal notranslate"><span class="pre">TubeOp</span></code></a>`
+
 Only the :bg-ok:`✓` operators are supported at the moment.
 If you notice any mathematical operators missing from the list below, feel free to contribute to the library. You can submit your suggestions or pull requests on the `GitHub repository of Codac <https://github.com/codac-team/codac>`_.
 
@@ -266,15 +272,51 @@ If you notice any mathematical operators missing from the list below, feel free 
   +-----------------------------------------------------+----------------------+---------------+-------------------------------------+--------+--------+-------+------------+
   | :math:`\left(\mathbf{x}_1,\mathbf{x}_2,\dots\right)`| ``mat(x1,x2,...)``   | |MatrixOp|    | ``x1``, ``...``: vector             ||okk|   ||okk|   ||okk|  ||nok|       |
   +-----------------------------------------------------+----------------------+---------------+-------------------------------------+--------+--------+-------+------------+
+  | :math:`\sigma(\mathbf{x})`                          | ``s(x)``             | |OctaSymOp|   | ``s``: action, ``x``: vector        ||okk|   ||okk|   ||okk|  ||okk|       |
+  +-----------------------------------------------------+----------------------+---------------+-------------------------------------+--------+--------+-------+------------+
+  | :bg-title:`Temporal operations`                                                                                                                                         |
+  +-----------------------------------------------------+----------------------+---------------+-------------------------------------+--------+--------+-------+------------+
+  | :math:`\mathbf{x}(t)`                               | ``x(t)``             | |TrajOp|      | ``x``: trajectory, ``t``: scalar    ||okk|   ||nok|   ||nok|  ||nok|       |
+  +-----------------------------------------------------+----------------------+---------------+-------------------------------------+--------+--------+-------+------------+
+  | :math:`[\mathbf{x}](t)`                             | ``x(t)``             | |TubeOp|      | ``x``: tube, ``t``: scalar          ||okk|   ||nok|   ||nok|  ||nok|       |
+  +-----------------------------------------------------+----------------------+---------------+-------------------------------------+--------+--------+-------+------------+
 
 | Note: the operator :math:`\det` is only available for :math:`1\times 1` and :math:`2\times 2` matrices.
 | Note: the operator :math:`\bmod` is only available for real periods (double precision), interval periods are not yet supported.
 
 
-Expression involving a non-supported centered-form operation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Expressions involving a non-supported centered-form operation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If an operator, for which the centered form is not defined, is involved in an expression, then this expression cannot be evaluated using the centered form (calculation is disabled for the entire operation). A simple natural evaluation will then be computed.
+
+
+Expressions involving a temporal operator
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Temporal operations for involving trajectories or tubes in analytic expressions require an intermediate operation:
+
+.. tabs::
+  
+  .. code-tab:: py
+
+    x = # some sampled trajectory...
+    g = x.as_function() # intermediate operation
+
+    t = ScalarVar()
+    h = AnalyticFunction(
+      [t], g(t)
+    )
+
+  .. code-tab:: c++
+
+    x = // some sampled trajectory...
+    g = x.as_function(); // intermediate operation
+
+    ScalarVar t;
+    AnalyticFunction h(
+      {t}, g(t)
+    );
 
 
 Direct use of operators

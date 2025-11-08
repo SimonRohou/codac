@@ -42,6 +42,7 @@ void export_CtcCtcBoundary(py::module& m, py::class_<CtcBase<IntervalVector>,pyC
 void export_CtcDeriv(py::module& m);
 void export_CtcDist(py::module& m, py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector>& ctc);
 void export_CtcEmpty(py::module& m, py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector>& ctc);
+void export_CtcEval(py::module& m);
 void export_CtcFixpoint(py::module& m, py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector>& ctc);
 void export_CtcIdentity(py::module& m, py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector>& ctc);
 void export_CtcInnerOuter(py::module& m, py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector>& ctc);
@@ -69,7 +70,10 @@ py::class_<IntervalMatrix> export_IntervalMatrix(py::module& m);
 void export_Paving(py::module& m);
 void export_PavingNode(py::module& m);
 void export_Subpaving(py::module& m);
+void export_Zonotope(py::module& m);
+void export_Parallelepiped(py::module& m);
 void export_TDomain(py::module& m);
+void export_TimePropag(py::module& m);
 void export_TSlice(py::module& m);
 void export_TubeBase(py::module& m);
 void export_tube_cart_prod(py::module& m);
@@ -117,9 +121,13 @@ void export_operators(py::module& m);
 // paver
 void export_pave(py::module& m);
 
+// peibos
+void export_peibos(py::module& m);
+
 // separators
 py::class_<SepBase,pySep> export_Sep(py::module& m);
 void export_SepAction(py::module& m, py::class_<SepBase,pySep>& pysep);
+void export_SepCartPolar(py::module& m, py::class_<SepBase,pySep>& pysep);
 void export_SepCartProd(py::module& m, py::class_<SepBase,pySep>& pysep);
 void export_SepChi(py::module& m, py::class_<SepBase,pySep>& pysep);
 void export_SepCross(py::module& m, py::class_<SepBase,pySep>& pysep);
@@ -139,6 +147,7 @@ void export_Approx(py::module& m);
 void export_RobotSimulator(py::module& m);
 void export_serialization(py::module& m);
 void export_transformations(py::module& m);
+void export_trunc(py::module& m);
 
 // trajectory
 void export_AnalyticTraj(py::module& m);
@@ -150,6 +159,8 @@ PYBIND11_MODULE(_core, m)
   m.doc() = string(FOR_MATLAB ? "Matlab" : "Python") + " binding of Codac (core)";
   m.attr("oo") = oo;
   m.attr("PI") = PI;
+  
+  export_TimePropag(m);
 
   // 3rd
 
@@ -166,6 +177,7 @@ PYBIND11_MODULE(_core, m)
   export_CtcDeriv(m);
   export_CtcDist(m, py_ctc_iv);
   export_CtcEmpty(m, py_ctc_iv);
+  export_CtcEval(m);
   export_CtcFixpoint(m, py_ctc_iv);
   export_CtcIdentity(m, py_ctc_iv);
   export_CtcInnerOuter(m, py_ctc_iv);
@@ -229,12 +241,15 @@ PYBIND11_MODULE(_core, m)
   export_PavingNode(m);
   export_Subpaving(m);
 
+  export_Zonotope(m);
+  export_Parallelepiped(m);
+
   // function
   py::enum_<EvalMode>(m, "EvalMode")
     .value("NATURAL", EvalMode::NATURAL)
     .value("CENTERED", EvalMode::CENTERED)
     .value("DEFAULT", EvalMode::DEFAULT)
-    .def(py::self | py::self, EVALMODE_OPERATOROR_EVALMODE_EVALMODE)
+    .def(py::self | py::self, EVALMODE_OPERATORUNION_EVALMODE_EVALMODE)
   ;
 
   #if FOR_MATLAB // Python enums do not seem to be callable in matlab
@@ -266,9 +281,13 @@ PYBIND11_MODULE(_core, m)
   // paver
   export_pave(m);
 
+  // peibos
+  export_peibos(m);
+
   // separators
   auto py_sep = export_Sep(m);
   export_SepAction(m,py_sep);
+  export_SepCartPolar(m,py_sep);
   export_SepCartProd(m,py_sep);
   export_SepChi(m,py_sep);
   export_SepCross(m,py_sep);
@@ -287,6 +306,7 @@ PYBIND11_MODULE(_core, m)
   export_Approx(m);
   export_serialization(m);
   export_transformations(m);
+  export_trunc(m);
   export_RobotSimulator(m);
 
   // trajectory

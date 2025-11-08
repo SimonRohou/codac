@@ -36,6 +36,20 @@ namespace codac2
     return x.size();
   }
 
+  template<typename C>
+    requires is_ctc_v<C>
+  inline Index size_of(const std::shared_ptr<C>& x)
+  {
+    return x->size();
+  }
+
+  template<typename S>
+    requires is_sep_v<S>
+  inline Index size_of(const std::shared_ptr<S>& x)
+  {
+    return x->size();
+  }
+
   template<typename T1, typename T2>
   inline bool same_size(const T1& x1, const T2& x2)
   {
@@ -68,20 +82,6 @@ namespace codac2
     }
   }
 
-  template<typename C>
-    requires is_ctc_v<C>
-  inline Index size_of(const std::shared_ptr<C>& x)
-  {
-    return x->size();
-  }
-
-  template<typename S>
-    requires is_sep_v<S>
-  inline Index size_of(const std::shared_ptr<S>& x)
-  {
-    return x->size();
-  }
-
   template<int R,int C>
   inline auto vectorVector_to_vectorIntervalVector(const std::vector<Mat<double,R,C>>& x)
   {
@@ -95,7 +95,7 @@ namespace codac2
   static inline std::array<float, N> to_array(std::initializer_list<float> list)
   {
     assert(list.size() == N);
-    std::array<float, N> arr;
+    std::array<float, N> arr{};
     std::copy(list.begin(), list.end(), arr.begin());
     return arr;
   }

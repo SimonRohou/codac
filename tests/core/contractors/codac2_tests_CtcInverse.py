@@ -20,6 +20,13 @@ class TestCtcInverse(unittest.TestCase):
 
   def test_CtcInverse_1(self):
 
+    x = VectorVar(1)
+    f = AnalyticFunction([x], x[0]-42)
+    c = CtcInverse(f, Interval(0.))
+    a = IntervalVector(1)
+    c.contract(a)
+    self.assertTrue(a == IntervalVector([[42]]))
+
     x = VectorVar(2)
     f = AnalyticFunction([x], x[0]-x[1])
     c = CtcInverse(f, 0)
@@ -147,7 +154,7 @@ class TestCtcInverse(unittest.TestCase):
 
     ctc = CtcInverse(h, [0,0,0])
     x0 = [[0,1],[0,1],[0.05,0.18],[0.05,0.18]]
-    #draw_while_paving(x0, ctc, 0.001)
+    #DefaultFigure.pave(x0, ctc, 0.001)
     p = pave(x0, ctc, 0.01)
     cs = p.connected_subsets()
     self.assertTrue(len(cs) == 1)

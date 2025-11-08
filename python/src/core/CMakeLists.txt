@@ -20,6 +20,7 @@
     contractors/codac2_py_CtcDeriv.cpp
     contractors/codac2_py_CtcDist.cpp
     contractors/codac2_py_CtcEmpty.cpp
+    contractors/codac2_py_CtcEval.cpp
     contractors/codac2_py_CtcFixpoint.cpp
     contractors/codac2_py_CtcInnerOuter.cpp
     contractors/codac2_py_CtcIdentity.cpp
@@ -49,9 +50,12 @@
     domains/paving/codac2_py_Paving.cpp
     domains/paving/codac2_py_PavingNode.cpp
     domains/paving/codac2_py_Subpaving.cpp
+    domains/zonotope/codac2_py_Parallelepiped.cpp
+    domains/zonotope/codac2_py_Zonotope.cpp
     domains/tube/codac2_py_Slice.h
     domains/tube/codac2_py_SlicedTube.h
     domains/tube/codac2_py_TDomain.cpp
+    domains/tube/codac2_py_TimePropag.cpp
     domains/tube/codac2_py_TSlice.cpp
     domains/tube/codac2_py_TubeBase.cpp
     domains/tube/codac2_py_tube_cart_prod.cpp
@@ -84,9 +88,12 @@
 
     paver/codac2_py_pave.cpp
 
+    peibos/codac2_py_peibos.cpp
+
     separators/codac2_py_Sep.cpp
     separators/codac2_py_Sep.h
     separators/codac2_py_SepAction.cpp
+    separators/codac2_py_SepCartPolar.cpp
     separators/codac2_py_SepCartProd.cpp
     separators/codac2_py_SepChi.cpp
     separators/codac2_py_SepCross.cpp
@@ -105,6 +112,7 @@
     tools/codac2_py_RobotSimulator.cpp
     tools/codac2_py_serialization.cpp
     tools/codac2_py_transformations.cpp
+    tools/codac2_py_trunc.cpp
 
     trajectory/codac2_py_AnalyticTraj.cpp
     trajectory/codac2_py_SampledTraj.cpp
@@ -121,12 +129,14 @@
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/domains/
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/domains/interval/
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/domains/paving/
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/domains/zonotope/
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/domains/tube/
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/functions/
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/functions/analytic/
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/graphics/
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/matrices/
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/paver/
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/peibos/
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/separators/
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/tools/
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/trajectory/

@@ -33,10 +33,12 @@ int main(){
      //      \in cent.mid + [-1,1] * T.rad*df.mid + [-1,1]*cent.rad + 
      //        [-1,1] * T.rad*df.rad
        Vector inflationbox = cent.rad() + T.rad()*df.rad();
-       std::vector<Vector> v
-  	{ (T.rad()*df.mid()),
-	  { inflationbox[0], 0.0 }, { 0.0, inflationbox[1] } };
-       fig4.draw_zonotope(cent.mid(),v,{Color::red(),Color::yellow(0.1)});
+      Matrix v (2,3);
+      v << (T.rad()*df.mid()), Vector({ inflationbox[0], 0.0 }), Vector({ 0.0, inflationbox[1] });
+       fig4.draw_zonotope({cent.mid(),v},{{Color::red(),Color::yellow(0.1)},"zonotopes"});
+
+      Parallelepiped p = f1.parallelepiped_eval(T);
+      fig4.draw_parallelepiped(p,{{Color::black(),Color::green(0.1)},"parallelepipeds"});
      }
      time = time+dt;
   }

@@ -105,7 +105,7 @@ namespace codac2 {
         T.col(1) = u/u.norm();
 
         auto TTG = T.transpose() * this->G;
-        Eigen::BDCSVD<Matrix> bdcsvd(TTG);
+        Eigen::BDCSVD<Matrix,Eigen::ComputeFullU> bdcsvd(TTG);
         Matrix U = bdcsvd.matrixU();
         Matrix E = bdcsvd.singularValues().asDiagonal();
 
@@ -194,7 +194,7 @@ namespace codac2 {
             assert(q.size() == G.rows());
 
             // SVD decomposition of JG = U*E*V.T
-            Eigen::BDCSVD<Matrix> bdcsvd(JG);
+            Eigen::BDCSVD<Matrix,Eigen::ComputeFullU> bdcsvd(JG);
             IntervalMatrix U_ = bdcsvd.matrixU().template cast<Interval>(); // which is also the right part
             Vector Sv = bdcsvd.singularValues(); // vectors of singular values
 

@@ -15,13 +15,30 @@
 #include <codac2_Subpaving.h>
 #include <codac2_CtcWrapper.h>
 #include <codac2_SepInverse.h>
-#include <codac2_drawwhilepaving.h>
 
 using namespace std;
 using namespace codac2;
 
 TEST_CASE("CtcInverse")
 {
+  {
+    ScalarVar x;
+    AnalyticFunction f { {x}, x-42 };
+    CtcInverse<Interval,Interval> c(f, Interval(0.));
+    Interval a;
+    c.contract(a);
+    CHECK(a == 42);
+  }
+
+  {
+    VectorVar x(1);
+    AnalyticFunction f { {x}, x[0]-42 };
+    CtcInverse<Interval,IntervalVector> c(f, Interval(0.));
+    IntervalVector a(1);
+    c.contract(a);
+    CHECK(a == IntervalVector({{42}}));
+  }
+
   {
     ScalarVar x,y;
     AnalyticFunction f { {x,y}, x-y };
@@ -231,7 +248,7 @@ TEST_CASE("ParabolasExample")
   CtcInverse ctc(h, IntervalVector::zero(3));
   IntervalVector x0 {{0,1},{0,1},{0.05,0.18},{0.05,0.18}};
 
-  //draw_while_paving(x0, ctc, 0.001);
+  //DefaultFigure::pave(x0, ctc, 0.001);
   //DefaultFigure::set_axes(axis(0,{0.11,0.23}), axis(1,{0.1,0.22}));
 
   auto p = pave(x0, ctc, 0.01);

@@ -19,6 +19,7 @@
 #include "codac2_Matrix.h"
 #include "codac2_IntervalMatrix.h"
 #include "codac2_Ellipsoid.h"
+#include "codac2_Parallelepiped.h"
 
 namespace codac2
 {
@@ -81,7 +82,7 @@ namespace codac2
         const StyleProperties& style = { Color::dark_gray(0.5) });
 
       /**
-       * \brief Draws a ``star-shaped'' polygon  as a sequence of adjacent
+       * \brief Draws a star-shaped polygon  as a sequence of adjacent
        * triangles (l[0],l[k],l[k+1]) with k>=1.
        *
        * \param c translation
@@ -109,20 +110,18 @@ namespace codac2
       /**
        * \brief Draws a parallelepiped z+A*[-1,1]^3 on the figure
        * 
-       * \param z Coordinates of the center of the parallelepiped
-       * \param A Matrix of the parallelepiped
+       * \param p Parallelepiped to draw (center and shape matrix)
        * \param style Style of the parallelepiped (edge color)
        */
-      void draw_parallelepiped(const Vector& z, const Matrix& A, const StyleProperties& style = { Color::dark_gray(0.5) });
+      void draw_parallelepiped(const Parallelepiped& p, const StyleProperties& style = { Color::dark_gray(0.5) });
 
       /**
        * \brief Draws a zonotope z+sum_i [-1,1] A_i on the figure
        * 
-       * \param z Coordinates of the center of the zonotope
-       * \param A list of vectors 
+       * \param z Zonotope to draw (center and shape matrix)
        * \param style Style of the zonotope (edge color)
        */
-      void draw_zonotope(const Vector& z, const std::vector<Vector>& A, const StyleProperties& style = { Color::dark_gray(0.5) });
+      void draw_zonotope(const Zonotope& z, const StyleProperties& style = { Color::dark_gray(0.5) });
 
       /**
        * \brief Draws a box on the figure
@@ -190,7 +189,7 @@ namespace codac2
       /** 
        * \brief Draws a car, with blue windscreen
        *
-       * \param c ``center'' (low) of the car
+       * \param c center of the car
        * \param A orientation
        * \param style Style (color)
        */
@@ -200,7 +199,7 @@ namespace codac2
       /** 
        * \brief Draws a (paper) plane
        *
-       * \param c ``center'' (low) of the car
+       * \param c center of the car
        * \param A orientation
        * \param yaw_is_up yaw axis is up (default true)
        * \param style Style (color)
