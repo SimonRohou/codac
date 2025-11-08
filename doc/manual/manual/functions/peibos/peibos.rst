@@ -1,4 +1,4 @@
-.. _sec-tools-peibos:
+.. _sec-functions-peibos:
 
 PEIBOS
 ======

@@ -71,34 +71,34 @@ void export_IntervalMatrixBase(py::module& m, py::class_<S>& pyclass)
       MATRIXBASE_ADDONS_INTERVALMATRIXBASE_AUTO_DIAM_CONST)
 
     .def("min_rad", [](const S& x) { return x.min_rad(); },
-      MATRIX_ADDONS_INTERVALMATRIXBASE_DOUBLE_MIN_RAD_CONST)
+      MATRIXBASE_ADDONS_INTERVALMATRIXBASE_DOUBLE_MIN_RAD_CONST)
 
     .def("max_rad", [](const S& x) { return x.max_rad(); },
-      MATRIX_ADDONS_INTERVALMATRIXBASE_DOUBLE_MAX_RAD_CONST)
+      MATRIXBASE_ADDONS_INTERVALMATRIXBASE_DOUBLE_MAX_RAD_CONST)
 
     .def("min_diam", [](const S& x) { return x.min_diam(); },
-      MATRIX_ADDONS_INTERVALMATRIXBASE_DOUBLE_MIN_DIAM_CONST)
+      MATRIXBASE_ADDONS_INTERVALMATRIXBASE_DOUBLE_MIN_DIAM_CONST)
 
     .def("max_diam", [](const S& x) { return x.max_diam(); },
-      MATRIX_ADDONS_INTERVALMATRIXBASE_DOUBLE_MAX_DIAM_CONST)
+      MATRIXBASE_ADDONS_INTERVALMATRIXBASE_DOUBLE_MAX_DIAM_CONST)
 
     .def("min_diam_index", [](const S& x)
         {
           return matlab::output_index(x.min_diam_index());
         },
-      MATRIX_ADDONS_INTERVALMATRIXBASE_INDEX_MIN_DIAM_INDEX_CONST)
+      MATRIXBASE_ADDONS_INTERVALMATRIXBASE_INDEX_MIN_DIAM_INDEX_CONST)
 
     .def("max_diam_index", [](const S& x)
         {
           return matlab::output_index(x.max_diam_index());
         },
-      MATRIX_ADDONS_INTERVALMATRIXBASE_INDEX_MAX_DIAM_INDEX_CONST)
+      MATRIXBASE_ADDONS_INTERVALMATRIXBASE_INDEX_MAX_DIAM_INDEX_CONST)
 
     .def("extr_diam_index", [](const S& x, bool min)
         {
           return matlab::output_index(x.extr_diam_index(min));
         },
-      MATRIX_ADDONS_INTERVALMATRIXBASE_INDEX_EXTR_DIAM_INDEX_BOOL_CONST,
+      MATRIXBASE_ADDONS_INTERVALMATRIXBASE_INDEX_EXTR_DIAM_INDEX_BOOL_CONST,
       "min"_a)
 
     .def("__contains__", [](const S& x, const V& y) { return x.contains(y); },
