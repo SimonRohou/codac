@@ -357,6 +357,31 @@ namespace codac2
         return d;
       }
 
+      T mean() const
+      {
+        if(this->empty())
+          return this->nan_value();
+
+        auto it = this->begin();
+        double t_prev = it->first;
+        T x_prev = it->second;
+
+        T sum = x_prev;
+        double total_time = 0.;
+
+        for(++it; it != this->end(); ++it)
+        {
+          double dt = it->first - t_prev;
+          sum += (x_prev + it->second) * 0.5 * dt;
+          total_time += dt;
+
+          t_prev = it->first;
+          x_prev = it->second;
+        }
+
+        return sum / total_time;
+      }
+
       template<typename X1, typename X2>
       static bool same_sampling(const SampledTraj<X1>& x1, const SampledTraj<X2>& x2)
       {
