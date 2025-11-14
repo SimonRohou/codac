@@ -400,6 +400,8 @@ void Figure2D::draw_trajectory(const AnalyticTraj<VectorType>& x, const ColorMap
 void Figure2D::plot_trajectory(const SampledTraj<double>& x, const StyleProperties& s)
 {
   _axes[0].limits = x.tdomain();
+  if(_axes[1].limits == Interval(0,1))
+    _axes[1].limits.set_empty();
   _axes[1].limits |= x.codomain();
   for(const auto& output_fig : _output_figures)
     output_fig->update_axes();
