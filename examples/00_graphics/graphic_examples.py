@@ -40,6 +40,7 @@ DefaultFigure.draw_box([[2.2,2.5],[2.2,2.5]],[Color.blue(),Color.cyan(0.8)])
 
 fig2.draw_AUV([1,1,3.14/2],2.,StyleProperties([Color.black(),Color.yellow()], "0.1", "vehicles"))
 fig2.draw_tank([2,1,3.14/2],1.5,StyleProperties([Color.black(),Color.yellow()],"vehicles","0.1"))
+fig2.draw_motor_boat([0,0,0], 1.,StyleProperties([Color.black(),Color.yellow()],"vehicles"))
 fig2.draw_pie([2,2],[1.5,2.5],[(3*3.14/4)-0.5,(3*3.14/4)+0.5],[Color.blue(),Color.cyan()])
 fig2.draw_polyline([[2,-0.5],[4,0.5],[3,1.5],[4,2.5],[3,3]], StyleProperties(Color.red(),".."))
 fig2.draw_polygon([[2,4.5],[4,4.5],[4.2,3.5],[3.5,3]], [Color.none(),Color.green(0.5)])
