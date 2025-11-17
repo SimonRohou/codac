@@ -150,6 +150,11 @@ namespace codac2
 
       inline IntervalVector operator&(const IntervalVector& x) const
       {
+        assert_release(x.size() == this->size());
+        
+        if(x.is_empty())
+          return IntervalVector::empty(x.size());
+
         IntervalVector x_ = IntervalVector::empty(x.size());
         this->tree()->visit([&]
           (Node_ n)
