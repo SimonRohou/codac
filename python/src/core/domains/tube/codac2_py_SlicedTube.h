@@ -133,9 +133,30 @@ void export_SlicedTube(py::module& m, const std::string& name)
       VOID_SLICEDTUBE_T_SET_ITH_SLICE_CONST_T_REF_INDEX,
       "codomain"_a, "i"_a)
     
-    .def("inflate", &SlicedTube<T>::inflate,
-      CONST_SLICEDTUBE_T_REF_SLICEDTUBE_T_INFLATE_DOUBLE,
+    .def("inflate", (const SlicedTube<T>& (SlicedTube<T>::*)(const double&)) &SlicedTube<T>::inflate,
+      CONST_SLICEDTUBE_T_REF_SLICEDTUBE_T_INFLATE_CONST_V_REF,
       "rad"_a)
+    
+    .def("inflate", (const SlicedTube<T>& (SlicedTube<T>::*)(const SampledTraj<double>&)) &SlicedTube<T>::inflate,
+      CONST_SLICEDTUBE_T_REF_SLICEDTUBE_T_INFLATE_CONST_SAMPLEDTRAJ_V_REF,
+      "rad"_a)
+  ;
+
+  if constexpr(std::is_same_v<T,IntervalVector>)
+  {
+    exported_slicedtubebase_class
+
+    .def("inflate", (const SlicedTube<T>& (SlicedTube<T>::*)(const Vector&)) &SlicedTube<T>::inflate,
+      CONST_SLICEDTUBE_T_REF_SLICEDTUBE_T_INFLATE_CONST_V_REF,
+      "rad"_a)
+    
+    .def("inflate", (const SlicedTube<T>& (SlicedTube<T>::*)(const SampledTraj<Vector>&)) &SlicedTube<T>::inflate,
+      CONST_SLICEDTUBE_T_REF_SLICEDTUBE_T_INFLATE_CONST_SAMPLEDTRAJ_V_REF,
+      "rad"_a)
+    ;
+  }
+
+  exported_slicedtubebase_class
 
     .def(py::self == py::self,
       BOOL_SLICEDTUBE_T_OPERATOREQ_CONST_SLICEDTUBE_REF_CONST,
