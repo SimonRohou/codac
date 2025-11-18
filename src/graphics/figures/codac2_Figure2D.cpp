@@ -56,6 +56,7 @@ const vector<FigureAxis>& Figure2D::axes() const
 Figure2D& Figure2D::set_axes(const FigureAxis& axis1, const FigureAxis& axis2)
 {
   _axes = { axis1, axis2 };
+  assert_release(axis1.dim_id != axis2.dim_id);
   for(const auto& output_fig : _output_figures)
     output_fig->update_axes();
   return *this;
