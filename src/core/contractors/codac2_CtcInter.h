@@ -133,4 +133,7 @@ namespace codac2
     assert_release(c1.size() == c2.size());
     return CtcInter<IntervalVector>(c1,CtcWrapper(c2));
   }
+
+  // Template deduction guides
+  CtcInter(Index) -> CtcInter<IntervalVector>;
 }

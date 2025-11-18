@@ -136,4 +136,7 @@ namespace codac2
     assert_release(c1.size() == c2.size());
     return CtcUnion<IntervalVector>(c1,CtcWrapper(c2));
   }
+
+  // Template deduction guides
+  CtcUnion(Index) -> CtcUnion<IntervalVector>;
 }
