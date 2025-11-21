@@ -8,6 +8,7 @@
  */
 
 #include <cassert>
+#include "codac2_AnalyticFunction.h"
 #include "codac2_peibos_capd.h"
 
 using namespace std;

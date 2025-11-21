@@ -9,10 +9,11 @@
 
 #pragma once
 
+#include <vector>
 #include "codac2_peibos.h"
 #include "codac2_capd.h"
+#include "codac2_OctaSym.h"
 #include <capd/poincare/lib.h>
-#include <vector>
 
 namespace codac2
 {

@@ -9,11 +9,23 @@
 
 #pragma once
 
-#include "codac2_AnalyticFunction.h"
-#include "codac2_OctaSym.h"
+#include <type_traits>
+#include "codac2_Matrix.h"
+#include "codac2_IntervalVector.h"
+#include "codac2_IntervalMatrix.h"
 
 namespace codac2
 {
+  // Forward declarations to reduce compilation load caused by heavy template use:
+  class AnalyticTypeBase;
+  
+  template<typename T>
+    requires std::is_base_of_v<AnalyticTypeBase,T>
+  class AnalyticFunction;
+
+  class Parallelepiped;
+  class OctaSym;
+
   /**
    * \brief Used in PEIBOS. Compute a parallelepiped enclosing of \f$\mathbf{g}([\mathbf{x}])\f$ where \f$\mathbf{g} = \mathbf{f}\circ \sigma \circ \psi_0\f$.
    * 

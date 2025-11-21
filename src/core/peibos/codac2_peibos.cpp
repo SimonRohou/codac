@@ -7,6 +7,8 @@
  *  \license    GNU Lesser General Public License (LGPL)
  */
 
+#include "codac2_AnalyticFunction.h"
+#include "codac2_OctaSym.h"
 #include "codac2_peibos.h"
 #include "codac2_peibos_tools.h"
 #include "codac2_OctaSym_operator.h"
