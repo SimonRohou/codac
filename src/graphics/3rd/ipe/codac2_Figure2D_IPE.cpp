@@ -283,7 +283,7 @@ void Figure2D_IPE::begin_path_with_matrix(const Vector& x, float length, const S
 }
 
 
-void Figure2D_IPE::draw_text(const Vector& c, const Vector& r, const std::string& text, const StyleProperties& style)
+void Figure2D_IPE::draw_tick_label(const Vector& c, const Vector& r, const std::string& text, const StyleProperties& style)
 {
   assert(_fig.size() <= c.size());
   _colors.emplace(ipe_str(style.stroke_color), style.stroke_color);
@@ -317,14 +317,14 @@ void Figure2D_IPE::draw_axes()
   {
     auto formatted_x_tick = format_number(x_tick,(_x_ticks[1] - _x_ticks[0]));
     draw_polyline({{x_tick,_fig.axes()[1].limits.lb()-0.02*_fig.axes()[1].limits.diam()},{x_tick,_fig.axes()[1].limits.lb()}}, 0., StyleProperties({Color::black(),Color::black()}, "axes", to_string(axe_thickness)));
-    draw_text({x_tick+0.005*_fig.axes()[0].limits.diam(),_fig.axes()[1].limits.lb()-0.02*_fig.axes()[1].limits.diam()}, {_fig.axes()[0].limits.diam(),_fig.axes()[1].limits.diam()}, formatted_x_tick, StyleProperties({Color::black(),Color::black()}, "axes"));
+    draw_tick_label({x_tick+0.005*_fig.axes()[0].limits.diam(),_fig.axes()[1].limits.lb()-0.02*_fig.axes()[1].limits.diam()}, {_fig.axes()[0].limits.diam(),_fig.axes()[1].limits.diam()}, formatted_x_tick, StyleProperties({Color::black(),Color::black()}, "axes"));
   }
 
   for (const auto& y_tick : _y_ticks) 
   {
     auto formatted_y_tick = format_number(y_tick,(_y_ticks[1] - _y_ticks[0]));
     draw_polyline({{_fig.axes()[0].limits.lb()-0.02*_fig.axes()[0].limits.diam(),y_tick},{_fig.axes()[0].limits.lb(),y_tick}}, 0., StyleProperties({Color::black(),Color::black()}, "axes", to_string(axe_thickness)));
-    draw_text({_fig.axes()[0].limits.lb()-(0.02+0.0095*(formatted_y_tick.size()-1))*_fig.axes()[0].limits.diam(),y_tick+0.005*_fig.axes()[1].limits.diam()}, {_fig.axes()[0].limits.diam(),_fig.axes()[1].limits.diam()}, formatted_y_tick, StyleProperties({Color::black(),Color::black()}, "axes"));
+    draw_tick_label({_fig.axes()[0].limits.lb()-(0.02+0.0095*(formatted_y_tick.size()-1))*_fig.axes()[0].limits.diam(),y_tick+0.005*_fig.axes()[1].limits.diam()}, {_fig.axes()[0].limits.diam(),_fig.axes()[1].limits.diam()}, formatted_y_tick, StyleProperties({Color::black(),Color::black()}, "axes"));
   }
 }
 
@@ -527,6 +527,42 @@ void Figure2D_IPE::draw_motor_boat(const Vector& x, float size, const StylePrope
   _f_temp_content << circle << "</path>";
 
   _f_temp_content << "</group>";
+}
+
+void Figure2D_IPE::draw_text(const std::string& text, const Vector& ul, [[maybe_unused]] double scale, const StyleProperties& style)
+{
+  assert(_fig.size() <= ul.size());
+  _colors.emplace(ipe_str(style.stroke_color), style.stroke_color);
+  _colors.emplace(ipe_str(style.fill_color), style.fill_color);
+
+    if (std::find(_layers.begin(), _layers.end(), style.layer) == _layers.end() && style.layer != "")
+      _layers.push_back(style.layer);
+
+  _f_temp_content << "\n \
+    <text layer=\"" << style.layer << "\" \n \
+    transformations=\"translations\" \n \
+    pos=\"" << scale_x(ul[i()]) << " " << scale_y(ul[j()]) << "\" \n \
+    stroke=\"codac_color_" << ipe_str(style.stroke_color) << "\" \n \
+    opacity=\"" << ipe_opacity(style.stroke_color) << "%\" \n \
+    type=\"label\" \n \
+    depth=\"0\" \n \
+    valign=\"top\">" << text << "</text>";
+}
+
+void Figure2D_IPE::draw_raster(const std::string& filename, const IntervalVector& bbox, const StyleProperties& style)
+{
+  draw_box(bbox, style);
+
+  // underscore "_" need to be replaced by "\_" for ipe (LateX style)
+  auto fname = filename;
+  size_t pos = 0;
+  while ((pos = fname.find("_", pos)) != std::string::npos) 
+  {
+      fname.replace(pos, 1, "\\_"); 
+      pos += 2;
+  }
+
+  draw_text("Add "+ fname + " here", {bbox[0].lb(),bbox[1].ub()}, 1., StyleProperties(Color::black(), "replacement_text"));
 }
 
 double Figure2D_IPE::scale_x(double x) const

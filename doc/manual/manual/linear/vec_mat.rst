@@ -8,6 +8,15 @@ By default, ``Vector``, ``Row`` and ``Matrix`` objects are initialized with :mat
 *More documentation to come...*
 
 
+.. _sec-linear-mat-preconditioning:
+
+Matrix preconditioning
+----------------------
+
+.. doxygenfunction:: codac2::gauss_jordan(const Matrix&)
+  :project: codac
+
+
 .. _sec-linear-vecmat-VectorCompare:
 
 Using ``Vector`` as keys in ``std::map`` (C++ use)

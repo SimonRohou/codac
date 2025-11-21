@@ -1,4 +1,5 @@
 #include <codac>
+#include <filesystem>
 
 using namespace std;
 using namespace codac2;
@@ -64,6 +65,11 @@ int main(){
   Parallelepiped p_3d ({1.2,3.5,2.2},Matrix({{0.5,0.4,0},{0,0.2,0.1},{0,0,0.3}}));
   fig2->draw_zonotope(p_3d.proj({0,1}), {{Color::green(),Color::yellow(0.4)}, "zonotope"});
 
+  fig2->draw_text("Hello, World!",{-0.5,4.5},0.2, Color::blue());
+
+  std::filesystem::path p = __FILE__;
+  fig2->draw_raster(p.parent_path().string()+"/logo_codac.png", IntervalVector({{2.5,5},{-1,-0.4}}), StyleProperties("raster"));
+
   // Colors
   // predefined colors without and with opacity
   fig2->draw_point({2,2}, {Color::red(),Color::yellow(0.5)});
@@ -109,5 +115,5 @@ int main(){
   // Fermat's spiral
   AnalyticFunction f1 ({t},{a*sqrt(t)*cos(t),a*sqrt(t)*sin(t)});
   AnalyticTraj traj4 (f1,{0,100});
-  fig4.draw_trajectory(traj4,ColorMap::rainbow());
+  fig4.draw_trajectory(traj4,{ColorMap::rainbow(), ".."});
 }
