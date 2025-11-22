@@ -346,6 +346,7 @@ User manual
    * Related papers
    * Contributors
    * How to cite Codac
+   :ref:`sec-ref-codac-logos`
 
 
 How-to guides
@@ -480,3 +481,7 @@ The main reference to the Codac library is `the following paper <https://www.sim
     month={Mar.},
     pages={871-887}
   }
+
+See the Codac logos page for downloadable logos suitable for projects, presentations, and publications:
+
+* :ref:`sec-ref-codac-logos`
