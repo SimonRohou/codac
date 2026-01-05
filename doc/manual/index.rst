@@ -137,6 +137,7 @@ This list is in alphabetical order by surname.
   * Auguste Bourgois
   * `Cyril Bouvier <http://www.lirmm.fr/~bouvier/index.en.html>`_
   * `Quentin Brateau <https://teusner.github.io>`_
+  * `Clément Carbonnel <https://www.lirmm.fr/~ccarbonnel/>`_
   * Gilles Chabert
   * `Julien Damers <http://damers.org>`_
   * Benoît Desrochers
@@ -182,6 +183,7 @@ User manual
    * :ref:`sec-install-py`
    * :ref:`sec-install-cpp`
    * :ref:`sec-install-matlab`
+   * :ref:`sec-install-performances`
 
 * :ref:`sec-intervals`
    * What is an interval?
@@ -337,10 +339,7 @@ User manual
    * Interface with the IBEX library
    * Sympy (symbolic computation)
 
-* :ref:`sec-seealso`
-   * Frequently Asked Questions
-   * :ref:`sec-seealso-performances`
-   * Low-level interval library
+* Frequently Asked Questions
 
 * References
    * Related papers
@@ -373,10 +372,7 @@ Development
 * :ref:`sec-dev-info`
 * :ref:`sec-dev-common-issues`
 * :ref:`sec-dev-changelog`
-* C++ API
-
-
-
+* :ref:`sec-dev-api`
 
 
 
@@ -406,7 +402,6 @@ Development
    manual/visualization/index.rst
    manual/tools/index.rst
    manual/extensions/index.rst
-   manual/seealso/index.rst
    
 ..    linear/index.rst
 ..    functions/index.rst
@@ -456,9 +451,7 @@ Development
    development/info_dev.rst
    development/common_issues.rst
    development/changelog.rst
-.. 
-..    C++ API
-
+   development/api_redirect.rst
 
 
 How to cite Codac
