@@ -168,10 +168,8 @@ void Figure2D_IPE::update_axes()
     _x_offset = std::max(_x_offset, (0.02+0.0095*(formatted_y_tick.size()-1))*_fig.axes()[0].limits.diam()); // the 0.0095 is empirical, it is used to displace the vertical label according to its length
   }
 
-  _ratio = {
-    _ipe_grid_size/(_fig.axes()[0].limits.diam()+_x_offset),
-    _ipe_grid_size/(_fig.axes()[1].limits.diam()+_y_offset)
-  };
+  double dr = _ipe_grid_size/std::max(_fig.axes()[0].limits.rad(),_fig.axes()[1].limits.rad());
+  _ratio = { dr, dr };
 }
 
 void Figure2D_IPE::update_window_properties()
@@ -620,11 +618,18 @@ double Figure2D_IPE::scale_length(double x) const
 
 void Figure2D_IPE::print_header_page()
 {
+  IntervalVector viewbox = cart_prod(_fig.axes()[0].limits,_fig.axes()[1].limits);
+
   _f << "<?xml version=\"1.0\"?> \n \
     <!DOCTYPE ipe SYSTEM \"ipe.dtd\"> \n \
     <ipe version=\"70218\" creator=\"Ipe 7.2.24\"> \n \
     <info created=\"D:20240517161412\" modified=\"D:20240517162731\"/> \n \
     <ipestyle name=\"codac\"> \n \
+    <layout \
+        paper=\"" << viewbox[0].diam() << " " << viewbox[1].diam() << "\" \
+        origin=\"0 0\" \
+        frame=\"" << viewbox[0].diam() << " " << viewbox[1].diam() << "\" \
+        crop=\"yes\"/> \n \
     <symbol name=\"arrow/arc(spx)\"> \n \
     <path stroke=\"sym-stroke\" fill=\"sym-stroke\" pen=\"sym-pen\"> \n \
     0 0 m \n \
