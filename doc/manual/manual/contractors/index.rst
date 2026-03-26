@@ -1,5 +1,6 @@
-Contractors
-===========
+.. _sec-ctc:
+Contractors, separators
+=======================
 
 .. toctree::
 

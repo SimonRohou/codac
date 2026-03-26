@@ -22,15 +22,13 @@ using namespace codac2;
 shared_ptr<Figure2D> DefaultFigure::_default_fig = nullptr;
 shared_ptr<Figure2D> DefaultFigure::_selected_fig = DefaultFigure::_default_fig;
 
-Figure2D::Figure2D(const string& name, GraphicOutput o, bool set_as_default_)
+Figure2D::Figure2D(const string& name, GraphicOutput o)
   : _name(name)
 {
   if(o & GraphicOutput::VIBES)
     _output_figures.push_back(make_shared<Figure2D_VIBes>(*this));
   if(o & GraphicOutput::IPE)
     _output_figures.push_back(make_shared<Figure2D_IPE>(*this));
-  if(set_as_default_)
-    set_as_default();
 }
 
 vector<shared_ptr<OutputFigure2D>> Figure2D::output_figures()
@@ -155,7 +153,7 @@ void Figure2D::draw_box(const IntervalVector& x, const StyleProperties& style)
       if(x.max_diam() == 0.)
         output_fig->draw_point({x[0].lb(),x[1].lb()}, style);
       else
-        output_fig->draw_box(x,style);
+        output_fig->draw_box(x & IntervalVector::constant(x.size(),{-9e10,9e10}),style);
     }
 }
 
@@ -460,7 +458,7 @@ void draw_tube_common(Figure2D& fig, const SlicedTube<IntervalVector>& x, int ma
       
   else
   {
-    int group_size = std::max(1, (int)(1.*n/max_nb_slices_to_display));
+    int group_size = std::max(1, (int)((1.*n)/max_nb_slices_to_display));
 
     for(auto it = x.tdomain()->rbegin() ; it != x.tdomain()->rend(); )
     {
@@ -468,13 +466,12 @@ void draw_tube_common(Figure2D& fig, const SlicedTube<IntervalVector>& x, int ma
       ConvexPolygon p(x.slice(it)->codomain());
       it++;
 
-      for(int j = 0; j < group_size-1 && it != x.tdomain()->rend(); j++,it++)
+      int j;
+      for(j = 0; j < group_size-1 && it != x.tdomain()->rend(); j++,it++)
         p |= ConvexPolygon(x.slice(it)->codomain());
       fig.draw_polygon(p, c);
-      if(it != x.tdomain()->rend())
-      {
-        it--; it--;
-      }
+      if(j != 0)
+        it--;
     }
   }
 }

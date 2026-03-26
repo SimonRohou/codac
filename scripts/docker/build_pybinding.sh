@@ -2,7 +2,7 @@
 
 set -e -x
 
-wget https://github.com/lebarsfa/ibex-lib/releases/download/ibex-2.8.9.20241117/ibex_$(uname -m)_manylinux_2_28.zip --no-check-certificate -nv
+wget https://github.com/lebarsfa/ibex-lib/releases/download/ibex-2.8.9.20250626/ibex_$(uname -m)_manylinux_2_28.zip --no-check-certificate -nv
 unzip -q ibex_$(uname -m)_manylinux_2_28.zip
 rm -Rf ibex_$(uname -m)_manylinux_2_28.zip
 sudo cp -Rf ibex/* /usr/local/
@@ -30,6 +30,7 @@ for PYBIN in /opt/python/cp3*/bin; do
   "${PYBIN}/python" -m pip install codac --no-deps --no-index -f /io/wheelhouse
   "${PYBIN}/python" ../examples/02_centered_form/main.py
   "${PYBIN}/python" -m pip install numpy --prefer-binary
+  "${PYBIN}/python" -m pip install sympy
   "${PYBIN}/python" -m unittest discover codac.tests
   
   make test ARGS="-V --output-on-failure"
