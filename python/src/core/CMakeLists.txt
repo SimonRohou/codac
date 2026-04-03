@@ -28,6 +28,7 @@
     contractors/codac2_py_CtcInverse.h
     contractors/codac2_py_CtcInverseNotIn.h
     contractors/codac2_py_CtcLazy.cpp
+    contractors/codac2_py_CtcLohner.cpp
     contractors/codac2_py_CtcNot.cpp
     contractors/codac2_py_CtcPointCloud.cpp
     contractors/codac2_py_CtcPolar.cpp
@@ -124,6 +125,7 @@
     trajectory/codac2_py_AnalyticTraj.cpp
     trajectory/codac2_py_SampledTraj.cpp
     trajectory/codac2_py_TrajBase.h
+    trajectory/codac2_py_traj_cart_prod.cpp
   )
 
   target_include_directories(_core

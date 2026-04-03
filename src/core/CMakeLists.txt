@@ -38,6 +38,8 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcInverseNotIn.h
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcLazy.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcLazy.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcLohner.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcLohner.h
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcNot.h
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcUnion.h
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcPointCloud.cpp
@@ -275,6 +277,7 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/trajectory/codac2_SampledTraj.h
     ${CMAKE_CURRENT_SOURCE_DIR}/trajectory/codac2_SampledTraj_operations.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/trajectory/codac2_SampledTraj_operations.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/trajectory/codac2_traj_cart_prod.h
     ${CMAKE_CURRENT_SOURCE_DIR}/trajectory/codac2_Traj_operator.h
     ${CMAKE_CURRENT_SOURCE_DIR}/trajectory/codac2_TrajBase.h
   )
