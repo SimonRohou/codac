@@ -41,6 +41,7 @@ list(APPEND SRC_TESTS # listing files without extension
   core/contractors/codac2_tests_CtcLohner
   core/contractors/codac2_tests_CtcPolygon
   core/contractors/codac2_tests_CtcSegment
+  core/contractors/codac2_tests_CtcVisible
   core/contractors/codac2_tests_linear_ctc
   ../doc/manual/manual/contractors/geometric/src
   ../doc/manual/manual/contractors/analytic/src
@@ -93,6 +94,7 @@ list(APPEND SRC_TESTS # listing files without extension
   core/separators/codac2_tests_SepPolygon
   core/separators/codac2_tests_SepProj
   core/separators/codac2_tests_SepTransform
+  core/separators/codac2_tests_SepVisible
   
   core/tools/codac2_tests_Approx
   core/tools/codac2_tests_serialization
@@ -136,6 +138,7 @@ endif()
 if (WITH_CAPD)
   list(APPEND SRC_TESTS
     extensions/capd/codac2_tests_capd
+    extensions/capd/codac2_tests_peibos_capd
     ../doc/manual/manual/extensions/capd/src
   )
   set(CODAC_LIBRARIES ${CODAC_LIBRARIES} ${PROJECT_NAME}-capd capd::capd)
