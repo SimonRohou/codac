@@ -8,3 +8,5 @@ Tools
    
   serialization.rst
   registration.rst
+  octasym.rst
+  sampled_traj_npz.rst
