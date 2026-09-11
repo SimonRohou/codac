@@ -159,6 +159,11 @@ namespace codac2
         if(x.is_empty())
           return x_;
 
+        // The parts of the box that are outside of the paving can not be contracted
+        auto d = x.diff(this->tree()->hull());
+        for(const auto& di : d)
+          x_ |= di;
+
         this->tree()->visit([&]
           (Node_ n)
           {
@@ -172,6 +177,8 @@ namespace codac2
 
       static const NodeValue_ outer, outer_complem;
   };
+
+  IntervalVector operator&(const IntervalVector& x, const PavingOut& p);
 
 
   class PavingInOut;

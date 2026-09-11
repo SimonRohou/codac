@@ -3,6 +3,28 @@
 Changelog
 =========
 
+Upcoming version 
+****************
+
+Pull Request #379 from godardma (27/04)
+---------------------------------------
+
+``Zonotope`` and ``Parallelepiped`` center is now ``c`` instead of ``z`` to avoid ambiguity.
+
+Version 2.0.2
+*************
+
+Commit ca1f6f4
+--------------
+
+set_axes change for Figure2D
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Since this PR, a bounding box can be passed to the set_axes method to specify the ranges of the x and y axes.
+The old method with ``axis(id,Interval)`` still works
+
+Version 2.0.0
+*************
 
 Commit 52b81c8 ([cmake] warning for Doxygen version)
 ----------------------------------------------------
@@ -15,6 +37,8 @@ If this version is not available, the API documentation will not be generated,
 which may cause issues when building the Python binding from source.
 This has no impact on the C++ build nor on downloading/installing the Python packages.
 
+Pre-Release
+***********
 
 Pull Request from godardma (15/10)
 ----------------------------------

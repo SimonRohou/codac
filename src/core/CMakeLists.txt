@@ -62,6 +62,7 @@
 
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/codac2_BoolInterval.h
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/codac2_Domain.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/domains/codac2_Scalar.h
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/codac2_Wrapper.h
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/ellipsoid/codac2_Ellipsoid.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/ellipsoid/codac2_Ellipsoid_checks.cpp
@@ -241,12 +242,16 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepInter.h
     ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepInverse.h
     ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepNot.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepPolarCart.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepPolarCart.h
     ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepPolygon.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepPolygon.h
     ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepProj.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepProj.h
     ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepQInter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepQInter.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepTest.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepTest.h
     ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepTransform.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepTransform.h
     ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepUnion.cpp
@@ -287,6 +292,7 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/trajectory/codac2_traj_cart_prod.h
     ${CMAKE_CURRENT_SOURCE_DIR}/trajectory/codac2_Traj_operator.h
     ${CMAKE_CURRENT_SOURCE_DIR}/trajectory/codac2_TrajBase.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/trajectory/codac2_TrajBase_impl.h
   )
 
 ################################################################################

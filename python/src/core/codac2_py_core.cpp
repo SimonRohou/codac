@@ -21,6 +21,7 @@
 #include "codac2_py_CtcInverse.h"
 #include "codac2_py_MatrixBlock.h"
 #include "codac2_py_Slice.h"
+#include "codac2_py_SlicedTube.h"
 
 using namespace codac2;
 namespace py = pybind11;
@@ -79,7 +80,11 @@ void export_TimePropag(py::module& m);
 void export_TSlice(py::module& m);
 py::class_<TubeBase> export_TubeBase(py::module& m);
 void export_tube_cart_prod(py::module& m);
-void export_SlicedTube(py::module& m);
+void export_SlicedTube_operations(
+  py::module& m,
+  py::class_<SlicedTube<Interval>,TubeBase>& py_SlicedTube_Interval,
+  py::class_<SlicedTube<IntervalVector>,TubeBase>& py_SlicedTube_IntervalVector,
+  py::class_<SlicedTube<IntervalMatrix>,TubeBase>& py_SlicedTube_IntervalMatrix);
 
 // functions
 void export_VarBase(py::module& m);
@@ -143,9 +148,11 @@ void export_SepCtcPair(py::module& m, py::class_<SepBase,pySep>& pysep);
 void export_SepInter(py::module& m, py::class_<SepBase,pySep>& sep);
 void export_SepInverse(py::module& m, py::class_<SepBase,pySep>& sep);
 void export_SepNot(py::module& m, py::class_<SepBase,pySep>& sep);
+void export_SepPolarCart(py::module& m, py::class_<SepBase,pySep>& pysep);
 void export_SepPolygon(py::module& m, py::class_<SepBase,pySep>& sep);
 void export_SepProj(py::module& m, py::class_<SepBase,pySep>& sep);
 void export_SepQInter(py::module& m, py::class_<SepBase,pySep>& sep);
+void export_SepTest(py::module& m, py::class_<SepBase,pySep>& sep);
 void export_SepTransform(py::module& m, py::class_<SepBase,pySep>& sep);
 void export_SepUnion(py::module& m, py::class_<SepBase,pySep>& sep);
 void export_SepVisible(py::module& m, py::class_<SepBase,pySep>& sep);
@@ -248,7 +255,15 @@ PYBIND11_MODULE(_core, m)
   export_TDomain(m);
   export_TSlice(m);
   auto tube_base = export_TubeBase(m);
-  export_SlicedTube(m);
+  auto py_SlicedTube_Interval = export_SlicedTube<Interval>(m, "SlicedTube_Interval");
+  auto py_SlicedTube_IntervalVector = export_SlicedTube<IntervalVector>(m, "SlicedTube_IntervalVector");
+  auto py_SlicedTube_IntervalMatrix = export_SlicedTube<IntervalMatrix>(m, "SlicedTube_IntervalMatrix");
+  export_SlicedTube_operations(
+    m,
+    py_SlicedTube_Interval,
+    py_SlicedTube_IntervalVector,
+    py_SlicedTube_IntervalMatrix
+  );
   export_tube_cart_prod(m);
 
   export_arithmetic_add(py_V, py_IV, py_M, py_IM, py_B, py_IB);
@@ -318,9 +333,11 @@ PYBIND11_MODULE(_core, m)
   export_SepInter(m,py_sep);
   export_SepInverse(m,py_sep);
   export_SepNot(m,py_sep);
+  export_SepPolarCart(m,py_sep);
   export_SepPolygon(m,py_sep);
   export_SepProj(m,py_sep);
   export_SepQInter(m,py_sep);
+  export_SepTest(m,py_sep);
   export_SepTransform(m,py_sep);
   export_SepUnion(m,py_sep);
   export_SepVisible(m,py_sep);

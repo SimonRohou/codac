@@ -144,8 +144,8 @@ This list is in alphabetical order by surname.
   * `Peter Franek <http://www.cs.cas.cz/~franek>`_
   * `Maël Godard <https://godardma.github.io>`_
   * `Nuwan Herath M. <https://members.loria.fr/NHerathMudiyanselage>`_
-  * `Luc Jaulin <https://www.ensta-bretagne.fr/jaulin>`_
-  * `Fabrice Le Bars <https://www.ensta-bretagne.fr/lebars>`_
+  * `Luc Jaulin <https://webperso.ensta.fr/jaulin>`_
+  * `Fabrice Le Bars <https://webperso.ensta.fr/lebars>`_
   * `Morgan Louédec <https://morgan-louedec.fr>`_
   * `Damien Massé <https://lab-sticc.univ-brest.fr/~dmasse>`_
   * `Bertrand Neveu <http://imagine.enpc.fr/~neveub>`_
@@ -154,7 +154,7 @@ This list is in alphabetical order by surname.
   * `Simon Rohou <http://simon-rohou.fr/research>`_
   * `Joris Tillet <https://perso.ensta-paris.fr/~tillet/>`_
   * `Gilles Trombettoni <https://www.lirmm.fr/~trombetton>`_
-  * `Christophe Viel <https://www.ensta-bretagne.fr/viel/>`_
+  * `Christophe Viel <https://webperso.ensta.fr/viel/>`_
   * `Raphael Voges <https://raphael-voges.de>`_
 
 We appreciate all contributions, whether code, documentation, bug reports, or suggestions. If you believe your name should be included here and it is not, please contact us so we can update the list.
@@ -213,10 +213,9 @@ User manual
       * The class SetMembershipFunction
       * Extension to custom expressions
 
-* Tubes
-   * What is a tube?
-   * Temporal domains
-   * The Tube classes
+* :ref:`sec-domains-tubes`
+   * :ref:`sec-domains-tubes-tdomain`
+   * :ref:`sec-domains-tubes-slicedtube`
    * The Trajectory classes
    * Increasing performances using views
 
@@ -256,7 +255,7 @@ User manual
       * CtcCross / CtcNoCross
    * Shape contractors
       * CtcCtcBoundary
-      * CtcWrapper
+      * :ref:`sec-ctc-shape-ctcwrapper`
       * CtcImage
       * CtcDiscreteSet
    * Temporal contractors
@@ -318,8 +317,8 @@ User manual
    * :ref:`sec-zonotope`
    * Polyhedron
 
-* :ref:`sec-actions`
-   * :ref:`sec-actions-octasym`
+* :ref:`sec-tools`
+   * :ref:`sec-tools-octasym`
 
 * :ref:`sec-ellipsoids`
    * :ref:`sec-ellipsoids-intro`
@@ -401,6 +400,7 @@ Development
    manual/introduction/index.rst
    manual/installation/index.rst
    manual/intervals/index.rst
+   manual/tubes/index.rst
    manual/linear/index.rst
    manual/functions/index.rst
    manual/contractors/index.rst

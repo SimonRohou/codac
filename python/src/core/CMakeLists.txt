@@ -55,7 +55,8 @@
     domains/zonotope/codac2_py_Parallelepiped.cpp
     domains/zonotope/codac2_py_Zonotope.cpp
     domains/tube/codac2_py_Slice.h
-    domains/tube/codac2_py_SlicedTube.cpp
+    domains/tube/codac2_py_SlicedTube.h
+    domains/tube/codac2_py_SlicedTube_operations.cpp
     domains/tube/codac2_py_TDomain.cpp
     domains/tube/codac2_py_TimePropag.cpp
     domains/tube/codac2_py_TSlice.cpp
@@ -109,9 +110,11 @@
     separators/codac2_py_SepInter.cpp
     separators/codac2_py_SepInverse.cpp
     separators/codac2_py_SepNot.cpp
+    separators/codac2_py_SepPolarCart.cpp
     separators/codac2_py_SepPolygon.cpp
     separators/codac2_py_SepProj.cpp
     separators/codac2_py_SepQInter.cpp
+    separators/codac2_py_SepTest.cpp
     separators/codac2_py_SepTransform.cpp
     separators/codac2_py_SepUnion.cpp
     separators/codac2_py_SepVisible.cpp

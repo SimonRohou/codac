@@ -78,10 +78,14 @@ void export_Figure2D(py::module& m)
   
     .def("axes", &Figure2D::axes,
       CONST_VECTOR_FIGUREAXIS_REF_FIGURE2D_AXES_CONST)
-  
-    .def("set_axes", &Figure2D::set_axes,
+
+    .def("set_axes", (Figure2D& (Figure2D::*)(const FigureAxis&, const FigureAxis&)) &Figure2D::set_axes,
       FIGURE2D_REF_FIGURE2D_SET_AXES_CONST_FIGUREAXIS_REF_CONST_FIGUREAXIS_REF,
       "axis1"_a, "axis2"_a)
+
+    .def("set_axes", (Figure2D& (Figure2D::*)(const IntervalVector&)) &Figure2D::set_axes,
+      FIGURE2D_REF_FIGURE2D_SET_AXES_CONST_INTERVALVECTOR_REF,
+      "bbox"_a)
   
     .def("i", &Figure2D::i,
       CONST_INDEX_REF_FIGURE2D_I_CONST)
@@ -105,6 +109,10 @@ void export_Figure2D(py::module& m)
 
     .def("clear", &Figure2D::clear,
       VOID_FIGURE2D_CLEAR)
+
+    .def("save", &Figure2D::save,
+      VOID_FIGURE2D_SAVE_CONST_STRING_REF,
+      "filename"_a)
   
     .def("scaled_unit", &Figure2D::scaled_unit,
       DOUBLE_FIGURE2D_SCALED_UNIT_CONST)
@@ -201,6 +209,10 @@ void export_Figure2D(py::module& m)
 
     .def("plot_trajectory", (void(Figure2D::*)(const SampledTraj<double>&,const StyleProperties&))&Figure2D::plot_trajectory,
       VOID_FIGURE2D_PLOT_TRAJECTORY_CONST_SAMPLEDTRAJ_DOUBLE_REF_CONST_STYLEPROPERTIES_REF,
+      "x"_a, "style"_a=StyleProperties())
+
+    .def("plot_trajectory", (void(Figure2D::*)(const AnalyticTraj<ScalarType>&,const StyleProperties&))&Figure2D::plot_trajectory,
+      VOID_FIGURE2D_PLOT_TRAJECTORY_CONST_ANALYTICTRAJ_SCALARTYPE_REF_CONST_STYLEPROPERTIES_REF,
       "x"_a, "style"_a=StyleProperties())
 
     .def("plot_trajectories", (void(Figure2D::*)(const SampledTraj<Vector>&))&Figure2D::plot_trajectories,
@@ -317,10 +329,15 @@ void export_Figure2D(py::module& m)
   
     .def_static("set", &DefaultFigure::set,
       STATIC_VOID_DEFAULTFIGURE_SET_SHARED_PTR_FIGURE2D)
-  
-    .def_static("set_axes", &DefaultFigure::set_axes, py::return_value_policy::reference,
+
+    .def_static("set_axes", (Figure2D& (*)(const FigureAxis&, const FigureAxis&)) &DefaultFigure::set_axes, py::return_value_policy::reference,
       STATIC_FIGURE2D_REF_DEFAULTFIGURE_SET_AXES_CONST_FIGUREAXIS_REF_CONST_FIGUREAXIS_REF,
       "axis1"_a, "axis2"_a)
+
+    .def_static("set_axes", (Figure2D& (*)(const IntervalVector&)) &DefaultFigure::set_axes, py::return_value_policy::reference,
+      STATIC_FIGURE2D_REF_DEFAULTFIGURE_SET_AXES_CONST_INTERVALVECTOR_REF,
+      "bbox"_a)
+  
   
     .def_static("set_window_properties", &DefaultFigure::set_window_properties,
       STATIC_VOID_DEFAULTFIGURE_SET_WINDOW_PROPERTIES_CONST_VECTOR_REF_CONST_VECTOR_REF)
@@ -408,6 +425,10 @@ void export_Figure2D(py::module& m)
 
     .def_static("plot_trajectory", (void(*)(const SampledTraj<double>&,const StyleProperties&))&DefaultFigure::plot_trajectory,
       STATIC_VOID_DEFAULTFIGURE_PLOT_TRAJECTORY_CONST_SAMPLEDTRAJ_DOUBLE_REF_CONST_STYLEPROPERTIES_REF,
+      "x"_a, "style"_a=StyleProperties())
+
+    .def_static("plot_trajectory", (void(*)(const AnalyticTraj<ScalarType>&,const StyleProperties&))&DefaultFigure::plot_trajectory,
+      STATIC_VOID_DEFAULTFIGURE_PLOT_TRAJECTORY_CONST_ANALYTICTRAJ_SCALARTYPE_REF_CONST_STYLEPROPERTIES_REF
       "x"_a, "style"_a=StyleProperties())
 
     .def_static("plot_trajectories", (void(*)(const SampledTraj<Vector>&,const StyleProperties&))&DefaultFigure::plot_trajectories,
