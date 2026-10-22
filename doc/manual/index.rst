@@ -215,14 +215,16 @@ User manual
       * Extension to custom expressions
 
 * :ref:`sec-tubes-trajectories`
-   * :ref:`sec-trajectories-sampledtraj`
-   * :ref:`sec-trajectories-analytictraj`
-   * :ref:`sec-trajectories-operations`
-   * :ref:`sec-trajectories-io`
-   * :ref:`sec-tubes-tdomain`
-   * :ref:`sec-tubes-slice`
-   * :ref:`sec-tubes-slicedtube`
-   * :ref:`sec-tubes-examples`
+   * Trajectories
+      * :ref:`sec-trajectories-sampledtraj`
+      * :ref:`sec-trajectories-analytictraj`
+      * :ref:`sec-trajectories-operations`
+      * :ref:`sec-trajectories-io`
+   * Tubes
+      * :ref:`sec-tubes-tdomain`
+      * :ref:`sec-tubes-slice`
+      * :ref:`sec-tubes-slicedtube`
+      * :ref:`sec-tubes-examples`
 
 * Contractors
    * What are contractors?
