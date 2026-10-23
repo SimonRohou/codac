@@ -193,6 +193,7 @@ User manual
    * :ref:`sec-intervals-class`
    * :ref:`sec-intervals-intervalvector-class`
    * :ref:`sec-intervals-boolinterval-class`
+   * :ref:`sec-intervals-rounding`
 
 * :ref:`sec-linear`
    * :ref:`sec-linear-vecmat`
