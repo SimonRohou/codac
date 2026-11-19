@@ -64,7 +64,7 @@ namespace codac2
         assert_release(_f.nb_args() == 1 + sizeof...(X)
           && "CtcInverse: invalid number of input arguments");
 
-        ValuesMap v;
+        ValuesMap v(_f.values_layout());
         // Setting user values into a map before the tree evaluation
         _f.fill_from_args(v, x0, x...);
 

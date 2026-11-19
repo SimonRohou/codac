@@ -9,9 +9,11 @@
 
 #pragma once
 
-#include <map>
 #include <memory>
+#include <unordered_map>
 #include <utility>
+#include <variant>
+#include <vector>
 #include "codac2_ExprBase.h"
 #include "codac2_Domain.h"
 #include "codac2_FunctionArgsList.h"
@@ -19,7 +21,91 @@
 
 namespace codac2
 {
-  using ValuesMap = std::map<ExprID,std::shared_ptr<AnalyticTypeBase>>;
+  // Built once per AnalyticFunction, after its expression and arguments are finalized.
+  // ExprID values are global and may be sparse, hence the local compact indexing.
+  class AnalyticValuesLayout
+  {
+    public:
+      AnalyticValuesLayout(const FunctionArgsList& args, const std::shared_ptr<ExprBase>& expr)
+      {
+        for(const auto& arg : args)
+          _indices.emplace(arg->unique_id().id(), _indices.size());
+        add(expr);
+      }
+
+      std::size_t size() const
+      {
+        return _indices.size();
+      }
+
+      std::size_t index_of(const ExprID& id) const
+      {
+        const auto it = _indices.find(id.id());
+        assert(it != _indices.end() && "expression not present in analytic layout");
+        return it->second;
+      }
+
+    private:
+      void add(const std::shared_ptr<ExprBase>& expr)
+      {
+        if(!expr)
+          return;
+
+        const auto [it, inserted] = _indices.emplace(expr->unique_id().id(), _indices.size());
+        if(!inserted)
+          return;
+
+        for(const auto& child : expr->children_expr_base())
+          add(child);
+      }
+
+      std::unordered_map<Index,std::size_t> _indices;
+  };
+
+  // Each evaluation owns its values. Slots are contiguous and indexed by the
+  // immutable layout, rather than individually allocated in a std::map.
+  class ValuesMap
+  {
+    public:
+      explicit ValuesMap(const AnalyticValuesLayout& layout)
+        : _layout(layout), _values(layout.size())
+      { }
+
+      template<typename T,typename U>
+      T& set(const ExprID& id, U&& x)
+      {
+        auto& slot = _values[_layout.index_of(id)];
+        if(auto* p = std::get_if<T>(&slot))
+        {
+          *p = std::forward<U>(x);
+          return *p;
+        }
+
+        assert(std::holds_alternative<std::monostate>(slot) && "analytic value type mismatch");
+        return slot.emplace<T>(std::forward<U>(x));
+      }
+
+      template<typename T>
+      T& get(const ExprID& id)
+      {
+        auto* p = std::get_if<T>(&_values[_layout.index_of(id)]);
+        assert(p && "missing or mismatched analytic value");
+        return *p;
+      }
+
+      template<typename T>
+      const T& get(const ExprID& id) const
+      {
+        const auto* p = std::get_if<T>(&_values[_layout.index_of(id)]);
+        assert(p && "missing or mismatched analytic value");
+        return *p;
+      }
+
+    private:
+      using Value = std::variant<std::monostate,ScalarType,VectorType,MatrixType>;
+      const AnalyticValuesLayout& _layout;
+      std::vector<Value> _values;
+  };
 
   template<typename T>
   class AnalyticExpr : public ExprBase
@@ -31,51 +117,18 @@ namespace codac2
       virtual std::pair<Index,Index> output_shape() const = 0;
 
       const T& init_value(ValuesMap& v, const T& x) const
-      {        
-        auto& p = v[unique_id()];
-
-        if(!p)
-        {
-          p = std::make_shared<T>(x);
-          return *static_cast<T*>(p.get());
-        }
-
-        else
-        {
-          auto pt = std::dynamic_pointer_cast<T>(p);
-          assert(pt && "Type mismatch in ValuesMap for this ExprID");
-          *pt = x;
-          return *pt;
-        }
+      {
+        return v.set<T>(unique_id(), x);
       }
-
 
       const T& init_value(ValuesMap& v, T&& x) const
       {
-        auto& p = v[unique_id()];
-
-        if(!p)
-        {
-          p = std::make_shared<T>(std::move(x));
-          return *static_cast<T*>(p.get());
-        }
-
-        else
-        {
-          auto pt = std::dynamic_pointer_cast<T>(p);
-          assert(pt && "Type mismatch in ValuesMap for this ExprID");
-          *pt = std::move(x);
-          return *pt;
-        }
+        return v.set<T>(unique_id(), std::move(x));
       }
 
       T& value(ValuesMap& v) const
       {
-        auto it = v.find(unique_id());
-        assert(it != v.end() && "argument cannot be found");
-        auto p = std::dynamic_pointer_cast<T>(it->second);
-        assert(p && "Type mismatch in ValuesMap for this ExprID");
-        return *p;
+        return v.get<T>(unique_id());
       }
 
       virtual bool belongs_to_args_list(const FunctionArgsList& args) const = 0;

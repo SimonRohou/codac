@@ -101,6 +101,11 @@ namespace codac2
         return false;
       }
 
+      std::vector<std::shared_ptr<ExprBase>> children_expr_base() const override
+      {
+        return OperationExprBase<AnalyticExpr<VectorType>>::children_expr_base();
+      }
+
     protected:
 
       const Index _i, _j;

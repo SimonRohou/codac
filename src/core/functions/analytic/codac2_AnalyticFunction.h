@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <map>
+#include <optional>
 #include "codac2_AnalyticExpr.h"
 #include "codac2_Domain.h"
 #include "codac2_analytic_variables.h"
@@ -67,6 +67,7 @@ namespace codac2
         assert_release(y->belongs_to_args_list(this->args()) && 
           "Invalid argument: variable not present in input arguments");
         update_var_names();
+        _values_layout.emplace(this->args(), this->expr());
       }
 
       AnalyticFunction(const FunctionArgsList& args, const AnalyticExprWrapper<T>& y)
@@ -75,11 +76,19 @@ namespace codac2
         assert_release(y->belongs_to_args_list(this->args()) && 
           "Invalid argument: variable not present in input arguments");
         update_var_names();
+        _values_layout.emplace(this->args(), this->expr());
       }
 
       AnalyticFunction(const AnalyticFunction<T>& f)
         : FunctionBase<AnalyticExpr<T>>(f)
-      { }
+      {
+        _values_layout.emplace(this->args(), this->expr());
+      }
+
+      const AnalyticValuesLayout& values_layout() const
+      {
+        return *_values_layout;
+      }
 
       template<typename... X>
       AnalyticExprWrapper<T> operator()(const X&... x) const
@@ -307,21 +316,20 @@ namespace codac2
         for(Index k = p ; k < p+size_of(x) ; k++)
           d(k-p,k) = 1.;
 
-        v[this->args()[i]->unique_id()] = 
-          std::make_shared<D_TYPE>(typename D_TYPE::Domain(x).mid(), x, d, true);
+        v.set<D_TYPE>(this->args()[i]->unique_id(),
+          D_TYPE(typename D_TYPE::Domain(x).mid(), x, d, true));
       }
 
       template<typename D>
       void intersect_value_from_arg_map(const ValuesMap& v, D& x, Index i) const
       {
-        assert(v.find(this->args()[i]->unique_id()) != v.end() && "argument cannot be found");
-        x &= std::dynamic_pointer_cast<typename ExprType<D>::Type>(v.at(this->args()[i]->unique_id()))->a;
+        x &= v.get<typename ExprType<D>::Type>(this->args()[i]->unique_id()).a;
       }
 
       template<bool NATURAL_EVAL,typename... Args>
       auto eval_(const Args&... x) const
       {
-        ValuesMap v;
+        ValuesMap v(values_layout());
 
         if constexpr(sizeof...(Args) == 0)
           return this->expr()->fwd_eval(v, 0, NATURAL_EVAL);
@@ -369,6 +377,8 @@ namespace codac2
       {
         return this->eval(default_eval_input<X>(this->args()[I])...);
       }
+
+      std::optional<AnalyticValuesLayout> _values_layout;
   };
 
   AnalyticFunction(const FunctionArgsList&, std::initializer_list<ScalarExpr>) -> 
